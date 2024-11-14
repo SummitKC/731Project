@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.cps731.project.team.cps731.pomodoro.data.analytics.WorkAnalytics;
 import org.cps731.project.team.cps731.pomodoro.data.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.task.Task;
 
@@ -27,5 +28,7 @@ public class Student {
     private Set<Course> courses;
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<Task> tasks;
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    private Set<WorkAnalytics> workAnalytics;
 
 }

@@ -24,7 +24,6 @@ public class Announcement {
     private Timestamp issueTime;
     private String description;
     @ManyToOne
-    @MapsId("courseID")
     @JoinColumns({
             @JoinColumn(name="course_name", referencedColumnName = "course_name"),
             @JoinColumn(name="school_term", referencedColumnName = "school_term"),

@@ -15,16 +15,16 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long ID;
     private String name;
-    private Timestamp hardDueDate;
     private Timestamp plannedDueDate;
     @Enumerated(EnumType.ORDINAL)
     private TaskState state;
     @Convert(converter = DurationConverter.class)
     private Duration timeLogged;
+    private Integer pomodorosCompleted;
     @ManyToOne
     private Student owner;
     @ManyToOne
-    @JoinColumn(name = "deriving_assignment", referencedColumnName = "ID")
+    @JoinColumn(name = "deriving_assignment", referencedColumnName = "assignment_details_announcement")
     private Assignment derivedFrom;
 
 }

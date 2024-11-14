@@ -20,8 +20,8 @@ public class Assignment {
 
     @Id
     private Long ID;
-    @OneToOne
-    @MapsId("ID")
+    @OneToOne(cascade = CascadeType.ALL)
+    @MapsId
     @JoinColumn(name = "assignment_details_announcement", referencedColumnName = "ID")
     private Announcement announcement;
     private Timestamp dueDate;
