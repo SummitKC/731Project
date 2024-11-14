@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.cps731.project.team.cps731.pomodoro.data.announcement.Announcement;
-import org.cps731.project.team.cps731.pomodoro.data.announcement.AnnouncementID;
 import org.cps731.project.team.cps731.pomodoro.data.task.Task;
 
 import java.sql.Timestamp;
@@ -19,17 +18,11 @@ import java.util.Set;
 @Data
 public class Assignment {
 
-    @EmbeddedId
-    private AnnouncementID id;
+    @Id
+    private Long ID;
     @OneToOne
-    @MapsId
-    @JoinColumns({
-            @JoinColumn(name="course_name", referencedColumnName = "course_name"),
-            @JoinColumn(name="school_term", referencedColumnName = "school_term"),
-            @JoinColumn(name="school_year", referencedColumnName = "school_year"),
-            @JoinColumn(name="title", referencedColumnName = "title"),
-            @JoinColumn(name="issue_time", referencedColumnName = "issue_time")
-    })
+    @MapsId("ID")
+    @JoinColumn(name = "assignment_details_announcement", referencedColumnName = "ID")
     private Announcement announcement;
     private Timestamp dueDate;
     @OneToMany(mappedBy = "derivedFrom")

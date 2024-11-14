@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.cps731.project.team.cps731.pomodoro.data.course.Course;
 
+import java.sql.Timestamp;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,8 +16,12 @@ import org.cps731.project.team.cps731.pomodoro.data.course.Course;
 @Data
 public class Announcement {
 
-    @EmbeddedId
-    private AnnouncementID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long ID;
+    private String title;
+    @Column(name="issue_time")
+    private Timestamp issueTime;
     private String description;
     @ManyToOne
     @MapsId("courseID")

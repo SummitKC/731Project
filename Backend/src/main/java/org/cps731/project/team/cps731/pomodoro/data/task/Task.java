@@ -24,13 +24,7 @@ public class Task {
     @ManyToOne
     private Student owner;
     @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name="course_name", referencedColumnName = "course_name"),
-            @JoinColumn(name="school_term", referencedColumnName = "school_term"),
-            @JoinColumn(name="school_year", referencedColumnName = "school_year"),
-            @JoinColumn(name="referenced_assignment_title", referencedColumnName = "title"),
-            @JoinColumn(name="referenced_assignment_issue_time", referencedColumnName = "issue_time")
-    })
+    @JoinColumn(name = "deriving_assignment", referencedColumnName = "ID")
     private Assignment derivedFrom;
 
 }
