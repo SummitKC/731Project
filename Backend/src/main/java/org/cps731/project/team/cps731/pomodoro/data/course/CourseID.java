@@ -18,7 +18,7 @@ public class CourseID {
 
     @Column(name = "course_name")
     private String name;
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "school_term")
     private Term term;
     @Column(name = "school_year")
