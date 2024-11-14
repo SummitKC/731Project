@@ -1,9 +1,17 @@
 package org.cps731.project.team.cps731.pomodoro.data.announcement;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.cps731.project.team.cps731.pomodoro.data.course.Course;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Data
 public class Announcement {
 
     @EmbeddedId
