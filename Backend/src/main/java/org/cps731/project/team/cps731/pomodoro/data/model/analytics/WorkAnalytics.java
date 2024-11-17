@@ -1,11 +1,11 @@
-package org.cps731.project.team.cps731.pomodoro.data.analytics;
+package org.cps731.project.team.cps731.pomodoro.data.model.analytics;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.cps731.project.team.cps731.pomodoro.data.user.Student;
+import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 
 @Entity
 @AllArgsConstructor

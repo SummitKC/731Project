@@ -1,4 +1,4 @@
-package org.cps731.project.team.cps731.pomodoro.data.analytics;
+package org.cps731.project.team.cps731.pomodoro.data.model.analytics;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

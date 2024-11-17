@@ -1,4 +1,4 @@
-package org.cps731.project.team.cps731.pomodoro.data.user;
+package org.cps731.project.team.cps731.pomodoro.data.model.user;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

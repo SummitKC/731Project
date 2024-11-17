@@ -1,13 +1,13 @@
-package org.cps731.project.team.cps731.pomodoro.data.course;
+package org.cps731.project.team.cps731.pomodoro.data.model.course;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.cps731.project.team.cps731.pomodoro.data.announcement.Announcement;
-import org.cps731.project.team.cps731.pomodoro.data.user.Professor;
-import org.cps731.project.team.cps731.pomodoro.data.user.Student;
+import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
+import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
+import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 
 import java.util.Set;
 

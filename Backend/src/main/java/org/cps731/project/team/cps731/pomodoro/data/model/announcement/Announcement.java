@@ -1,11 +1,11 @@
-package org.cps731.project.team.cps731.pomodoro.data.announcement;
+package org.cps731.project.team.cps731.pomodoro.data.model.announcement;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.cps731.project.team.cps731.pomodoro.data.course.Course;
+import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 
 import java.sql.Timestamp;
 

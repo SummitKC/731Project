@@ -1,9 +1,9 @@
-package org.cps731.project.team.cps731.pomodoro.data.task;
+package org.cps731.project.team.cps731.pomodoro.data.model.task;
 
 import jakarta.persistence.*;
-import org.cps731.project.team.cps731.pomodoro.data.assignment.Assignment;
-import org.cps731.project.team.cps731.pomodoro.data.converter.DurationConverter;
-import org.cps731.project.team.cps731.pomodoro.data.user.Student;
+import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
+import org.cps731.project.team.cps731.pomodoro.data.model.converter.DurationConverter;
+import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 
 import java.sql.Timestamp;
 import java.time.Duration;

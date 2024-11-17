@@ -1,4 +1,4 @@
-package org.cps731.project.team.cps731.pomodoro.data.converter;
+package org.cps731.project.team.cps731.pomodoro.data.model.converter;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
