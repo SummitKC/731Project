@@ -10,7 +10,6 @@ import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskState;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.User;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

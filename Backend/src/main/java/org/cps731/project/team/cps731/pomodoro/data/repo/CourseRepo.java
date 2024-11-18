@@ -11,7 +11,7 @@ import java.util.Set;
 @Repository
 public interface CourseRepo extends JpaRepository<Course, CourseID> {
 
-    Set<Course> findCoursesByTakenByContains(Student takenBy);
+    Set<Course> findCoursesByTakenById(Long takenById);
     Set<Course> findCoursesByCreatedById(Long id);
 
 }

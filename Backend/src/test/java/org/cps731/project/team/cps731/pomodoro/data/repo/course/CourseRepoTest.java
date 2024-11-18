@@ -74,7 +74,7 @@ public class CourseRepoTest {
         entityManager.persist(introToDatabaseSystems);
         entityManager.flush();
 
-        var courses = repo.findCoursesByTakenByContains(studentJohn);
+        var courses = repo.findCoursesByTakenById(studentJohn.getId());
         assertThat(courses, equalTo(Set.of(introToDatabaseSystems)));
     }
 
