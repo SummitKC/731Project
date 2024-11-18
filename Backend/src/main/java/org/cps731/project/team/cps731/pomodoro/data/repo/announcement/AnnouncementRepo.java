@@ -1,4 +1,4 @@
-package org.cps731.project.team.cps731.pomodoro.data.repo;
+package org.cps731.project.team.cps731.pomodoro.data.repo.announcement;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;

@@ -6,7 +6,6 @@ import org.cps731.project.team.cps731.pomodoro.data.model.course.Term;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.User;
-import org.cps731.project.team.cps731.pomodoro.data.repo.CourseRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
