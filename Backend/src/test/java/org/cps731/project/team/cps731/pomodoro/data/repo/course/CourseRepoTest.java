@@ -42,7 +42,6 @@ public class CourseRepoTest {
                 new Course(new CourseID("Introduction to Database Systems", Term.FALL, 2024), false, professorJohn, Set.of(), Set.of()),
                 new Course(new CourseID("Introduction to Software Engineering", Term.FALL, 2024), false, professorJohn, Set.of(), Set.of())
         ));
-
         entityManager.persist(userJohn);
         entityManager.persist(professorJohn);
         for(var course : johnCourses) {
