@@ -2,11 +2,9 @@ package org.cps731.project.team.cps731.pomodoro.data.model.task;
 
 import jakarta.persistence.*;
 import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
-import org.cps731.project.team.cps731.pomodoro.data.model.converter.DurationConverter;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 
 import java.sql.Timestamp;
-import java.time.Duration;
 
 @Entity
 public class Task {
@@ -18,21 +16,16 @@ public class Task {
     private Timestamp plannedDueDate;
     @Enumerated(EnumType.ORDINAL)
     private TaskState state;
-    @Convert(converter = DurationConverter.class)
-    private Duration timeLogged;
-    private Integer pomodorosCompleted;
     @ManyToOne
     private Student owner;
     @ManyToOne
     @JoinColumn(name = "deriving_assignment", referencedColumnName = "assignment_details_announcement")
     private Assignment derivedFrom;
 
-    public Task(String name, Timestamp plannedDueDate, TaskState state, Duration timeLogged, Integer pomodorosCompleted, Student owner, Assignment derivedFrom) {
+    public Task(String name, Timestamp plannedDueDate, TaskState state, Student owner, Assignment derivedFrom) {
         this.name = name;
         this.plannedDueDate = plannedDueDate;
         this.state = state;
-        this.timeLogged = timeLogged;
-        this.pomodorosCompleted = pomodorosCompleted;
         this.owner = owner;
         this.derivedFrom = derivedFrom;
     }
@@ -60,14 +53,6 @@ public class Task {
         return this.state;
     }
 
-    public Duration getTimeLogged() {
-        return this.timeLogged;
-    }
-
-    public Integer getPomodorosCompleted() {
-        return this.pomodorosCompleted;
-    }
-
     public Student getOwner() {
         return this.owner;
     }
@@ -90,14 +75,6 @@ public class Task {
 
     public void setState(TaskState state) {
         this.state = state;
-    }
-
-    public void setTimeLogged(Duration timeLogged) {
-        this.timeLogged = timeLogged;
-    }
-
-    public void setPomodorosCompleted(Integer pomodorosCompleted) {
-        this.pomodorosCompleted = pomodorosCompleted;
     }
 
     public void setOwner(Student owner) {
@@ -135,8 +112,6 @@ public class Task {
         private String name;
         private Timestamp plannedDueDate;
         private TaskState state;
-        private Duration timeLogged;
-        private Integer pomodorosCompleted;
         private Student owner;
         private Assignment derivedFrom;
 
@@ -158,16 +133,6 @@ public class Task {
             return this;
         }
 
-        public TaskBuilder timeLogged(Duration timeLogged) {
-            this.timeLogged = timeLogged;
-            return this;
-        }
-
-        public TaskBuilder pomodorosCompleted(Integer pomodorosCompleted) {
-            this.pomodorosCompleted = pomodorosCompleted;
-            return this;
-        }
-
         public TaskBuilder owner(Student owner) {
             this.owner = owner;
             return this;
@@ -179,11 +144,11 @@ public class Task {
         }
 
         public Task build() {
-            return new Task(this.name, this.plannedDueDate, this.state, this.timeLogged, this.pomodorosCompleted, this.owner, this.derivedFrom);
+            return new Task(this.name, this.plannedDueDate, this.state, this.owner, this.derivedFrom);
         }
 
         public String toString() {
-            return "Task.TaskBuilder(name=" + this.name + ", plannedDueDate=" + this.plannedDueDate + ", state=" + this.state + ", timeLogged=" + this.timeLogged + ", pomodorosCompleted=" + this.pomodorosCompleted + ", owner=" + this.owner + ", derivedFrom=" + this.derivedFrom + ")";
+            return "Task.TaskBuilder(name=" + this.name + ", plannedDueDate=" + this.plannedDueDate + ", state=" + this.state + ", timeLogged=" + ", owner=" + this.owner + ", derivedFrom=" + this.derivedFrom + ")";
         }
     }
 }

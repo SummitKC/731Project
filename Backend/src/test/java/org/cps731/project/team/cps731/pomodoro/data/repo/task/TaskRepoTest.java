@@ -16,10 +16,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import java.sql.Timestamp;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -52,8 +50,6 @@ public class TaskRepoTest {
                 .name("Finish Assignment 1")
                 .plannedDueDate(Timestamp.from(Instant.now().plus(8, ChronoUnit.DAYS)))
                 .state(TaskState.TODO)
-                .timeLogged(Duration.of(0, ChronoUnit.MINUTES))
-                .pomodorosCompleted(0)
                 .owner(studentJohn)
                 .derivedFrom(assignment1)
                 .build();
@@ -89,8 +85,6 @@ public class TaskRepoTest {
                 .name("Finish Assignment 1")
                 .plannedDueDate(Timestamp.from(Instant.now().plus(8, ChronoUnit.DAYS)))
                 .state(TaskState.TODO)
-                .timeLogged(Duration.of(0, ChronoUnit.MINUTES))
-                .pomodorosCompleted(0)
                 .owner(studentJohn)
                 .derivedFrom(assignment1)
                 .build();
@@ -126,8 +120,6 @@ public class TaskRepoTest {
                 .name("Finish Assignment 1")
                 .plannedDueDate(Timestamp.from(Instant.now().minus(14, ChronoUnit.DAYS)))
                 .state(TaskState.COMPLETE)
-                .timeLogged(Duration.of(500, ChronoUnit.MINUTES))
-                .pomodorosCompleted(0)
                 .owner(studentJohn)
                 .derivedFrom(assignment1)
                 .build();
@@ -137,8 +129,6 @@ public class TaskRepoTest {
                 .name("Finish Assignment 2")
                 .plannedDueDate(Timestamp.from(Instant.now().minus(2, ChronoUnit.DAYS)))
                 .state(TaskState.COMPLETE)
-                .timeLogged(Duration.of(350, ChronoUnit.MINUTES))
-                .pomodorosCompleted(0)
                 .owner(studentJohn)
                 .derivedFrom(assignment2)
                 .build();
@@ -148,8 +138,6 @@ public class TaskRepoTest {
                 .name("Finish Assignment 3")
                 .plannedDueDate(Timestamp.from(Instant.now().plus(1, ChronoUnit.DAYS)))
                 .state(TaskState.IN_PROGRESS)
-                .timeLogged(Duration.of(120, ChronoUnit.MINUTES))
-                .pomodorosCompleted(0)
                 .owner(studentJohn)
                 .derivedFrom(assignment3)
                 .build();
