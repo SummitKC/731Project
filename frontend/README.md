@@ -1,9 +1,10 @@
-# Getting Started with Create React App
+Install these npm packages:
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
+```console
+npm install -g npm@10.9.0
+npm install --save react-responsive
+npm install react-router-dom
+```
 In the project directory, you can run:
 
 ### `npm start`
