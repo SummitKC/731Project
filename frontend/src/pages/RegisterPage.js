@@ -26,10 +26,9 @@ const RegisterPage = () => {
           <input type="number" min="0" placeholder={(userType=="Professor") ? 'Employee ID' : 'Student ID'} required/>
           <input type="email" placeholder='School Email' required/>
           <input type="password" placeholder='Password' required/>
-          
-          <ToggleButton onToggle={handleToggle}/>
-
           <button type="submit">Register</button>
+          <ToggleButton onToggle={handleToggle}/>
+          
           <p>Have an account? <a href='/'>Login</a></p>
         </form>
     </div>

@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
+
   flex-direction: column;
 }
 
@@ -20,18 +20,18 @@
 }
 
 .toggle-button .toggle-circle {
-  width: 25px;
-  height: 25px;
+  width: 24px;
+  height: 24px;
   background-color: #1a75e9;
   border-radius: 50%;
   transition: transform 0.3s ease;
 }
 
-.toggle-button.professor .toggle-circle {
-  transform: translateX(25px);
+.toggle-button.student .toggle-circle {
+  transform: translateX(26px);
 }
 
-.toggle-button.student .toggle-circle {
+.toggle-button.professor .toggle-circle {
   transform: translateX(0);
 }
 

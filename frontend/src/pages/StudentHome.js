@@ -10,14 +10,28 @@ const StudentHome= () => {
   const isPortrait = useMediaQuery({ query: '(orientation: portrait)' })
   const isRetina = useMediaQuery({ query: '(min-resolution: 2dppx)' })
   
+  const firstName="John";
+  const lastName="Doe";
+  
+  const initials = `${firstName[0]}${lastName[0]}`;
+  const isMobile = useMediaQuery({ query: '(max-width: 600px)' });
   
   return (
-    <div style={{ display: 'flex' }}> 
+    <div style={{ display: 'flex', flexDirection: 'row'}}> 
       <StudentSidebar firstName="John" lastName="Doe" />
-      <div style={{ flex: 1, padding: '20px' }}>
-        <h1>Welcome to your Dashboard</h1> 
+      <div >
+      <div id="profile-container" style={ isMobile ? {} : {display:'None'}}>
+          <div className="profile-placeholder">{initials}</div>
+          <div className="name">{firstName} {lastName}</div>
+        </div>
         
+        <div className="main-content">
+          <h1 style={isMobile ? {} : {paddingTop: '10px', paddingLeft: '30px'}}>Welcome to your Dashboard</h1>      
+        </div>
+        
+      
       </div>
+      
     </div>
   )
 }
