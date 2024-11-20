@@ -11,18 +11,20 @@ const LoginPage = () => {
   
   
   const [isProfessor, setIsProfessor] = useState(false);
-  
+
   return (
-    <div>
-        <form className={'form'}>
+    <div className={'container'}>
+        <form className={'form font'}>
           <h2>Login</h2>
           <input type="email" placeholder='School Email' required/>
           <input type="password" placeholder='Password' required/>
+          <button type="submit">Login</button>
           <button onClick={()=>setIsProfessor(!isProfessor)}>
           {isProfessor ? 'Professor' : 'Student'}
         </button>
-          <button type="submit">Login as a {isProfessor ? 'Professor' : 'Student'}</button>
+          <p id='register'>Don't have an account? <a href='/register'>Register here</a></p>
         </form>
+      
     </div>
   )
 }

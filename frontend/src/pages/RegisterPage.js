@@ -13,7 +13,7 @@ const RegisterPage = () => {
   const [isProfessor, setIsProfessor] = useState(false);
   
   return (
-    <div>
+    <div className='container'>
         <form className={'form'}>
           <h2>Register</h2>
           <input type="text" placeholder='Full Name' required/>
@@ -24,9 +24,11 @@ const RegisterPage = () => {
           {isProfessor ? 'Professor' : 'Student'}
         </button>
           <button type="submit">Register as a {isProfessor ? 'Professor' : 'Student'}</button>
+          <p>Have an account? <a href='/'>Login</a></p>
         </form>
     </div>
   )
 }
 
 export default RegisterPage;
+
