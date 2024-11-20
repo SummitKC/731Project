@@ -1,0 +1,46 @@
+.toggle-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex-direction: column;
+}
+
+.toggle-button {
+  width: 50px;
+  height: 20px;
+  border-radius: 20px;
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-button .toggle-circle {
+  width: 24px;
+  height: 24px;
+  background-color: #1a75e9;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.toggle-button.student .toggle-circle {
+  transform: translateX(26px);
+}
+
+.toggle-button.professor .toggle-circle {
+  transform: translateX(0);
+}
+
+.toggle-text {
+  margin-top: 10px;
+  text-align: center;
+  font-family: "Open Sans", sans-serif;
+  font-size: medium;
+  font-weight: 200;
+  color: #000;
+}
+

@@ -2,8 +2,6 @@
 
 body {
   background-color: #eaeaea;
-}
-.font {
   font-family: "Open Sans", sans-serif;
   font-weight: 400;
   font-style: normal;
@@ -11,22 +9,32 @@ body {
     "wdth" 100;
 }
 
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 25px;
+}
+
+
 .form {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px; 
   width: 55vh;
-  min-width: 200px;
+  min-width: 300px;
   height: 75vh;
-  min-height: 250px;
+  min-height: 550px;
   border: 1px solid #1a75e9;
   background-color: white;
   border-radius: 25px;
   justify-content: center;
+
 }
 
-input, button {
+.form input, .form button {
   font-family: "Open Sans", sans-serif;
   font-weight: 500;
   font-style: normal;
@@ -35,7 +43,7 @@ input, button {
   border: none;
 }
 
-input {
+.form input {
   width: 75%;
   height: 5px;
   border-radius: 25px;
@@ -43,7 +51,7 @@ input {
   background-color: #eaeaea;
 }
 
-button {
+.form button {
   width: 150px;
   height: 35px;
   background-color: #1a75e9;
@@ -51,6 +59,14 @@ button {
   border-radius: 10px;
   margin-top: 10px;
 }
+
+.form button:hover{
+  background-color: #004df2;
+}
+
+.form button:focus{
+  background-color: #022e8e;
+} 
 
 h2 {
   font-family: "Open Sans", sans-serif;
@@ -63,14 +79,72 @@ p {
   font-size: 15px;
 
 }
-.container {
-  display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-size: 25px;
+
+.form a:link {
+  color: #1a75e9;
+  text-decoration: none;
+  font-weight: 700;
 }
 
-#register {
-  padding-top: 100px;
+.form a:visited {
+  color: #1a75e9;
+  text-decoration: none;
+}
+
+.form a:hover {
+  color: #004df2;
+  text-decoration: none;
+
+}
+
+
+#register { 
+  margin-top: 4em;  
+  text-align: center; 
+}
+
+@media (max-width: 600px) {
+  .form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; 
+    width: 100vw;
+    height: 99vh;
+    border: none;
+    border-radius: 0px;
+    background-color: white;
+    justify-content: center;
+  }
+
+  .form input {
+    width: 60%;
+    height: 5px;
+    border-radius: 25px;
+    background-color: #eaeaea;
+  }
+  
+  .form button {
+    width: 150px;
+    height: 40px;
+    background-color: #1a75e9;
+    color: white;
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+  
+  .form input, .form button {
+    font-family: "Open Sans", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+    border: none;
+  }
 }
