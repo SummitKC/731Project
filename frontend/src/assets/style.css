@@ -1,6 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Preahvihear&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+  background-color: #eaeaea;
+}
+.font {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
 .form {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px; 
+  width: 55vh;
+  min-width: 200px;
+  height: 75vh;
+  min-height: 250px;
+  border: 1px solid #1a75e9;
+  background-color: white;
+  border-radius: 25px;
+  justify-content: center;
+}
+
+input, button {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+  margin-bottom: 5%;
+  border: none;
+}
+
+input {
+  width: 75%;
+  height: 5px;
+  border-radius: 25px;
+  padding: 15px;
+  background-color: #eaeaea;
+}
+
+button {
+  width: 150px;
+  height: 35px;
+  background-color: #1a75e9;
+  color: white;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+h2 {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+p {
+  font-size: 15px;
+
+}
+.container {
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 25px;
+}
+
+#register {
+  padding-top: 100px;
 }
