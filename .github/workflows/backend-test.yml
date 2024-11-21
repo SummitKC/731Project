@@ -20,3 +20,4 @@ jobs:
           cache: maven
       - name: Test with maven
         run: mvn test
+        working-directory: ./Backend
