@@ -1,5 +1,6 @@
 package org.cps731.project.team.cps731.pomodoro.security.filter;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,17 +34,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 String token = authorizationHeader.substring(7);
-                String email = jwtUtil.extractSubject(token);
-
-                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                    if (jwtUtil.isTokenValid(token, email)) {
+                if (token != null && !token.isBlank() && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    try {
+                        var decodedToken = jwtUtil.validateTokenAndGetDecoded(token);
+                        var email = decodedToken.getSubject();
+                        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                        if (userDetails == null) {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            return;
+                        }
                         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authToken);
+                    } catch (JWTVerificationException ex) {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        return;
                     }
+                } else {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
                 }
+
+                filterChain.doFilter(request, response);
+                return;
             }
-            filterChain.doFilter(request, response);
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }
