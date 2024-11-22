@@ -14,7 +14,7 @@ function AppRouter() {
         <Route path="/login" element={ <LoginPage/ > } />
         <Route path="/register" element={ <RegisterPage/ > } />
         <Route path="/student/home" element={ <StudentHome/ > } />
-        <Route path="/professor/home" element={ <ProfessorHome/ > } />
+        <Route path="/professor/home" element={ <ProfessorHome/ > }/>
         
         
       </Routes>

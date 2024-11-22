@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import '../assets/home.css';
+import '../assets/professorhome.css';
 import { Link } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive'
 import ProfessorSidebar from '../components/Common/ProfessorSidebar';
@@ -15,21 +15,21 @@ const ProfessorHome= () => {
   const lastName="Doe";
   
   const initials = `${firstName[0]}${lastName[0]}`;
-  const isMobile = useMediaQuery({ query: '(max-width: 600px)' });
+  const isMobile = useMediaQuery({ query: '(max-width: 700px)' });
   
   return (
     <div style={{ display: 'flex', flexDirection: 'row'}}> 
-      <ProfessorSidebar firstName="John" lastName="Doe" />
-      <div >
+      <ProfessorSidebar firstName="Jane" lastName="Doe" />
+      <div style={{width:'100vw'}}>
       <div id="profile-container" style={ isMobile ? {} : {display:'None'}}>
           <div className="profile-placeholder">{initials}</div>
           <div className="name">{firstName} {lastName}</div>
         </div>
         
-        <div className="main-content main-container">
+        <div className="main-container">
           <div className='header-container'>
           <h1 style={isMobile ? {} : {paddingTop: '10px', paddingLeft: '30px'}}>Welcome to your Dashboard</h1>    
-          <Link className="create-course" to="/professor/createCourse">Create Course</Link>   
+          <Link className="generic-button" to="/professor/createCourse">Create Course</Link>   
           </div>
         </div>
 

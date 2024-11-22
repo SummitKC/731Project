@@ -1,19 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import '../../assets/home.css';
+import '../../assets/sidebar.css';
 import { useMediaQuery } from 'react-responsive';
 
 const ProfessorSidebar = ({ firstName, lastName }) => {
   const initials = `${firstName[0]}${lastName[0]}`;
-  const isMobile = useMediaQuery({ query: '(max-width: 600px)' });
+  const isMobile = useMediaQuery({ query: '(max-width: 700px)' });
+
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
 
   return (
-      <div className={`sidebar-container ${isMobile ? 'bottom-nav' : ''}`}>
-        <div style={isMobile ? { display:"None" } : {}} className="profile-placeholder">{initials}</div>
-        <div style={isMobile ? { display:"None" } : {}} className="name">{firstName} {lastName}</div>
-        <button style={isMobile ? { display:"None" } : {}} className="button">Logout</button>
-        <Link className="sidebar-button" to="/professor/home">Home</Link>
-        <Link className="sidebar-button" to="/archived">Archived Courses</Link>
+      <div className='sidebar-wrapper'>
+        <button onClick={toggleSidebar} className='collapse-button' style={isMobile ? { display: 'none'} : { }}>
+          {isCollapsed ? '>>': '<<'}
+        </button>
+        
+        <div className={`sidebar-container ${(isCollapsed && !isMobile) ? 'hidden' : ''} ${isMobile ? 'bottom-nav' : ''}`}> 
+          <div style={isMobile ? { display:"None" } : {}} className="profile-placeholder">{initials}</div>
+          <div style={isMobile ? { display:"None" } : {}} className="name">{firstName} {lastName}</div>
+          <button style={isMobile ? { display:"None" } : {}} className="button">Logout</button>
+          <Link className="sidebar-button" to="/professor/home">Home</Link>
+          <Link className="sidebar-button" to="/archived">Archived Courses</Link>
+          
+        </div>
       </div>
   );
 };
