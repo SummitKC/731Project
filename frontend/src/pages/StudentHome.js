@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import '../assets/home.css';
+import '../assets/studenthome.css';
 import { useMediaQuery } from 'react-responsive'
 import StudentSidebar from '../components/Common/StudentSidebar';
 import Course from '../components/Course/Course';

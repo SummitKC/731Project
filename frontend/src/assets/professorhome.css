@@ -1,0 +1,146 @@
+body {
+  background-color: #eaeaea;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;  
+  width: 85%; 
+  height: 85%;
+  max-width: 1500px;
+  background-color: white;
+  margin-top: 40px;
+  margin-left: 40px;
+  border-radius: 50px;
+
+}
+
+.header-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 100;
+  margin-top: 25px;
+  padding-right: 20px;
+  padding-left: 10px;
+}
+
+.header-container h1 {
+  margin: 0;
+  padding: 0 20px;
+}
+
+.sidebar-button:hover {
+  background-color: #9ebbff;
+  font-weight: 700;
+}
+
+.generic-button {
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  justify-content: center;
+  align-content: center;
+  border-radius: 10px;
+  transition: background-color 0.3s;
+  background-color: #1a75e9;
+  width: 150px;
+  height: 45px;
+  margin-top: 20px;
+}
+  
+/* Desktop */
+@media (min-width: 1224px) {
+  .dashboard-content{
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    overflow-x: auto;
+  }
+  
+}
+
+/* Tablet */
+@media (max-width: 1224px) {
+  
+  .main-container{
+    min-width: 100px;
+    max-width: 800px;
+    width: 75%;
+  }
+  
+  .dashboard-wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: none;
+  }
+  .generic-button {
+    width: 130px;
+    height: 60px;
+
+  }
+  
+
+  
+  
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .main-container {
+    margin-top: 150px;
+    margin-left: none;
+    padding-left: none;
+    margin-right: none;
+    margin-bottom: 40px;
+    min-width: 250px;
+    width: 85vw;
+    height: auto;
+    min-height: 60vh;
+  }
+  
+  .generic-button {
+    transition: background-color 0.3s;
+    width: 150px;
+    height: 45px;
+    margin-left: 30px;
+  }
+  
+  .header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    text-align: center;
+    align-content: center;
+
+    padding-right: none;
+    padding-left: none;
+  }
+  
+  .header-container h1 {
+    margin-right: 10px;
+    padding: 0 20px;
+    font-size: 22px;
+  }
+
+  .dashboard-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: none;
+
+  }
+}
