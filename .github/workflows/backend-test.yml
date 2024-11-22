@@ -21,3 +21,15 @@ jobs:
       - name: Test with maven
         run: mvn test
         working-directory: ./Backend
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./coverage/reports/
+          env_vars: OS
+          fail_ci_if_error: true
+          files: /home/runner/work/731Project/731Project/Backend/target/site/jacoco/jacoco.xml
+          flags: unittests
+          name: codecov-umbrella
+          path_to_write_report: ./coverage/codecov_report.txt
+          verbose: true
