@@ -5,7 +5,7 @@ import { useMediaQuery } from 'react-responsive'
 import ToggleButton from '../components/Auth/ToggleButton';
 
 const LoginPage = () => {
-  const isMobile = useMediaQuery({ query: '(max-width: 600px)' });
+  const isMobile = useMediaQuery({ query: '(max-width: 700px)' });
 
   
   const [userType, setUserType] = useState('Student');
