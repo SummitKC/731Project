@@ -1,123 +1,113 @@
-.sidebar-container {
-  width: 11%;
-  background-color: rgb(2, 42, 173);
+body {
+  background-color: #eaeaea;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+.generic-button {
+  width: 150px;
+  height: 35px;
+  background-color: #1a75e9;
+  border-radius: 10px;
+  border-color: transparent;
+  font-family: 'Open Sans';
   color: white;
-  height: 95.8vh;
-  padding: 20px;
+  font-weight: 400;
+  margin-bottom: 30px;
+  margin-right: 40px
+}
+
+.courses-box {
+  width: 700px;
+  height: auto;
+  background-color: white;
+  margin: 50px 50px;
+  border-radius: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
-  min-width: 200px;
-  font-weight: 600;
-  max-width: 250px;
+  justify-content: start;
 }
 
-.profile-placeholder {
-  width: 80px;
-  background-color: lightgray;
-  color: navy;
-  border-radius: 80px;
+.courses-container {
   display: flex;
-  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
   justify-content: center;
-  font-size: 24px;
-  margin-bottom: 10px;
-  margin-top: 30px;
-  min-height: 80px;
+  align-items: center;
+  margin-bottom: 40px;
 }
 
-.name {
-  font-size: 18px;
-  margin-bottom: 20px;
+.taskboard-box{
+  width: 600px;
+  height: auto;
+  min-height: 300px;
+  background-color: white;
+  margin: 50px 50px;
+  border-radius: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
 }
 
-.button {
-  transition: background-color 0.3s;
-  background-color: #d0e8ff;
-  color: black;
-  border: none;
-  border-radius: 40px;
-  padding: 10px 20px;
-  margin: 10px 0;
-  cursor: pointer;
-  width: 60%;
-  font-size: 16px;
-  margin-bottom: 60px;
-  font-weight: 500;
-}
-
-.button:hover {
-  background-color: #9ebbff;
-}
-
-.sidebar-button {
-  color: black;
-  font-weight: 600;
-  text-decoration: none;
-  text-align: center;
-  padding: 10px 20px;
-  border-radius: 10px;
-  margin-bottom: 80px;
-  width: 70%;
-  display: block;
-  transition: background-color 0.3s;
-  background-color: #d0e8ff;
-}
-
-.sidebar-button:hover {
-  background-color: #9ebbff;
-  font-weight: 700;
-}
-
-
-@media (max-width: 600px) {
-  .sidebar-container {
+/* Desktop */
+@media (min-width: 1224px) {
+  .dashboard-wrapper{
+    display: flex;
     flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-    height: 60px;
-    border-radius: 0;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgb(2, 42, 173);
-    z-index: 1000;
-    min-width: None;
-    max-width: None;
-    
+    align-items: end;
+    overflow-x: auto;
   }
+}
 
-  .sidebar-button {
-    margin-bottom: 0;
-    width: 15%;
-    color: black;
-    margin-right: 1em;
-    text-align: center;
-  }
-  
-  #profile-container {
+/* Tablet */
+@media (max-width: 1224px) {
+  .main-content {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
     align-items: center;
-    background-color: rgb(2, 42, 173);
-    color: white;
-    padding: 10px 0;
-    z-index: 1000;
-    
+    overflow-x: auto;
   }
+  
+  .dashboard-wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: none;
+  }
+  
+  .courses-box {
+    width: 75%;
+    height: auto;
+    margin: none;
+    border-radius: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+  }
+  
+  .taskboard-box{
+    width: 80%;
+    height: auto;
+    min-height: 300px;
+    min-width: 300px;
+    margin: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+  }
+  
+}
 
-  .profile-placeholder, .name {
-    margin: 0 10px;
-  }
+/* Mobile */
+@media (max-width: 700px) {
   
   .main-content {
     padding-top: 120px;
@@ -127,6 +117,17 @@
     justify-content: center;
     align-items: center;
     width: 100vw;
+
+  }
+  
+  
+  
+  .dashboard-wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: none;
 
   }
 }

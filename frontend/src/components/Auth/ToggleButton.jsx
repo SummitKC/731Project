@@ -12,14 +12,16 @@ const ToggleButton = ({ onToggle }) => {
   };
 
   return (
-    <div className="toggle-button-container">
-      <div className={`toggle-button ${isProfessor ? 'professor' : 'student'}`} onClick={toggleMode}>
-        <div className="toggle-circle" />
+    <>
+      <div className="toggle-button-container">
+        <div className={`toggle-button ${isProfessor ? 'professor' : 'student'}`} onClick={toggleMode}>
+          <div className="toggle-circle" />
+        </div>
+        <span className="toggle-text">
+          {isProfessor ? 'Professor' : 'Student'}
+        </span>
       </div>
-      <span className="toggle-text">
-        {isProfessor ? 'Professor' : 'Student'}
-      </span>
-    </div>
+    </>
   );
 };
 
