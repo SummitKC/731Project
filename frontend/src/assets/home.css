@@ -71,6 +71,47 @@
   font-weight: 700;
 }
 
+.main-container {
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  width: 135%; 
+  height: 85%;
+  max-width: 1200px;
+  padding: 35px;
+  background-color: white;
+  margin: 30px 20px 0 20px;
+  border-radius: 50px;
+  padding-top: 20px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 100;
+}
+
+.header-container h1 {
+  margin: 0;
+  padding: 0 20px;
+}
+
+.create-course {
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  padding: 10px 20px;
+  border-radius: 10px;
+  transition: background-color 0.3s;
+  background-color: #1a75e9;
+  width: auto;
+  margin: 0 50px;
+  margin-top: 20px;
+  }
 
 @media (max-width: 600px) {
   .sidebar-container {
@@ -129,4 +170,5 @@
     width: 100vw;
 
   }
+
 }
