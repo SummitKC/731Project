@@ -44,7 +44,7 @@ body {
 
 .generic-button {
   color: white;
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: none;
   text-align: center;
   justify-content: center;
@@ -52,9 +52,27 @@ body {
   border-radius: 10px;
   transition: background-color 0.3s;
   background-color: #1a75e9;
-  width: 150px;
-  height: 45px;
+  width: 170px;
+  height: 40px;
   margin-top: 20px;
+}
+
+.generic-button:hover{
+  background-color: #1763c6;
+  font-weight: 600;
+}
+
+.generic-button:active{
+  background-color: #0f51a7;
+}
+  
+.courses-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
 }
   
 /* Desktop */
@@ -74,7 +92,7 @@ body {
   .main-container{
     min-width: 100px;
     max-width: 800px;
-    width: 75%;
+
   }
   
   .dashboard-wrapper{
