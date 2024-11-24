@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import StudentHome from './pages/StudentHome';
 import ProfessorHome from './pages/ProfessorHome';
+import TaskBoard from './pages/TaskBoard'
 import './assets/style.css';
 
 function AppRouter() {
@@ -15,6 +16,7 @@ function AppRouter() {
         <Route path="/register" element={ <RegisterPage/ > } />
         <Route path="/student/home" element={ <StudentHome/ > } />
         <Route path="/professor/home" element={ <ProfessorHome/ > }/>
+        <Route path="/taskboard" element={ <TaskBoard/ > }/>
         
         
       </Routes>

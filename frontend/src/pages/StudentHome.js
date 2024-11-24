@@ -22,11 +22,11 @@ const StudentHome = () => {
   ];
 
   const placeholderTasks = [
-    { taskName: 'This is a really long named task', taskStatus: 'TODO', taskPriority: 'HIGH', taskDate: '2024-11-20', taskBoard: false },
-    { taskName: 'TASK 2', taskStatus: 'In Progress', taskPriority: 'LOW', taskDate: '2024-11-22', taskBoard: true },
-    { taskName: 'TASK 3', taskStatus: 'In Progress', taskPriority: 'NORMAL', taskDate: '2024-11-22', taskBoard: false },
-    { taskName: 'TASK 4', taskStatus: 'TODO', taskPriority: 'URGENT', taskDate: '2024-11-23', taskBoard: false },
-    { taskName: 'TASK 5', taskStatus: 'TODO', taskPriority: 'HIGH', taskDate: '2024-11-24', taskBoard: false },
+    { taskName: 'This is a really long named task', taskStatus: 'TODO', taskPriority: 'HIGH', taskDate: '2024-11-20'},
+    { taskName: 'TASK 2', taskStatus: 'In Progress', taskPriority: 'LOW', taskDate: '2024-11-22'},
+    { taskName: 'TASK 3', taskStatus: 'In Progress', taskPriority: 'NORMAL', taskDate: '2024-11-22' },
+    { taskName: 'TASK 4', taskStatus: 'TODO', taskPriority: 'URGENT', taskDate: '2024-11-23' },
+    { taskName: 'TASK 5', taskStatus: 'TODO', taskPriority: 'HIGH', taskDate: '2024-11-24' },
   ];
 
   const [courses, setCourses] = useState(placeholderCourses);
@@ -84,6 +84,7 @@ const StudentHome = () => {
                         taskName={task.taskName}
                         taskPriority={task.taskPriority}
                         taskStatus={task.taskStatus}
+                        board={'true'}
                       />
                     ))}
                   </div>
