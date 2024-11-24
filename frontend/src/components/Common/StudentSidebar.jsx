@@ -1,4 +1,4 @@
-import React, { useState }from 'react';
+import React, { useState, useEffect }from 'react';
 import { Link } from 'react-router-dom';
 import '../../assets/sidebar.css';
 import { useMediaQuery } from 'react-responsive';
@@ -8,6 +8,15 @@ const StudentSidebar = ({ firstName, lastName }) => {
   const isMobile = useMediaQuery({ query: '(max-width: 700px)' });
 
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const isCollapseNeeded = useMediaQuery({ query: '(max-width: 1400px)'});
+  
+  useEffect(() => { 
+    if (isCollapseNeeded) { 
+      setIsCollapsed(true);
+    } else {
+      setIsCollapsed(false);
+      }
+    }, [isCollapseNeeded]);
   
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
@@ -27,7 +36,7 @@ const StudentSidebar = ({ firstName, lastName }) => {
           <Link className="sidebar-button" to="/student/home">Home</Link>
           <Link className="sidebar-button" to="/taskboard">Task Board</Link>
           <Link className="sidebar-button" to="/pomodoro">Pomodoro</Link>
-          <Link style={ isMobile ?  {marginRight:'30px'} : {}} className="sidebar-button" to="/analytics">Analytics</Link>
+          <Link className="sidebar-button" to="/analytics">Analytics</Link>
         </div>
       </div>
   );

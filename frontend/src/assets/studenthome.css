@@ -20,6 +20,7 @@ body {
   margin-right: 40px
 }
 
+
 .courses-box {
   width: 700px;
   height: auto;
@@ -42,16 +43,28 @@ body {
 }
 
 .taskboard-box{
-  width: 600px;
+  width: 40%;
   height: auto;
   min-height: 300px;
   background-color: white;
-  margin: 50px 50px;
+  margin-left: 40px;
+  margin-right: 20px;
+  
   border-radius: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: start;
+  max-width: 550px;
+  min-width: 500px;
+}
+
+.tasks-container{
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  align-items: center;
+  margin-bottom: 25px;
 }
 
 .sidebar-button:hover {
@@ -59,14 +72,27 @@ body {
   font-weight: 700;
 }
 
+.task-header { 
+  margin-bottom: 0px;
+  width: 100%;
+  margin-left: 10px;
+  font-size: 18px;
+}
+
+.task-item {
+  margin-bottom: 5px;
+}
+
 /* Desktop */
 @media (min-width: 1224px) {
   .dashboard-wrapper{
     display: flex;
     flex-direction: row;
-    align-items: end;
+    align-items: start;
     overflow-x: auto;
   }
+  
+
 }
 
 /* Tablet */
@@ -77,6 +103,7 @@ body {
     justify-content: center;
     align-items: center;
     overflow-x: auto;
+    
   }
   
   .dashboard-wrapper{
@@ -121,6 +148,9 @@ body {
   
   h2 {
     font-size: 20px;
+  }
+  h3{
+    font-size: 16px;
   }
   
   .main-content {

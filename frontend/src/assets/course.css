@@ -21,6 +21,15 @@
   margin-bottom: 10px
 }
 
+.course-text{
+  width: 150px;
+  height: 50px;
+  display: flex;
+  align-content: center;
+  text-align: center;
+  justify-content: center;
+}
+
 /* Mobile */
 @media (max-width: 700px) {
   .course-wrapper{
@@ -34,5 +43,7 @@
     justify-content: center;
     align-items: center;
   }
+  
+  
   
 }

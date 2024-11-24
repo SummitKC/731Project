@@ -12,7 +12,9 @@ const Course = ( { courseCode, courseName, courseIcon }) => {
   return (
     <div className='course-wrapper'>
       <div className='course'></div>
-      <span>{courseCode} - {courseName}</span>
+      <div className='course-text'>
+        <span>{courseCode} - {courseName}</span>
+      </div>
     </div>
   );
 
