@@ -2,7 +2,7 @@ import React from 'react';
 import '../../assets/task.css';
 import '../../assets/global.css';
 
-const Task = ({ taskName, taskPriority, taskStatus, taskDate, board }) => {
+const Task = ({ taskName, taskPriority, taskStatus, taskDate, board, onClick }) => {
   const priorityClass = taskPriority.toLowerCase();
 
   let statusElement = null;
@@ -18,7 +18,7 @@ const Task = ({ taskName, taskPriority, taskStatus, taskDate, board }) => {
   }
 
   return (
-    <div className={`task-wrapper weight-600`}>
+    <div className={`task-wrapper weight-600`} onClick={onClick}>
       <div className='task'>
         <p className='lmar-30'>{taskName}</p>
       </div>

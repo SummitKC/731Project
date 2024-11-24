@@ -4,6 +4,8 @@ import '../assets/global.css';
 import { useMediaQuery } from 'react-responsive';
 import StudentSidebar from '../components/Common/StudentSidebar';
 import Task from '../components/TaskBoard/Task';
+import '../assets/task.css';
+import TaskDetailOverlay from '../components/TaskBoard/TaskOverlayDetail';
 
 const TaskBoard = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 700px)' });
@@ -29,7 +31,7 @@ const TaskBoard = () => {
   const [tasks, setTasks] = useState(placeholderTasks);
   const term = "Fall 2024";
 
-  // Group tasks by date and status
+
   const groupedTasks = tasks.reduce((acc, task) => {
     const { taskDate, taskStatus } = task;
     if (!acc[taskDate]) {
@@ -41,6 +43,14 @@ const TaskBoard = () => {
 
   const sortedDates = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
 
+
+  const [selectedTask, setSelectedTask] = useState(null);
+  const handleTaskClick = (task) => { 
+    setSelectedTask(task);
+  };
+  const handleClose = () => { 
+    setSelectedTask(null);
+  }
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <StudentSidebar firstName="John" lastName="Doe" />
@@ -56,22 +66,24 @@ const TaskBoard = () => {
             <button className='generic-button'>Create Task</button>
           </div>
           <div className='dashboard-wrapper'>
+            
             <div className='main-taskboard-box'>
               <h2>TODO</h2>
-              {sortedDates.filter(date => groupedTasks[date].TODO.length > 0).map(date => (
-                <div className='tasks-container' key={date}>
-                  <h3 className='task-header'>{date}</h3>
-                  {groupedTasks[date].TODO.map((task, index) => (
-                    <Task
-                      key={index}
-                      taskName={task.taskName}
-                      taskPriority={task.taskPriority}
-                      taskStatus={task.taskStatus}
-                      taskDate={task.taskDate}
-                    />
-                  ))}
-                </div>
-              ))}
+                {sortedDates.filter(date => groupedTasks[date].TODO.length > 0).map(date => (
+                  <div className='tasks-container' key={date}>
+                    <h3 className='task-header'>{date}</h3>
+                    {groupedTasks[date].TODO.map((task, index) => (
+                      <Task
+                        key={index}
+                        taskName={task.taskName}
+                        taskPriority={task.taskPriority}
+                        taskStatus={task.taskStatus}
+                        taskDate={task.taskDate}
+                        onClick={() => handleTaskClick(task)}
+                      />
+                    ))}
+                  </div>
+                ))}
             </div>
             
             <div className='main-taskboard-box'>
@@ -86,6 +98,7 @@ const TaskBoard = () => {
                       taskPriority={task.taskPriority}
                       taskStatus={task.taskStatus}
                       taskDate={task.taskDate}
+                      onClick={() => handleTaskClick(task)}
                     />
                   ))}
                 </div>
@@ -104,12 +117,16 @@ const TaskBoard = () => {
                       taskPriority={task.taskPriority}
                       taskStatus={task.taskStatus}
                       taskDate={task.taskDate}
+                      onClick={() => handleTaskClick(task)}
                     />
                   ))}
                 </div>
               ))}
             </div>
+          
           </div>
+          
+          <TaskDetailOverlay selectedTask={selectedTask} handleClose={handleClose} />
         </div>
       </div>
     </div>
