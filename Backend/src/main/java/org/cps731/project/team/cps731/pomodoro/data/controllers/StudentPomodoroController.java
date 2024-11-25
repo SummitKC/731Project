@@ -39,10 +39,8 @@ public class StudentPomodoroController {
     public ResponseEntity<Map<String, PomSession>> startPomodoro(@PathVariable Long TaskID, int mins) {
         PomSession session = activePomSession.get(TaskID);
         if (session == null) {
-            return ResponseEntity.badRequest().build();
-        }
+            session = new PomSession();
             Task task = taskService.getTaskById(TaskID);
-
             session.startTime = Timestamp.from(Instant.now());
             Instant endTimeInstant = session.startTime.toInstant().plusSeconds(mins * 60);
             session.endTime = Timestamp.from(endTimeInstant);
@@ -50,7 +48,8 @@ public class StudentPomodoroController {
             activePomSession.put(TaskID, session);
             
             return ResponseEntity.ok(Map.of("Start Time", session));
-        
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @PostMapping("/pause{TaskID}")
@@ -93,14 +92,15 @@ public class StudentPomodoroController {
 
 
     @GetMapping("/break{TaskID}") //Work in progress
-    public ResponseEntity<Integer> pomoBreak(@PathVariable Long TaskID, int brakeNumber) {
+    public ResponseEntity<Integer> pomoBreak(@PathVariable Long TaskID) {
         PomSession session = activePomSession.get(TaskID);
         if (session == null) {
             return ResponseEntity.badRequest().build();
         }
 
         //if (Timestamp.from(Instant.now()).equals(session.)) {
-            return ResponseEntity.ok(brakeNumber);
+        
+            return ResponseEntity.ok(5);
     }
 
 }

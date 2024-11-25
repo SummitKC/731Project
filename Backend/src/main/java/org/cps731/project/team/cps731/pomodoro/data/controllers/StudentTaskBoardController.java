@@ -1,101 +1,75 @@
 package org.cps731.project.team.cps731.pomodoro.data.controllers;
 
-import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
-import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
-import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
-import org.cps731.project.team.cps731.pomodoro.data.services.CourseService;
-import org.cps731.project.team.cps731.pomodoro.data.services.StudentService;
+import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskState;
+import org.cps731.project.team.cps731.pomodoro.data.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-
 
 @RestController
 @RequestMapping("/api/student/taskboard")
 public class StudentTaskBoardController {
 
     @Autowired
-    private StudentService studentService;
-
-    @Autowired
-    private CourseService courseService;
+    private TaskService taskService;
 
 
+    @GetMapping("/{studentId}/tasks")
+    public ResponseEntity<Map<String, Object>> getTaskBoard(
+            @PathVariable Long studentId,
+            @PathVariable Timestamp issueTime,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-    @GetMapping("/courses/{studentId}")
-    public ResponseEntity<Set<Course>> getStudentCourses(@PathVariable Long studentId) {
-        Student student = studentService.getStudentById(studentId);
-        if (student == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(student.getCourses());
+        // Get tasks by state
+        Set<Task> todoTasks = taskService.getTaskByState(studentId, TaskState.TODO);
+        
+        Set<Task> inProgressTasks = taskService.getTaskByState(studentId, TaskState.TODO);
+        
+        Set<Task> completedTasks = taskService.getTaskByState(studentId, TaskState.TODO);
+
+        // Get only recent tasks (last week)
+        //Timestamp oneWeekAgo = Timestamp.from(Instant.now().minusSeconds(7 * 24 * 60 * 60));
+        Set<Task> upcomingTasks = taskService.getTaskByStateAndIssueTime(studentId, TaskState.TODO, issueTime);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("todo", todoTasks);
+        response.put("inProgress", inProgressTasks);
+        response.put("completed", completedTasks);
+        response.put("upcoming", upcomingTasks);
+
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/tasks/{studentId}")
-    public ResponseEntity<Set<Task>> getUpcomingTasks(@PathVariable Long studentId) {
-        Student student = studentService.getStudentById(studentId);
-        if (student == null) {
-            return ResponseEntity.notFound().build();
-        }
-        Set<Task> upcomingTasks = student.getTasks();
-        return ResponseEntity.ok(upcomingTasks);
-    }
-
-/*     Try and catch block here would be better cause we would not have to call 
-    StudentService to get student by ID, and add course, this can be done in 1 call */
-    @PostMapping("/courses/{studentId}/join")
-    public ResponseEntity<Student> joinCourse(@PathVariable Long studentId, @PathVariable CourseID courseId) {
-        try {
-            Course course = courseService.getCourseById(courseId);
-            if (course == null) {
-                return ResponseEntity.notFound().build();
-            }
-            
-            Student updatedStudent = studentService.addCourseToStudent(studentId, course);
-            return ResponseEntity.ok(updatedStudent);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @DeleteMapping("/courses/{studentId}/{courseId}")
-    public ResponseEntity<Student> leaveCourse(@PathVariable Long studentId, @PathVariable CourseID courseId) {
-        try {
-            Student student = studentService.getStudentById(studentId);
-            if (student == null) {
-                return ResponseEntity.notFound().build();
-            }
-            
-            Set<Course> courses = student.getCourses();
-            courses.removeIf(c -> c.getCourseID().equals(courseId));
-            student.setCourses(courses);
-            
-            Student updatedStudent = studentService.updateStudent(studentId, student);
-            return ResponseEntity.ok(updatedStudent);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @GetMapping("/courses/{courseId}/details")
-    public ResponseEntity<Map<String, Object>> getCourseDetails(@PathVariable CourseID courseId) {
-        Course course = courseService.getCourseById(courseId);
-        if (course == null) {
+    @PutMapping("/tasks/{taskId}/state")
+    public ResponseEntity<Task> updateTaskState(
+            @PathVariable Long taskId,
+            @RequestParam TaskState newState) {
+        
+        Task updatedTask = taskService.changeTaskState(taskId, newState);
+        if (updatedTask == null) {
             return ResponseEntity.notFound().build();
         }
         
-        Map<String, Object> courseDetails = Map.of(
-            "courseId", course.getCourseID(),
-            "professor", course.getCreatedBy().getUser().getUsername(),
-            "announcements", course.getAnnouncements(),
-            "isArchived", course.getArchived()
-        );
+        return ResponseEntity.ok(updatedTask);
+    }
+
+    @PutMapping("/tasks/{taskId}")
+    public ResponseEntity<Task> updateTask(
+            @PathVariable Long taskId,
+            @RequestBody Task task) {
         
-        return ResponseEntity.ok(courseDetails);
+        Task updatedTask = taskService.updateTask(taskId, task);
+        if (updatedTask == null) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        return ResponseEntity.ok(updatedTask);
     }
 }
