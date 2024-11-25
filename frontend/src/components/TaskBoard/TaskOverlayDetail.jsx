@@ -14,10 +14,13 @@ const TaskDetailOverlay = ({ selectedTask, handleClose }) => {
         <h2>Task Details</h2>
         <p><strong>Name:</strong> {selectedTask.taskName}</p>
         <p><strong>Status:</strong> {selectedTask.taskStatus}</p>
-        <p><strong>Priority:</strong><span className={`${ prioclass}`}> {selectedTask.taskPriority}</span></p>
+        <p><strong>Priority:</strong><span className={`${ prioclass }`}> {selectedTask.taskPriority}</span></p>
         <p><strong>Date:</strong> {selectedTask.taskDate}</p>
-        <button>Edit Task</button>
-        <button>Delete Task</button>
+        <div className='overlay-button-container'>
+          <button>Edit Task</button>
+          <button>Delete Task</button>
+          <button>Complete Task</button>
+        </div>
       </div>
     </>
   );

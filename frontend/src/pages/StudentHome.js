@@ -84,6 +84,7 @@ const StudentHome = () => {
                         taskName={task.taskName}
                         taskPriority={task.taskPriority}
                         taskStatus={task.taskStatus}
+                        taskDate={task.taskDate}
                         board={'true'}
                       />
                     ))}
