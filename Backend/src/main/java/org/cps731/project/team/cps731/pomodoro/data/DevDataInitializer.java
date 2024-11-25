@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,23 +34,25 @@ public class DevDataInitializer implements ApplicationRunner {
 
     private final EntityManager entityManager;
     private static final Logger LOG = LoggerFactory.getLogger(DevDataInitializer.class);
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public DevDataInitializer(EntityManager entityManager) {
+    public DevDataInitializer(EntityManager entityManager, PasswordEncoder passwordEncoder) {
         this.entityManager = entityManager;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @Transactional
     public void run(ApplicationArguments args) throws Exception {
         LOG.info("Initializing DEV Data");
-
-        var userJohn = new User("john.smith@torontomu.ca", "$2y$10$ZZlD.z6h6dnc03RSzqaLwOkJ5Ea1rHoe0l3mZCYMtll9QZvKV8kkO", UserType.STUDENT);
+        var userJohn = new User("john.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.STUDENT);
         var studentJohn = new Student(userJohn);
-        var userSummit = new User("summit.smith@torontomu.ca", "$2y$10$ZZlD.z6h6dnc03RSzqaLwOkJ5Ea1rHoe0l3mZCYMtll9QZvKV8kkO", UserType.PROFESSOR);
+        var userSummit = new User("summit.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.PROFESSOR);
         var profSummit = new Professor(userSummit);
         var introToDbSystems = new Course(new CourseID("Intro To Database Systems", Term.FALL, 2024), false, profSummit);
         var introToSoftEng = new Course(new CourseID("Intro To Software Engineering", Term.FALL, 2023), true, profSummit);
+        var introToJava = new Course(new CourseID("Intro To Java", Term.WINTER, 2022), true, profSummit);
         var announcementForA1 = Announcement.builder()
                 .title("Assignment 1")
                 .description("Assignment 1 is out now!")
@@ -69,9 +72,11 @@ public class DevDataInitializer implements ApplicationRunner {
                 .derivedFrom(a1)
                 .build();
 
+        studentJohn.setCourses(Set.of(introToSoftEng));
+        introToSoftEng.setTakenBy(Set.of(studentJohn));
         a1.setDerivingTasks(Set.of(task1));
         introToDbSystems.setAnnouncements(Set.of(announcementForA1));
-        profSummit.setCreatedCourses(Set.of(introToDbSystems, introToSoftEng));
+        profSummit.setCreatedCourses(Set.of(introToDbSystems, introToSoftEng, introToJava));
 
         entityManager.persist(userJohn);
         entityManager.persist(userSummit);

@@ -5,12 +5,14 @@ import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
+import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.cps731.project.team.cps731.pomodoro.services.AnnouncementService;
 import org.cps731.project.team.cps731.pomodoro.services.AssignmentService;
 import org.cps731.project.team.cps731.pomodoro.services.StudentService;
 import org.cps731.project.team.cps731.pomodoro.services.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -20,6 +22,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/student/course")
+@Secured("STUDENT")
 public class StudentCoursePageController {
 
     @Autowired
@@ -84,9 +87,10 @@ public class StudentCoursePageController {
             assignmentService.getAssignmentsByCourse(courseId, page, size));
     }
 
-        @DeleteMapping("/courses/{studentId}/{courseId}")
-    public ResponseEntity<Student> leaveCourse(@PathVariable Long studentId, @PathVariable CourseID courseId) {
+    @DeleteMapping("/courses/{courseId}")
+    public ResponseEntity<Student> leaveCourse(@PathVariable CourseID courseId) {
         try {
+            var studentId = SecurityUtil.getAuthenticatedUserID();
             Student student = studentService.getStudentById(studentId);
             if (student == null) {
                 return ResponseEntity.notFound().build();

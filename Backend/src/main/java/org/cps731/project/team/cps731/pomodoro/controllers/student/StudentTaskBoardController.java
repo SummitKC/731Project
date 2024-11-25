@@ -1,13 +1,13 @@
 package org.cps731.project.team.cps731.pomodoro.controllers.student;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskState;
 import org.cps731.project.team.cps731.pomodoro.dto.TaskDTO;
+import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.cps731.project.team.cps731.pomodoro.security.auth.JwtUtil;
 import org.cps731.project.team.cps731.pomodoro.services.TaskService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/student/taskboard")
+@Secured("STUDENT")
 public class StudentTaskBoardController {
 
     private final TaskService taskService;
@@ -35,8 +36,7 @@ public class StudentTaskBoardController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        var decodedJWT = (DecodedJWT) SecurityContextHolder.getContext().getAuthentication().getCredentials();
-        var studentId = Long.parseLong(decodedJWT.getSubject());
+        var studentId = SecurityUtil.getAuthenticatedUserID();
         // Get tasks by state
         Set<TaskDTO> todoTasks = taskService.getTaskByState(studentId, TaskState.TODO).stream().map(TaskDTO::new).collect(Collectors.toSet());
 

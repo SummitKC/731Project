@@ -2,6 +2,7 @@ package org.cps731.project.team.cps731.pomodoro.services;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
+import org.cps731.project.team.cps731.pomodoro.data.repo.course.CourseRepo;
 import org.cps731.project.team.cps731.pomodoro.data.repo.user.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
@@ -15,9 +16,11 @@ import java.util.Set;
 public class StudentService {
 
     private final StudentRepo studentRepo;
+    private final CourseRepo courseRepo;
 
-    public StudentService(StudentRepo studentRepo) {
+    public StudentService(StudentRepo studentRepo, CourseRepo courseRepo) {
         this.studentRepo = studentRepo;
+        this.courseRepo = courseRepo;
     }
 
     public List<Student> getAllStudents() {
@@ -47,21 +50,22 @@ public class StudentService {
     }
 
     public Student addCourseToStudent(Long studentId, Course course) {
-    if (studentId == null || course == null) {
-        throw new IllegalArgumentException("Student ID and course cannot be null");
-    }
+        if (studentId == null || course == null) {
+            throw new IllegalArgumentException("Student ID and course cannot be null");
+        }
 
-    Student student = studentRepo.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found with id: " + studentId));
-    
-    Set<Course> courses = student.getCourses();
-    if (courses == null) {
-        courses = new HashSet<>();
-    }
-    
-    courses.add(course);
-    student.setCourses(courses);
-    
-    return studentRepo.save(student);
+        Student student = studentRepo.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found with id: " + studentId));
+
+        Set<Course> courses = student.getCourses();
+        if (courses == null) {
+            courses = new HashSet<>();
+        }
+
+        courses.add(course);
+        student.setCourses(courses);
+        course.getTakenBy().add(student);
+        courseRepo.save(course);
+        return studentRepo.save(student);
     }
 
     public Student addTaskToStudent(Long studentId, Task task) {

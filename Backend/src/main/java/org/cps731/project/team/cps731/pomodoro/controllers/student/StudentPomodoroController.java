@@ -12,10 +12,12 @@ import org.cps731.project.team.cps731.pomodoro.services.TimeEntryService;
 import org.cps731.project.team.cps731.pomodoro.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/student/pomodoro")
+@Secured("STUDENT")
 public class StudentPomodoroController {
 
     @Autowired
@@ -35,7 +37,7 @@ public class StudentPomodoroController {
         private Task task;
     }
     
-    @PostMapping("/start{TaskID}")
+    @PostMapping("/start/{TaskID}")
     public ResponseEntity<Map<String, PomSession>> startPomodoro(@PathVariable Long TaskID, int mins) {
         PomSession session = activePomSession.get(TaskID);
         if (session == null) {
@@ -52,7 +54,7 @@ public class StudentPomodoroController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PostMapping("/pause{TaskID}")
+    @PostMapping("/pause/{TaskID}")
     public ResponseEntity<Map<String, Object>> pausePomodoro(@PathVariable Long TaskID) {
         PomSession session = activePomSession.get(TaskID);
         if (session == null || !session.isPaused) {
@@ -64,7 +66,7 @@ public class StudentPomodoroController {
 
     }
     
-    @PostMapping("/resume{TaskID}")
+    @PostMapping("/resume/{TaskID}")
     public ResponseEntity<Map<String, Object>> resumePomodoro(@PathVariable Long TaskID) {
         PomSession session = activePomSession.get(TaskID);
         if (session == null || session.isPaused) {
@@ -78,7 +80,7 @@ public class StudentPomodoroController {
     
     }
 
-    @PostMapping("/end{TaskID}")
+    @PostMapping("/end/{TaskID}")
     public ResponseEntity<Map<String, Object>> endPomodoro(@PathVariable Long TaskID) {
         PomSession session = activePomSession.get(TaskID);
         if (session == null) {
@@ -91,7 +93,7 @@ public class StudentPomodoroController {
     }
 
 
-    @GetMapping("/break{TaskID}") //Work in progress
+    @GetMapping("/break/{TaskID}") //Work in progress
     public ResponseEntity<Integer> pomoBreak(@PathVariable Long TaskID) {
         PomSession session = activePomSession.get(TaskID);
         if (session == null) {
