@@ -50,7 +50,7 @@ public class ProfessorCoursePageController {
         response.put("announcements", announcements);
         response.put("assignments", assignments);
         response.put("isArchived", course.getArchived());
-        response.put("professor", course.getCreatedBy().getUser().getUsername());
+        response.put("professor", course.getCreatedBy().getUser().getEmail());
 
         return ResponseEntity.ok(response);
     }

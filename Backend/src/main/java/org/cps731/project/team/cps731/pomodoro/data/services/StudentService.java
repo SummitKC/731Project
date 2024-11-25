@@ -32,7 +32,7 @@ public class StudentService {
     public Student updateStudent(Long id, Student student) {
         Student existingStudent = studentRepo.findById(id).orElse(null);
         if (existingStudent != null) {
-            existingStudent.getUser().setUsername(student.getUser().getUsername());
+            existingStudent.getUser().setEmail(student.getUser().getEmail());
             existingStudent.getUser().setPassword(student.getUser().getPassword());
             return studentRepo.save(existingStudent);
         }

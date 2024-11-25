@@ -58,7 +58,7 @@ public class StudentCoursePageController {
         response.put("course", course);
         response.put("announcements", announcements);
         response.put("assignments", assignments);
-        response.put("professor", course.getCreatedBy().getUser().getUsername());
+        response.put("professor", course.getCreatedBy().getUser().getEmail());
         response.put("isArchived", course.getArchived());
 
         return ResponseEntity.ok(response);

@@ -71,7 +71,7 @@ public class StudentHomePageController {
         
         Map<String, Object> courseDetails = Map.of(
             "courseId", course.getCourseID(),
-            "professor", course.getCreatedBy().getUser().getUsername(),
+            "professor", course.getCreatedBy().getUser().getEmail(),
             "announcements", course.getAnnouncements(),
             "isArchived", course.getArchived()
         );

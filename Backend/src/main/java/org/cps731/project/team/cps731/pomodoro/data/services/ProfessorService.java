@@ -30,7 +30,7 @@ public class ProfessorService {
     public Professor updateProfessor(Long id, Professor professor) {
         Professor existingProfessor = professorRepo.findById(id).orElse(null);
         if (existingProfessor != null) {
-            existingProfessor.getUser().setUsername(professor.getUser().getUsername());
+            existingProfessor.getUser().setEmail(professor.getUser().getEmail());
             existingProfessor.getUser().setPassword(professor.getUser().getPassword());
             return professorRepo.save(existingProfessor);
         }

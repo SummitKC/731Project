@@ -27,7 +27,7 @@ public class ProfessorDashBoardController {
         if (professor == null) {
             return ResponseEntity.notFound().build();
         }
-        String uName =  professor.getUser().getUsername();
+        String uName =  professor.getUser().getEmail();
         return ResponseEntity.ok(uName);
     }
 

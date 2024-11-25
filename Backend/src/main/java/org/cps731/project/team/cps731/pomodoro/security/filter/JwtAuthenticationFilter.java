@@ -41,6 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                         if (userDetails == null) {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            filterChain.doFilter(request, response);
                             return;
                         }
                         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -48,17 +49,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     } catch (JWTVerificationException ex) {
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        filterChain.doFilter(request, response);
                         return;
                     }
-                } else {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    return;
                 }
-
-                filterChain.doFilter(request, response);
-                return;
             }
-
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            filterChain.doFilter(request, response);
     }
 }
