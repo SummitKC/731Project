@@ -1,4 +1,4 @@
-package org.cps731.project.team.cps731.pomodoro.data.services;
+package org.cps731.project.team.cps731.pomodoro.services;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
@@ -14,11 +14,18 @@ import java.util.Set;
 @Service
 public class StudentService {
 
-    @Autowired
-    private StudentRepo studentRepo;
+    private final StudentRepo studentRepo;
+
+    public StudentService(StudentRepo studentRepo) {
+        this.studentRepo = studentRepo;
+    }
 
     public List<Student> getAllStudents() {
         return studentRepo.findAll();
+    }
+
+    public Student getStudentByEmail(String email) {
+        return studentRepo.findAllByUser_Email(email);
     }
 
     public Student getStudentById(Long id) {

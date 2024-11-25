@@ -1,4 +1,4 @@
-package org.cps731.project.team.cps731.pomodoro.data.services;
+package org.cps731.project.team.cps731.pomodoro.services;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.timeentry.TimeEntry;
 import org.cps731.project.team.cps731.pomodoro.data.repo.timeentry.TimeEntryRepo;

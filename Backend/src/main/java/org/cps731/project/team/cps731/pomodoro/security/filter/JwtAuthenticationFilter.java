@@ -37,15 +37,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (token != null && !token.isBlank() && SecurityContextHolder.getContext().getAuthentication() == null) {
                     try {
                         var decodedToken = jwtUtil.validateTokenAndGetDecoded(token);
-                        var email = decodedToken.getSubject();
-                        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                        var idString = decodedToken.getSubject();
+                        UserDetails userDetails = userDetailsService.loadUserByUsername(idString);
                         if (userDetails == null) {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                             filterChain.doFilter(request, response);
                             return;
                         }
                         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities());
+                                userDetails, decodedToken, userDetails.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     } catch (JWTVerificationException ex) {
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

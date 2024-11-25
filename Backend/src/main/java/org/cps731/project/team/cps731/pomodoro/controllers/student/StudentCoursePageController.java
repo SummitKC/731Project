@@ -1,14 +1,14 @@
-package org.cps731.project.team.cps731.pomodoro.data.controllers;
+package org.cps731.project.team.cps731.pomodoro.controllers.student;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
 import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
-import org.cps731.project.team.cps731.pomodoro.data.services.AnnouncementService;
-import org.cps731.project.team.cps731.pomodoro.data.services.AssignmentService;
-import org.cps731.project.team.cps731.pomodoro.data.services.StudentService;
-import org.cps731.project.team.cps731.pomodoro.data.services.CourseService;
+import org.cps731.project.team.cps731.pomodoro.services.AnnouncementService;
+import org.cps731.project.team.cps731.pomodoro.services.AssignmentService;
+import org.cps731.project.team.cps731.pomodoro.services.StudentService;
+import org.cps731.project.team.cps731.pomodoro.services.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/student/course")
+@RequestMapping("/student/course")
 public class StudentCoursePageController {
 
     @Autowired

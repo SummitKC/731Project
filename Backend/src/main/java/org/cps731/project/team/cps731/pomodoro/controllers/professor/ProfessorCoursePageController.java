@@ -1,12 +1,12 @@
-package org.cps731.project.team.cps731.pomodoro.data.controllers;
+package org.cps731.project.team.cps731.pomodoro.controllers.professor;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
 import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
-import org.cps731.project.team.cps731.pomodoro.data.services.AnnouncementService;
-import org.cps731.project.team.cps731.pomodoro.data.services.AssignmentService;
-import org.cps731.project.team.cps731.pomodoro.data.services.CourseService;
+import org.cps731.project.team.cps731.pomodoro.services.AnnouncementService;
+import org.cps731.project.team.cps731.pomodoro.services.AssignmentService;
+import org.cps731.project.team.cps731.pomodoro.services.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/professor/course")
+@RequestMapping("/professor/course")
 public class ProfessorCoursePageController {
 
     @Autowired

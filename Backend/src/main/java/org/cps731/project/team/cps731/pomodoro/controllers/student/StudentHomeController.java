@@ -1,12 +1,12 @@
-package org.cps731.project.team.cps731.pomodoro.data.controllers;
+package org.cps731.project.team.cps731.pomodoro.controllers.student;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskState;
-import org.cps731.project.team.cps731.pomodoro.data.services.CourseService;
-import org.cps731.project.team.cps731.pomodoro.data.services.StudentService;
-import org.cps731.project.team.cps731.pomodoro.data.services.TaskService;
+import org.cps731.project.team.cps731.pomodoro.services.CourseService;
+import org.cps731.project.team.cps731.pomodoro.services.StudentService;
+import org.cps731.project.team.cps731.pomodoro.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/student/home")
+@RequestMapping("/student/home")
 public class StudentHomeController {
 
     @Autowired

@@ -18,8 +18,8 @@ public class AppUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var userOpt = userRepo.findByEmail(username);
+    public UserDetails loadUserByUsername(String idString) throws UsernameNotFoundException {
+        var userOpt = userRepo.findById(Long.parseLong(idString));
         return userOpt.map(AppUserDetails::new).orElse(null);
     }
 }

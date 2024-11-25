@@ -11,11 +11,11 @@ import java.util.Set;
 public class AppUserDetails implements UserDetails {
 
     private final String password;
-    private final String email;
+    private final String idString;
     private final Collection<AppAuthorities> authorities;
 
     public AppUserDetails(User user) {
-        email = user.getEmail();
+        idString = user.getId().toString();
         password = user.getPassword();
         authorities = switch (user.getUserType()) {
             case STUDENT:
@@ -39,7 +39,7 @@ public class AppUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return idString;
     }
 
     public boolean equals(final Object o) {
@@ -50,8 +50,8 @@ public class AppUserDetails implements UserDetails {
         final Object this$password = this.getPassword();
         final Object other$password = other.getPassword();
         if (this$password == null ? other$password != null : !this$password.equals(other$password)) return false;
-        final Object this$email = this.email;
-        final Object other$email = other.email;
+        final Object this$email = this.idString;
+        final Object other$email = other.idString;
         if (this$email == null ? other$email != null : !this$email.equals(other$email)) return false;
         final Object this$authorities = this.getAuthorities();
         final Object other$authorities = other.getAuthorities();
@@ -69,7 +69,7 @@ public class AppUserDetails implements UserDetails {
         int result = 1;
         final Object $password = this.getPassword();
         result = result * PRIME + ($password == null ? 43 : $password.hashCode());
-        final Object $email = this.email;
+        final Object $email = this.idString;
         result = result * PRIME + ($email == null ? 43 : $email.hashCode());
         final Object $authorities = this.getAuthorities();
         result = result * PRIME + ($authorities == null ? 43 : $authorities.hashCode());

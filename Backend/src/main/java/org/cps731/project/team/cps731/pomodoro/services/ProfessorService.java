@@ -1,4 +1,4 @@
-package org.cps731.project.team.cps731.pomodoro.data.services;
+package org.cps731.project.team.cps731.pomodoro.services;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;

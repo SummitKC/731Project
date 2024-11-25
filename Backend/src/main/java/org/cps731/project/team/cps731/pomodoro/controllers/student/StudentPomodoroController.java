@@ -1,4 +1,4 @@
-package org.cps731.project.team.cps731.pomodoro.data.controllers;
+package org.cps731.project.team.cps731.pomodoro.controllers.student;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.timeentry.TimeEntry;
 
@@ -8,14 +8,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
-import org.cps731.project.team.cps731.pomodoro.data.services.TimeEntryService;
-import org.cps731.project.team.cps731.pomodoro.data.services.TaskService;
+import org.cps731.project.team.cps731.pomodoro.services.TimeEntryService;
+import org.cps731.project.team.cps731.pomodoro.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/student/pomodoro")
+@RequestMapping("/student/pomodoro")
 public class StudentPomodoroController {
 
     @Autowired

@@ -1,10 +1,10 @@
-package org.cps731.project.team.cps731.pomodoro.data.controllers;
+package org.cps731.project.team.cps731.pomodoro.controllers.professor;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
-import org.cps731.project.team.cps731.pomodoro.data.services.CourseService;
-import org.cps731.project.team.cps731.pomodoro.data.services.ProfessorService;
+import org.cps731.project.team.cps731.pomodoro.services.CourseService;
+import org.cps731.project.team.cps731.pomodoro.services.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/professor/dashboard")
+@RequestMapping("/professor/dashboard")
 public class ProfessorDashBoardController {
 
     @Autowired
