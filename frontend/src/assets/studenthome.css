@@ -112,6 +112,7 @@ body {
     justify-content: center;
     align-items: center;
     margin: none;
+    width: 100%;
   }
   
   .courses-box {
