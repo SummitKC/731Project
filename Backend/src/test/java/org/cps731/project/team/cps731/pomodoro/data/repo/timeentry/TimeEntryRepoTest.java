@@ -11,6 +11,7 @@ import org.cps731.project.team.cps731.pomodoro.data.model.timeentry.TimeEntry;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.User;
+import org.cps731.project.team.cps731.pomodoro.data.model.user.UserType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -42,9 +43,9 @@ public class TimeEntryRepoTest {
 
     @Test
     public void findAllByOwnerIdAndStartTimeBeforeReturnsAllStudentTimeEntriesBeforeTime() {
-        var userJohn = new User("John", "password");
+        var userJohn = new User("John", "password", UserType.STUDENT);
         var studentJohn = new Student(userJohn);
-        var userSteve = new User("Steve", "password");
+        var userSteve = new User("Steve", "password", UserType.PROFESSOR);
         var profSteve = new Professor(userSteve);
         var introToDatabaseSystems = new Course(new CourseID("Intro to database system", Term.FALL, 2024), false, profSteve);
         var announcementForAssignment1 = new Announcement("Announcement 1 is out", Timestamp.from(Instant.now()), "Hello World", introToDatabaseSystems);
