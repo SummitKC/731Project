@@ -7,6 +7,7 @@ import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Term;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
+import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskPriority;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskState;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
@@ -63,6 +64,7 @@ public class DevDataInitializer implements ApplicationRunner {
                 .owner(studentJohn)
                 .state(TaskState.IN_PROGRESS)
                 .name("Finish Assignment 1")
+                .priority(TaskPriority.NORMAL)
                 .plannedDueDate(Timestamp.from(Instant.now().plus(10, ChronoUnit.DAYS)))
                 .derivedFrom(a1)
                 .build();

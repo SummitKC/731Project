@@ -3,6 +3,7 @@ package org.cps731.project.team.cps731.pomodoro.controllers.student;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskState;
+import org.cps731.project.team.cps731.pomodoro.dto.TaskDTO;
 import org.cps731.project.team.cps731.pomodoro.security.auth.JwtUtil;
 import org.cps731.project.team.cps731.pomodoro.services.TaskService;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/student/taskboard")
@@ -36,17 +38,18 @@ public class StudentTaskBoardController {
         var decodedJWT = (DecodedJWT) SecurityContextHolder.getContext().getAuthentication().getCredentials();
         var studentId = Long.parseLong(decodedJWT.getSubject());
         // Get tasks by state
-        Set<Task> todoTasks = taskService.getTaskByState(studentId, TaskState.TODO);
+        Set<TaskDTO> todoTasks = taskService.getTaskByState(studentId, TaskState.TODO).stream().map(TaskDTO::new).collect(Collectors.toSet());
 
-        Set<Task> inProgressTasks = taskService.getTaskByState(studentId, TaskState.IN_PROGRESS);
+        Set<TaskDTO> inProgressTasks = taskService.getTaskByState(studentId, TaskState.IN_PROGRESS).stream().map(TaskDTO::new).collect(Collectors.toSet());
 
-        Set<Task> completedTasks = taskService.getTaskByState(studentId, TaskState.COMPLETE);
+        Set<TaskDTO> completedTasks = taskService.getTaskByState(studentId, TaskState.COMPLETE).stream().map(TaskDTO::new).collect(Collectors.toSet());
 
         // Get only recent tasks (last week)
         //Timestamp oneWeekAgo = Timestamp.from(Instant.now().minusSeconds(7 * 24 * 60 * 60));
-        Set<Task> upcomingTasks = taskService.getTaskByStateAndIssueTime(studentId,
+        Set<TaskDTO> upcomingTasks = taskService.getTaskByStateAndIssueTime(studentId,
                 TaskState.TODO,
-                Timestamp.from(Instant.now().minus(7, ChronoUnit.DAYS)));
+                Timestamp.from(Instant.now().minus(7, ChronoUnit.DAYS)))
+                .stream().map(TaskDTO::new).collect(Collectors.toSet());
 
         Map<String, Object> response = new HashMap<>();
         response.put("todo", todoTasks);
@@ -58,7 +61,7 @@ public class StudentTaskBoardController {
     }
 
     @PutMapping("/tasks/{taskId}/state")
-    public ResponseEntity<Task> updateTaskState(
+    public ResponseEntity<TaskDTO> updateTaskState(
             @PathVariable Long taskId,
             @RequestParam TaskState newState) {
 
@@ -67,19 +70,19 @@ public class StudentTaskBoardController {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(updatedTask);
+        return ResponseEntity.ok(new TaskDTO(updatedTask));
     }
 
     @PutMapping("/tasks/{taskId}")
-    public ResponseEntity<Task> updateTask(
+    public ResponseEntity<TaskDTO> updateTask(
             @PathVariable Long taskId,
-            @RequestBody Task task) {
+            @RequestBody TaskDTO task) {
 
         Task updatedTask = taskService.updateTask(taskId, task);
         if (updatedTask == null) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(updatedTask);
+        return ResponseEntity.ok(new TaskDTO(updatedTask));
     }
 }
