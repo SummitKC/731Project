@@ -5,6 +5,7 @@ import { useMediaQuery } from 'react-responsive';
 import StudentSidebar from '../components/Common/StudentSidebar';
 import Course from '../components/Course/Course';
 import Task from '../components/TaskBoard/Task';
+import Board from '../components/TaskBoard/Board';
 
 const StudentHome = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 700px)' });
@@ -33,18 +34,32 @@ const StudentHome = () => {
   const [tasks, setTasks] = useState(placeholderTasks);
   const term = "Fall 2024";
 
-  // Group and sort tasks by date
-  const groupedTasks = tasks.reduce((acc, task) => {
-    const date = task.taskDate;
-    if (!acc[date]) {
-      acc[date] = [];
+
+  const groupedTasks = {};
+
+  tasks.forEach(task => {
+    const { taskDate, taskStatus } = task;
+    if (!groupedTasks[taskDate]) {
+      groupedTasks[taskDate] = { TODO: [], 'In Progress': [], Completed: [] };
     }
-    acc[date].push(task);
-    return acc;
-  }, {});
+    groupedTasks[taskDate][taskStatus].push(task);
+  });
+
 
   const sortedDates = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
 
+  const convertGroupedTasks = (groupedTasks) => {
+    return Object.keys(groupedTasks).map(date => {
+      const statuses = groupedTasks[date];
+      return {
+        taskDate: date,
+        tasks: Object.values(statuses).flat()
+      };
+    });
+  };
+  
+  const allTasks = convertGroupedTasks(groupedTasks);
+  
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <StudentSidebar firstName="John" lastName="Doe" />
@@ -72,26 +87,8 @@ const StudentHome = () => {
               </div>
               <button className='generic-button font' style={{ alignSelf: 'end' }}>Join Course</button>
             </div>
-            <div className='taskboard-box'>
-              <h2>Tasks Overview</h2>
-              
-                {sortedDates.map(date => (
-                  <div className='tasks-container' key={date}>
-                    <h3 className='task-header'>{date}</h3>
-                    {groupedTasks[date].map((task, index) => (
-                      <Task
-                        key={index}
-                        taskName={task.taskName}
-                        taskPriority={task.taskPriority}
-                        taskStatus={task.taskStatus}
-                        taskDate={task.taskDate}
-                        board={'true'}
-                      />
-                    ))}
-                  </div>
-                ))}
-              
-            </div>
+            
+            <Board title="Tasks Overview" tasks={allTasks}/>
           </div>
         </div>
       </div>

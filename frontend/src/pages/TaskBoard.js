@@ -33,31 +33,31 @@ const TaskBoard = () => {
   const term = "Fall 2024";
 
 
-  const groupedTasks = tasks.reduce((acc, task) => {
+  const groupedTasks = {};
+
+  tasks.forEach(task => {
     const { taskDate, taskStatus } = task;
-    if (!acc[taskDate]) {
-      acc[taskDate] = { TODO: [], 'In Progress': [], Completed: [] };
+    if (!groupedTasks[taskDate]) {
+      groupedTasks[taskDate] = { TODO: [], 'In Progress': [], Completed: [] };
     }
-    acc[taskDate][taskStatus].push(task);
-    return acc;
-  }, {});
+    groupedTasks[taskDate][taskStatus].push(task);
+  });
+
 
   const sortedDates = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
   
-  const todoTasks = sortedDates.filter(date => groupedTasks[date].TODO.length > 0).map(date => ({
-    taskDate: date,
-    tasks: groupedTasks[date].TODO
-  }));
-
-  const inProgressTasks = sortedDates.filter(date => groupedTasks[date]['In Progress'].length > 0).map(date => ({
-    taskDate: date,
-    tasks: groupedTasks[date]['In Progress']
-  }));
-
-  const completedTasks = sortedDates.filter(date => groupedTasks[date].Completed.length > 0).map(date => ({
-    taskDate: date,
-    tasks: groupedTasks[date].Completed
-  }));
+  const getTasksByStatus = (status) => {
+    return sortedDates
+      .filter(date => groupedTasks[date][status].length > 0)
+      .map(date => ({
+        taskDate: date,
+        tasks: groupedTasks[date][status]
+      }));
+  };
+  
+  const todoTasks = getTasksByStatus('TODO');
+  const inProgressTasks = getTasksByStatus('In Progress');
+  const completedTasks = getTasksByStatus('Completed');
 
 
   return (
