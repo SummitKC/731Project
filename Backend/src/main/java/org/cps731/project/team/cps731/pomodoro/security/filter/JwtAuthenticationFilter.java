@@ -40,7 +40,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         var idString = decodedToken.getSubject();
                         UserDetails userDetails = userDetailsService.loadUserByUsername(idString);
                         if (userDetails == null) {
-                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                             filterChain.doFilter(request, response);
                             return;
                         }
@@ -48,7 +47,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                 userDetails, decodedToken, userDetails.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     } catch (JWTVerificationException ex) {
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         filterChain.doFilter(request, response);
                         return;
                     }

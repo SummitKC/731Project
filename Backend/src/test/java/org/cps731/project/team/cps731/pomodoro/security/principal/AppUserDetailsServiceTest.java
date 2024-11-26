@@ -26,37 +26,41 @@ public class AppUserDetailsServiceTest {
     private AppUserDetailsService userDetailsService;
 
     @Test
-    public void shouldReturnAppUserDetailsWithStudentRoleForStudentsEmail() {
+    public void shouldReturnAppUserDetailsWithStudentRoleForStudentsID() {
+        var userID = 1L;
         var user = new User("john.smith@torontomu.ca", "password", UserType.STUDENT);
-        when(userRepo.findByEmail(user.getEmail()))
+        user.setId(userID);
+        when(userRepo.findById(userID))
                 .thenReturn(Optional.of(user));
 
-        var userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+        var userDetails = userDetailsService.loadUserByUsername(userID + "");
 
-        assertThat(userDetails.getUsername(), equalTo(user.getEmail()));
+        assertThat(userDetails.getUsername(), equalTo(user.getId() + ""));
         assertThat(userDetails.getPassword(), equalTo(user.getPassword()));
         assertThat(userDetails.getAuthorities(), equalTo(Set.of(AppAuthorities.STUDENT)));
     }
 
     @Test
-    public void shouldReturnAppUserDetailsWithProfessorRoleForProfessorsEmail() {
+    public void shouldReturnAppUserDetailsWithProfessorRoleForProfessorsID() {
+        var userID = 1L;
         var user = new User("jane.smith@torontomu.ca", "password", UserType.PROFESSOR);
-        when(userRepo.findByEmail(user.getEmail()))
+        user.setId(userID);
+        when(userRepo.findById(userID))
                 .thenReturn(Optional.of(user));
 
-        var userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+        var userDetails = userDetailsService.loadUserByUsername(userID + "");
 
-        assertThat(userDetails.getUsername(), equalTo(user.getEmail()));
+        assertThat(userDetails.getUsername(), equalTo(user.getId() + ""));
         assertThat(userDetails.getPassword(), equalTo(user.getPassword()));
         assertThat(userDetails.getAuthorities(), equalTo(Set.of(AppAuthorities.PROFESSOR)));
     }
 
     @Test
-    public void shouldReturnNullForNonExistentEmail() {
-        var email = "fake.guy@torontomu.ca";
-        when(userRepo.findByEmail(email)).thenReturn(Optional.empty());
+    public void shouldReturnNullForNonExistentID() {
+        var idString = "1";
+        when(userRepo.findByEmail(idString)).thenReturn(Optional.empty());
 
-        var userDetails = userDetailsService.loadUserByUsername(email);
+        var userDetails = userDetailsService.loadUserByUsername(idString);
 
         assertThat(userDetails, nullValue());
     }

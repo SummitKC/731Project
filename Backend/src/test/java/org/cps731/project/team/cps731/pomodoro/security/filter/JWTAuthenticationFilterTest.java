@@ -14,13 +14,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.io.IOException;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = {JwtAuthenticationFilter.class})
+@SpringBootTest(classes = {JwtAuthenticationFilter.class, SecurityContext.class})
 public class JWTAuthenticationFilterTest {
 
     @Autowired
@@ -31,18 +35,18 @@ public class JWTAuthenticationFilterTest {
     private UserDetailsService userDetailsService;
 
     @Test
-    public void shouldYield401UnauthorizedWhenMissingAuthorizationHeader() throws ServletException, IOException {
+    public void shouldFailWhenMissingAuthorizationHeader() throws ServletException, IOException {
         var request = mock(HttpServletRequest.class);
         var response = mock(HttpServletResponse.class);
         when(request.getHeader("Authorization")).thenReturn(null);
 
         jwtAuthenticationFilter.doFilterInternal(request, response, mock(FilterChain.class));
 
-        verify(response, times(1)).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        assertThat(SecurityContextHolder.getContext().getAuthentication(), is(nullValue()));
     }
 
     @Test
-    public void shouldYield401UnauthorizedWhenTokenIsInvalid() throws ServletException, IOException {
+    public void shouldFailWhenTokenIsInvalid() throws ServletException, IOException {
         var request = mock(HttpServletRequest.class);
         var response = mock(HttpServletResponse.class);
         var token = "sometokengoeshere";
@@ -51,29 +55,29 @@ public class JWTAuthenticationFilterTest {
 
         jwtAuthenticationFilter.doFilterInternal(request, response, mock(FilterChain.class));
 
-        verify(response, times(1)).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        assertThat(SecurityContextHolder.getContext().getAuthentication(), is(nullValue()));
     }
 
     @Test
-    public void shouldYield401UnauthorizedWhenTokenIsEmpty() throws ServletException, IOException {
+    public void shouldFailWhenTokenIsEmpty() throws ServletException, IOException {
         var request = mock(HttpServletRequest.class);
         var response = mock(HttpServletResponse.class);
         when(request.getHeader("Authorization")).thenReturn("Bearer ");
 
         jwtAuthenticationFilter.doFilterInternal(request, response, mock(FilterChain.class));
 
-        verify(response, times(1)).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        assertThat(SecurityContextHolder.getContext().getAuthentication(), is(nullValue()));
     }
 
     @Test
-    public void shouldYield401UnauthorizedWhenTokenIsBlank() throws ServletException, IOException {
+    public void shouldFailWhenTokenIsBlank() throws ServletException, IOException {
         var request = mock(HttpServletRequest.class);
         var response = mock(HttpServletResponse.class);
         when(request.getHeader("Authorization")).thenReturn("Bearer      ");
 
         jwtAuthenticationFilter.doFilterInternal(request, response, mock(FilterChain.class));
 
-        verify(response, times(1)).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        assertThat(SecurityContextHolder.getContext().getAuthentication(), is(nullValue()));
     }
 
     @Test
@@ -81,7 +85,9 @@ public class JWTAuthenticationFilterTest {
         var request = mock(HttpServletRequest.class);
         var response = mock(HttpServletResponse.class);
         var filterChain = mock(FilterChain.class);
+        var userID = 1L;
         var user = new User("john.smith@torontomu.ca", "password", UserType.STUDENT);
+        user.setId(userID);
         var token = "sometokengoeshere";
         var decodedJWT = mock(DecodedJWT.class);
         when(decodedJWT.getSubject()).thenReturn(user.getEmail());
@@ -91,12 +97,11 @@ public class JWTAuthenticationFilterTest {
 
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
-        verify(filterChain, times(1)).doFilter(request, response);
-        verify(response, times(0)).setStatus(anyInt());
+        assertThat(SecurityContextHolder.getContext().getAuthentication(), is(not(nullValue())));
     }
 
     @Test
-    public void shouldYield401IfTokenValidButUserDoesNotExist() throws ServletException, IOException {
+    public void shouldFailIfTokenValidButUserDoesNotExist() throws ServletException, IOException {
         var request = mock(HttpServletRequest.class);
         var response = mock(HttpServletResponse.class);
         var filterChain = mock(FilterChain.class);
@@ -110,7 +115,7 @@ public class JWTAuthenticationFilterTest {
 
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
-        verify(response, times(1)).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        assertThat(SecurityContextHolder.getContext().getAuthentication(), is(nullValue()));
     }
 
 }
