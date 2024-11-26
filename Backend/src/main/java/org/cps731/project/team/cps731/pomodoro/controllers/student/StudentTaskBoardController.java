@@ -7,7 +7,7 @@ import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.cps731.project.team.cps731.pomodoro.security.auth.JwtUtil;
 import org.cps731.project.team.cps731.pomodoro.services.TaskService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/student/taskboard")
-@Secured("STUDENT")
+@PreAuthorize("hasRole('ROLE_STUDENT')")
 public class StudentTaskBoardController {
 
     private final TaskService taskService;

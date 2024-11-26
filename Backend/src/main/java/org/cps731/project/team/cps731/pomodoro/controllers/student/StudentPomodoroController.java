@@ -12,12 +12,12 @@ import org.cps731.project.team.cps731.pomodoro.services.TimeEntryService;
 import org.cps731.project.team.cps731.pomodoro.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/student/pomodoro")
-@Secured("STUDENT")
+@PreAuthorize("hasRole('ROLE_STUDENT')")
 public class StudentPomodoroController {
 
     @Autowired

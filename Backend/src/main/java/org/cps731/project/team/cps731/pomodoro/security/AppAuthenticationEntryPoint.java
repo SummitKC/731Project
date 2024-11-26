@@ -1,6 +1,5 @@
 package org.cps731.project.team.cps731.pomodoro.security;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.InsufficientAuthenticationException;

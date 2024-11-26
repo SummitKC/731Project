@@ -23,6 +23,10 @@ public class ProfessorService {
         return professorRepo.findById(id).orElse(null);
     }
 
+    public Professor getProfessorByEmail(String email) {
+        return professorRepo.findByUser_Email(email);
+    }
+
     public Professor createProfessor(Professor professor) {
         return professorRepo.save(professor);
     }

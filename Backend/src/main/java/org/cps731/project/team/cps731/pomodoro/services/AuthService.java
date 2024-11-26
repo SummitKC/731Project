@@ -12,12 +12,14 @@ public class AuthService {
 
     private final JwtUtil jwtUtil;
     private final StudentService studentService;
+    private final ProfessorService professorService;
     private final PasswordEncoder encoder;
 
     @Autowired
-    public AuthService(JwtUtil jwtUtil, StudentService studentService, PasswordEncoder encoder) {
+    public AuthService(JwtUtil jwtUtil, StudentService studentService, ProfessorService professorService, PasswordEncoder encoder) {
         this.jwtUtil = jwtUtil;
         this.studentService = studentService;
+        this.professorService = professorService;
         this.encoder = encoder;
     }
 
@@ -29,6 +31,16 @@ public class AuthService {
             throw new AuthException("Wrong password");
         }
         return jwtUtil.generateToken(student.getUser().getId().toString());
+    }
+
+    public String professorLogin(LoginRequestBody loginRequest) throws AuthException {
+        var professor = professorService.getProfessorByEmail(loginRequest.getEmail());
+        if (professor == null) {
+            throw new AuthException("Professor not found");
+        } else if (!encoder.matches(loginRequest.getPassword(), professor.getUser().getPassword())) {
+            throw new AuthException("Wrong password");
+        }
+        return jwtUtil.generateToken(professor.getUser().getId().toString());
     }
 
 }

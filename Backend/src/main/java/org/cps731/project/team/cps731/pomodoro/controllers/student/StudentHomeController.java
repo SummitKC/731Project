@@ -2,7 +2,6 @@ package org.cps731.project.team.cps731.pomodoro.controllers.student;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
-import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskState;
 import org.cps731.project.team.cps731.pomodoro.dto.CourseDTO;
 import org.cps731.project.team.cps731.pomodoro.dto.StatusDTO;
@@ -14,20 +13,18 @@ import org.cps731.project.team.cps731.pomodoro.services.StudentService;
 import org.cps731.project.team.cps731.pomodoro.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/student/home")
-@Secured("STUDENT")
+@PreAuthorize("hasRole('ROLE_STUDENT')")
 public class StudentHomeController {
 
     @Autowired
