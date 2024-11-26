@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import '../assets/studenthome.css';
-import '../assets/global.css'
+import '../assets/taskboard.css';
+import '../assets/global.css';
 import { useMediaQuery } from 'react-responsive';
 import StudentSidebar from '../components/Common/StudentSidebar';
-import Course from '../components/Course/Course';
 import Task from '../components/TaskBoard/Task';
+import '../assets/task.css';
+import TaskDetailOverlay from '../components/TaskBoard/TaskOverlayDetail';
 import Board from '../components/TaskBoard/Board';
 
-const StudentHome = () => {
+const TaskBoard = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 700px)' });
   const isTablet = useMediaQuery({ query: '(max-width: 1224px)' });
   const isDesktopOrLaptop = useMediaQuery({ query: '(min-width: 1224px)' });
@@ -17,20 +18,17 @@ const StudentHome = () => {
   const lastName = "Doe";
   const initials = `${firstName[0]}${lastName[0]}`;
 
-  const placeholderCourses = [
-    { courseCode: 'CPS 510', courseName: 'Database Systems I' },
-    { courseCode: 'CPS 310', courseName: 'Computer Architecture II' },
-  ];
-
   const placeholderTasks = [
-    { taskName: 'This is a really long named task', taskStatus: 'TODO', taskPriority: 'HIGH', taskDate: '2024-11-20'},
-    { taskName: 'TASK 2', taskStatus: 'In Progress', taskPriority: 'LOW', taskDate: '2024-11-22'},
+    { taskName: 'This is a really long named task', taskStatus: 'TODO', taskPriority: 'HIGH', taskDate: '2024-11-20' },
+    { taskName: 'TASK 2', taskStatus: 'In Progress', taskPriority: 'LOW', taskDate: '2024-11-22' },
     { taskName: 'TASK 3', taskStatus: 'In Progress', taskPriority: 'NORMAL', taskDate: '2024-11-22' },
     { taskName: 'TASK 4', taskStatus: 'TODO', taskPriority: 'URGENT', taskDate: '2024-11-23' },
-    { taskName: 'TASK 5', taskStatus: 'TODO', taskPriority: 'HIGH', taskDate: '2024-11-24' },
+    { taskName: 'TASK 7', taskStatus: 'TODO', taskPriority: 'URGENT', taskDate: '2024-11-23' },
+    
+    { taskName: 'TASK 5', taskStatus: 'Completed', taskPriority: 'HIGH', taskDate: '2024-11-24' },
+    
   ];
 
-  const [courses, setCourses] = useState(placeholderCourses);
   const [tasks, setTasks] = useState(placeholderTasks);
   const term = "Fall 2024";
 
@@ -47,19 +45,21 @@ const StudentHome = () => {
 
 
   const sortedDates = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
-
-  const convertGroupedTasks = (groupedTasks) => {
-    return Object.keys(groupedTasks).map(date => {
-      const statuses = groupedTasks[date];
-      return {
+  
+  const getTasksByStatus = (status) => {
+    return sortedDates
+      .filter(date => groupedTasks[date][status].length > 0)
+      .map(date => ({
         taskDate: date,
-        tasks: Object.values(statuses).flat()
-      };
-    });
+        tasks: groupedTasks[date][status]
+      }));
   };
   
-  const allTasks = convertGroupedTasks(groupedTasks);
-  
+  const todoTasks = getTasksByStatus('TODO');
+  const inProgressTasks = getTasksByStatus('In Progress');
+  const completedTasks = getTasksByStatus('Completed');
+
+
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <StudentSidebar firstName="John" lastName="Doe" />
@@ -70,30 +70,20 @@ const StudentHome = () => {
         </div>
         
         <div className="main-content">
-          <h1 style={isDesktopOrLaptop ? { paddingTop: '30px', paddingLeft: '30px' } : { }}>Welcome to your Dashboard</h1>      
-          
-          <div className='dashboard-wrapper'>
-            <div className='courses-box'>
-              <h2>Your Courses for {term}</h2>
-              <div className='courses-container'>
-                {courses.map((course, index) => (
-                  <Course
-                    key={index}
-                    courseCode={course.courseCode}
-                    courseName={course.courseName}
-                    courseIcon={{}}
-                  />
-                ))}
-              </div>
-              <button className='generic-button font' style={{ alignSelf: 'end' }}>Join Course</button>
-            </div>
-            
-            <Board title="Tasks Overview" tasks={allTasks}/>
+          <div className='header-container'>
+            <h1>Your Taskboard</h1>      
+            <button className='generic-button'>Create Task</button>
           </div>
+          <div className='dashboard-wrapper'>  
+            <Board title="TODO" tasks={todoTasks} />
+            <Board title="In Progress" tasks={inProgressTasks} />
+            <Board title="Completed" tasks={completedTasks} />
+          </div>
+          
         </div>
       </div>
     </div>
   );
 }
 
-export default StudentHome;
+export default TaskBoard;

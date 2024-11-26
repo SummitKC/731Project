@@ -1,0 +1,124 @@
+.main-taskboard-box{
+  width: 40%;
+  height: auto;
+  min-height: 300px;
+  background-color: white;
+  margin-left: 40px;
+  margin-right: 20px;
+  border-radius: 50px;
+  margin-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  max-width: 550px;
+  min-width: 300px;
+  min-height: 75vh;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: auto;
+  max-width: 100;
+  align-content: center;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.overlay-button-container{
+  
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  margin-right: 10px;
+  margin-top: 30px;
+}
+
+.task-detail-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 65%;
+  max-width: 70%;
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  border-radius: 10px;
+  overflow: auto; 
+  min-height: 30vh;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  
+}
+
+.task-detail-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+
+@media (max-width: 1224px) {
+  .main-taskboard-box{
+    min-width: 500px;
+
+    min-height: 50vh;
+  }
+  
+  .header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 100;
+    align-items: center;
+    margin-left: 0px;
+    margin-right: 0px;
+
+  }
+  
+}
+
+@media (max-width: 700px) {
+  .main-taskboard-box{
+    width: 90%;
+    justify-self: center;
+    min-width: 100px;
+    margin-left: 0px;
+    margin-right: 20px;
+  }
+  
+  .task-detail-container{
+    min-width: 200px;
+  }
+  
+  .header-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: auto;
+    max-width: 100;
+    align-content: center;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  
+}
+

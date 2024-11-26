@@ -1,0 +1,100 @@
+.task-wrapper{
+  width: 100%;
+  height: 7.5vh;
+  min-height: 50px;
+  justify-content: space-between;
+  margin: 20px;
+  margin-bottom: 1px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: rgb(211, 209, 212);
+  border-radius: 15px;
+  align-content: center;
+  float: left;
+  gap: 60px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  
+}
+
+.task-wrapper:hover{
+  background-color: rgb(200, 199, 201);
+  transform: scale(1.05);
+  
+}
+
+.task{
+  max-width: 40%;
+  min-width: 40%;
+}
+
+.priority{
+  width: 70px;
+  overflow:hidden;
+
+}
+
+.status{
+  width: 100px;
+}
+
+.weight-600{
+  font-weight: 600;
+}
+
+.high{
+  color: crimson;
+  
+}
+
+.normal{
+  color: green;
+}
+
+.low{
+  color: rgb(69, 105, 250);
+}
+
+.urgent{
+  color: purple;
+}
+
+@media (max-width: 1224px) {
+  .task{
+    max-width: 35%;
+    min-width: 35%;
+
+    overflow: hidden;
+  }
+  
+  p{
+    font-size: small; 
+  }
+  
+  .priority{
+
+    min-width: 70px;
+    overflow: hidden;
+  }
+  
+  .status{
+    min-width: 40px;
+  }
+  
+}
+
+@media (max-width: 700px) {
+  .task-wrapper{
+    width: 100%;
+    height: 65px;
+    overflow: hidden;
+  }
+  
+  .task{
+    max-width: 35%;
+    min-width: 35%;
+    
+    overflow: hidden;
+  }
+  
+}

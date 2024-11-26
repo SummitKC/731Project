@@ -17,7 +17,7 @@ body {
   margin-top: 40px;
   margin-left: 40px;
   border-radius: 50px;
-
+  justify-self: center;
 }
 
 .header-container {
@@ -44,7 +44,7 @@ body {
 
 .generic-button {
   color: white;
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: none;
   text-align: center;
   justify-content: center;
@@ -52,9 +52,27 @@ body {
   border-radius: 10px;
   transition: background-color 0.3s;
   background-color: #1a75e9;
-  width: 150px;
-  height: 45px;
+  width: 170px;
+  height: 40px;
   margin-top: 20px;
+}
+
+.generic-button:hover{
+  background-color: #1763c6;
+  font-weight: 600;
+}
+
+.generic-button:active{
+  background-color: #0f51a7;
+}
+  
+.courses-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
 }
   
 /* Desktop */
@@ -74,7 +92,7 @@ body {
   .main-container{
     min-width: 100px;
     max-width: 800px;
-    width: 75%;
+
   }
   
   .dashboard-wrapper{
@@ -84,25 +102,23 @@ body {
     align-items: center;
     margin: none;
   }
+  
   .generic-button {
     width: 130px;
     height: 60px;
 
   }
-  
 
-  
-  
 }
 
 /* Mobile */
 @media (max-width: 700px) {
   .main-container {
     margin-top: 150px;
-    margin-left: none;
-    padding-left: none;
-    margin-right: none;
-    margin-bottom: 40px;
+    margin-left: 0px;
+    padding-left: 0xp;
+    margin-right: 0px;
+    margin-bottom: 150px;
     min-width: 250px;
     width: 85vw;
     height: auto;
