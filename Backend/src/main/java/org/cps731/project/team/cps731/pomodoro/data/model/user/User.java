@@ -9,12 +9,18 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String username;
+    @Column(unique = true, nullable = false)
+    private String email;
+    @Column(nullable = false)
     private String password;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(nullable = false)
+    private UserType userType;
 
-    public User(String username, String password) {
-        this.username = username;
+    public User(String email, String password, UserType userType) {
+        this.email = email;
         this.password = password;
+        this.userType = userType;
     }
 
     public User() {
@@ -24,8 +30,8 @@ public class User {
         return this.id;
     }
 
-    public String getUsername() {
-        return this.username;
+    public String getEmail() {
+        return this.email;
     }
 
     public String getPassword() {
@@ -36,12 +42,20 @@ public class User {
         this.id = id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 
     public boolean equals(final Object o) {

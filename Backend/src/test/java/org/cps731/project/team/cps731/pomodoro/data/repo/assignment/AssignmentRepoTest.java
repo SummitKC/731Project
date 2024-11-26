@@ -7,6 +7,7 @@ import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Term;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.User;
+import org.cps731.project.team.cps731.pomodoro.data.model.user.UserType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -39,7 +40,7 @@ public class AssignmentRepoTest {
 
     @Test
     public void findAllByAnnouncement_Course_CourseIDReturnsAllAssignmentsForCourse() {
-        var userJohn = new User("John", "password");
+        var userJohn = new User("John", "password", UserType.PROFESSOR);
         var profJohn = new Professor(userJohn);
         var introToDBSystems = new Course(new CourseID("Introduction To DatabaseSystems", Term.FALL, 2024), false, profJohn);
         var assignment1Announcement = new Announcement("Assignment 1", Timestamp.from(Instant.now()), "Do the thing", introToDBSystems);

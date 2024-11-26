@@ -6,6 +6,7 @@ import org.cps731.project.team.cps731.pomodoro.data.model.course.Term;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.User;
+import org.cps731.project.team.cps731.pomodoro.data.model.user.UserType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -34,7 +35,7 @@ public class CourseRepoTest {
 
     @Test
     public void getCoursesByCreatedByJohnReturnsIntroToDBSystemsAndSoftEng() {
-        var userJohn = new User("John", "password");
+        var userJohn = new User("John", "password", UserType.PROFESSOR);
         var johnCourses = new HashSet<Course>();
         var professorJohn = new Professor(1L, userJohn, johnCourses);
         johnCourses.addAll(List.of(
@@ -55,8 +56,8 @@ public class CourseRepoTest {
 
     @Test
     public void getCoursesTakeByContainsStudentJohnReturnsIntoToDBSystems() {
-        var userJohn = new User("John", "password");
-        var userBob = new User("Bob", "password");
+        var userJohn = new User("John", "password", UserType.STUDENT);
+        var userBob = new User("Bob", "password", UserType.PROFESSOR);
         var studentJohn = new Student(userJohn);
         var profBob = new Professor(userBob);
         var introToDatabaseSystems = new Course(new CourseID("Intro to Database Systems", Term.FALL, 2024), false, profBob);

@@ -3,6 +3,7 @@ package org.cps731.project.team.cps731.pomodoro.data.model.task;
 import jakarta.persistence.*;
 import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
+import org.cps731.project.team.cps731.pomodoro.dto.TaskDTO;
 
 import java.sql.Timestamp;
 
@@ -16,21 +17,31 @@ public class Task {
     private Timestamp plannedDueDate;
     @Enumerated(EnumType.ORDINAL)
     private TaskState state;
+    @Enumerated(EnumType.ORDINAL)
+    private TaskPriority priority;
     @ManyToOne
     private Student owner;
     @ManyToOne
     @JoinColumn(name = "deriving_assignment", referencedColumnName = "assignment_details_announcement")
     private Assignment derivedFrom;
 
-    public Task(String name, Timestamp plannedDueDate, TaskState state, Student owner, Assignment derivedFrom) {
+    public Task() {
+    }
+
+    public Task(String name, Timestamp plannedDueDate, TaskState state, TaskPriority priority, Student owner, Assignment derivedFrom) {
         this.name = name;
         this.plannedDueDate = plannedDueDate;
         this.state = state;
+        this.priority = priority;
         this.owner = owner;
         this.derivedFrom = derivedFrom;
     }
 
-    public Task() {
+    public void updateFromTaskDTO(TaskDTO taskDTO) {
+        name = taskDTO.getTaskName() == null ? name : taskDTO.getTaskName();
+        plannedDueDate = taskDTO.getTaskDate() == null ? plannedDueDate : new Timestamp(taskDTO.getTaskDate().getTime());
+        state = taskDTO.getTaskStatus() == null ? state : taskDTO.getTaskStatus();
+        priority = taskDTO.getTaskPriority() == null ? priority : taskDTO.getTaskPriority();
     }
 
     public static TaskBuilder builder() {
@@ -85,6 +96,14 @@ public class Task {
         this.derivedFrom = derivedFrom;
     }
 
+    public TaskPriority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(TaskPriority priority) {
+        this.priority = priority;
+    }
+
     public boolean equals(final Object o) {
         if (o == this) return true;
         if (!(o instanceof Task)) return false;
@@ -112,6 +131,7 @@ public class Task {
         private String name;
         private Timestamp plannedDueDate;
         private TaskState state;
+        private TaskPriority priority;
         private Student owner;
         private Assignment derivedFrom;
 
@@ -133,6 +153,11 @@ public class Task {
             return this;
         }
 
+        public TaskBuilder priority(TaskPriority priority) {
+            this.priority = priority;
+            return this;
+        }
+
         public TaskBuilder owner(Student owner) {
             this.owner = owner;
             return this;
@@ -144,11 +169,11 @@ public class Task {
         }
 
         public Task build() {
-            return new Task(this.name, this.plannedDueDate, this.state, this.owner, this.derivedFrom);
+            return new Task(this.name, this.plannedDueDate, this.state, this.priority, this.owner, this.derivedFrom);
         }
 
         public String toString() {
-            return "Task.TaskBuilder(name=" + this.name + ", plannedDueDate=" + this.plannedDueDate + ", state=" + this.state + ", timeLogged=" + ", owner=" + this.owner + ", derivedFrom=" + this.derivedFrom + ")";
+            return "Task.TaskBuilder(name=" + this.name + ", plannedDueDate=" + this.plannedDueDate + ", state=" + this.state + ", priority=" + this.priority + ", owner=" + this.owner + ", derivedFrom=" + this.derivedFrom + ")";
         }
     }
 }
