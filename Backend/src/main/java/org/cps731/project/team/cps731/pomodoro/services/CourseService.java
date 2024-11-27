@@ -3,7 +3,6 @@ package org.cps731.project.team.cps731.pomodoro.services;
 import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
 //import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
-import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.repo.course.CourseRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,29 +21,29 @@ public class CourseService {
         return courseRepo.findAll();
     }
 
-    public Course getCourseById(CourseID id) {
-        return courseRepo.findById(id).orElse(null);
+    public Course getCourseById(String courseCode) {
+        return courseRepo.findById(courseCode).orElse(null);
     }
 
     public Course createCourse(Course course) {
         return courseRepo.save(course);
     }
 
-    public Course updateCourse(CourseID id, Course course) {
-        Course existingCourse = courseRepo.findById(id).orElse(null);
+    public Course updateCourse(String courseCode, Course course) {
+        Course existingCourse = courseRepo.findById(courseCode).orElse(null);
         if (existingCourse != null) {
-            existingCourse.setCourseID(course.getCourseID());
-            //existingCourse.setArchived(course.getArchived());
-            //existingCourse.setCreatedBy(course.getCreatedBy());
-            //existingCourse.setTakenBy(course.getTakenBy());
+            existingCourse.setCourseCode(course.getCourseCode());
+            existingCourse.setArchived(course.getArchived());
+            existingCourse.setCreatedBy(course.getCreatedBy());
+            existingCourse.setTakenBy(course.getTakenBy());
             existingCourse.setAnnouncements(course.getAnnouncements());
             return courseRepo.save(existingCourse);
         }
         return null;
     }
 
-    public Course archiveState(CourseID id, Boolean state) {
-        Course existingCourse = courseRepo.findById(id).orElse(null);
+    public Course archiveState(String courseCode, Boolean state) {
+        Course existingCourse = courseRepo.findById(courseCode).orElse(null);
         if (existingCourse != null) {
             existingCourse.setArchived(state);
             return courseRepo.save(existingCourse);
@@ -52,8 +51,8 @@ public class CourseService {
         return null;
     }
 
-    public Course addAnnouncementToCourse(CourseID id, Announcement announcement) {
-        Course existingCourse = courseRepo.findById(id).orElse(null);
+    public Course addAnnouncementToCourse(String courseCode, Announcement announcement) {
+        Course existingCourse = courseRepo.findById(courseCode).orElse(null);
         if (existingCourse != null) {
             Set<Announcement> announcements = existingCourse.getAnnouncements();
             announcements.add(announcement);
@@ -74,7 +73,7 @@ public class CourseService {
         return null;
     }
  */
-    public void deleteCourse(CourseID id) {
-        courseRepo.deleteById(id);
+    public void deleteCourse(String courseCode) {
+        courseRepo.deleteById(courseCode);
     }
 }

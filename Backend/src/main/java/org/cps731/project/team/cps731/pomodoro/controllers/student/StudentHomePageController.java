@@ -2,12 +2,8 @@ package org.cps731.project.team.cps731.pomodoro.controllers.student;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
-import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
-import org.cps731.project.team.cps731.pomodoro.dto.AnnouncementDTO;
-import org.cps731.project.team.cps731.pomodoro.dto.CourseDTO;
-import org.cps731.project.team.cps731.pomodoro.dto.CourseDetailsDTO;
-import org.cps731.project.team.cps731.pomodoro.dto.TaskDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.*;
 import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.cps731.project.team.cps731.pomodoro.services.CourseService;
 import org.cps731.project.team.cps731.pomodoro.services.StudentService;
@@ -58,10 +54,10 @@ public class StudentHomePageController {
 /*     Try and catch block here would be better cause we would not have to call 
     StudentService to get student by ID, and add course, this can be done in 1 call */
     @PostMapping("/courses/join")
-    public ResponseEntity<Void> joinCourse(@RequestBody CourseID courseId) {
+    public ResponseEntity<Void> joinCourse(@RequestBody JoinCourseRequestDTO requestBody) {
         try {
             var studentId = SecurityUtil.getAuthenticatedUserID();
-            Course course = courseService.getCourseById(courseId);
+            Course course = courseService.getCourseById(requestBody.getCourseCode());
             if (course == null) {
                 return ResponseEntity.notFound().build();
             }
@@ -72,18 +68,13 @@ public class StudentHomePageController {
         }
     }
 
-    @GetMapping("/courses/details")
-    public ResponseEntity<CourseDetailsDTO> getCourseDetails(@RequestBody CourseID courseId) {
-        Course course = courseService.getCourseById(courseId);
+    @GetMapping("/courses/{courseCode}/details")
+    public ResponseEntity<CourseDetailsDTO> getCourseDetails(@PathVariable String courseCode) {
+        Course course = courseService.getCourseById(courseCode);
         if (course == null) {
             return ResponseEntity.notFound().build();
         }
         
-        return ResponseEntity.ok(new CourseDetailsDTO(
-                course.getCourseID(),
-                course.getCreatedBy().getUser().getEmail(),
-                course.getAnnouncements().stream().map(AnnouncementDTO::new).collect(Collectors.toSet()),
-                course.getArchived()
-        ));
+        return ResponseEntity.ok(new CourseDetailsDTO(course));
     }
 }

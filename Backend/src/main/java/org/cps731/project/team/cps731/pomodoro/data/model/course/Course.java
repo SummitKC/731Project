@@ -10,8 +10,16 @@ import java.util.Set;
 @Entity
 public class Course {
 
-    @EmbeddedId
-    private CourseID courseID;
+    @Id
+    @Column(name = "code_code")
+    private String courseCode;
+    @Column(name = "course_name")
+    private String name;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "school_term")
+    private Term term;
+    @Column(name = "school_year")
+    private Integer year;
     private Boolean archived;
     @ManyToOne
     private Professor createdBy;
@@ -29,16 +37,11 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private Set<Announcement> announcements;
 
-    public Course(CourseID courseID, Boolean archived, Professor createdBy, Set<Student> takenBy, Set<Announcement> announcements) {
-        this.courseID = courseID;
-        this.archived = archived;
-        this.createdBy = createdBy;
-        this.takenBy = takenBy;
-        this.announcements = announcements;
-    }
-
-    public Course(CourseID courseID, Boolean archived, Professor createdBy) {
-        this.courseID = courseID;
+    public Course(String courseCode, String name, Term term, Integer year, Boolean archived, Professor createdBy) {
+        this.courseCode = courseCode;
+        this.name = name;
+        this.term = term;
+        this.year = year;
         this.archived = archived;
         this.createdBy = createdBy;
     }
@@ -46,12 +49,15 @@ public class Course {
     public Course() {
     }
 
-    public static CourseBuilder builder() {
-        return new CourseBuilder();
-    }
-
-    public CourseID getCourseID() {
-        return this.courseID;
+    public Course(String courseCode, String name, Term term, Integer year, Boolean archived, Professor createdBy, Set<Student> takenBy, Set<Announcement> announcements) {
+        this.courseCode = courseCode;
+        this.name = name;
+        this.term = term;
+        this.year = year;
+        this.archived = archived;
+        this.createdBy = createdBy;
+        this.takenBy = takenBy;
+        this.announcements = announcements;
     }
 
     public Boolean getArchived() {
@@ -70,10 +76,6 @@ public class Course {
         return this.announcements;
     }
 
-    public void setCourseID(CourseID courseID) {
-        this.courseID = courseID;
-    }
-
     public void setArchived(Boolean archived) {
         this.archived = archived;
     }
@@ -90,70 +92,35 @@ public class Course {
         this.announcements = announcements;
     }
 
-    protected boolean canEqual(final Object other) {
-        return other instanceof Course;
+    public String getCourseCode() {
+        return courseCode;
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof Course)) return false;
-        final Course other = (Course) o;
-        if (!other.canEqual((Object) this)) return false;
-        final Object this$courseID = this.getCourseID();
-        final Object other$courseID = other.getCourseID();
-        if (this$courseID == null ? other$courseID != null : !this$courseID.equals(other$courseID)) return false;
-        return true;
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
     }
 
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $courseID = this.getCourseID();
-        result = result * PRIME + ($courseID == null ? 43 : $courseID.hashCode());
-        return result;
+    public String getName() {
+        return name;
     }
 
-    public static class CourseBuilder {
-        private CourseID courseID;
-        private Boolean archived;
-        private Professor createdBy;
-        private Set<Student> takenBy;
-        private Set<Announcement> announcements;
+    public void setName(String name) {
+        this.name = name;
+    }
 
-        CourseBuilder() {
-        }
+    public Integer getYear() {
+        return year;
+    }
 
-        public CourseBuilder courseID(CourseID courseID) {
-            this.courseID = courseID;
-            return this;
-        }
+    public void setYear(Integer year) {
+        this.year = year;
+    }
 
-        public CourseBuilder archived(Boolean archived) {
-            this.archived = archived;
-            return this;
-        }
+    public Term getTerm() {
+        return term;
+    }
 
-        public CourseBuilder createdBy(Professor createdBy) {
-            this.createdBy = createdBy;
-            return this;
-        }
-
-        public CourseBuilder takenBy(Set<Student> takenBy) {
-            this.takenBy = takenBy;
-            return this;
-        }
-
-        public CourseBuilder announcements(Set<Announcement> announcements) {
-            this.announcements = announcements;
-            return this;
-        }
-
-        public Course build() {
-            return new Course(this.courseID, this.archived, this.createdBy, this.takenBy, this.announcements);
-        }
-
-        public String toString() {
-            return "Course.CourseBuilder(courseID=" + this.courseID + ", archived=" + this.archived + ", createdBy=" + this.createdBy + ", takenBy=" + this.takenBy + ", announcements=" + this.announcements + ")";
-        }
+    public void setTerm(Term term) {
+        this.term = term;
     }
 }

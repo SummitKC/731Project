@@ -3,7 +3,6 @@ package org.cps731.project.team.cps731.pomodoro.controllers.student;
 import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
 import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
-import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.cps731.project.team.cps731.pomodoro.services.AnnouncementService;
@@ -37,25 +36,25 @@ public class StudentCoursePageController {
     @Autowired
     private StudentService studentService;
 
-    @GetMapping("/{courseId}")
+    @GetMapping("/{courseCode}")
     public ResponseEntity<Map<String, Object>> getCourseDetails(
-            @PathVariable CourseID courseId,
+            @PathVariable String courseCode,
             @RequestParam(defaultValue = "0") int announcementPage,
             @RequestParam(defaultValue = "0") int assignmentPage,
             @RequestParam(defaultValue = "10") int pageSize) {
         
-        Course course = courseService.getCourseById(courseId);
+        Course course = courseService.getCourseById(courseCode);
         if (course == null) {
             return ResponseEntity.notFound().build();
         }
 
         // Get announcements with pagination
         List<Announcement> announcements = announcementService.getAnnouncementsByCourse(
-            courseId, announcementPage, pageSize);
+                courseCode, announcementPage, pageSize);
 
         // Get assignments with pagination
         List<Assignment> assignments = assignmentService.getAssignmentsByCourse(
-            courseId, assignmentPage, pageSize);
+                courseCode, assignmentPage, pageSize);
 
         Map<String, Object> response = new HashMap<>();
         response.put("course", course);
@@ -67,28 +66,28 @@ public class StudentCoursePageController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{courseId}/announcements")
+    @GetMapping("/{courseCode}/announcements")
     public ResponseEntity<List<Announcement>> getCourseAnnouncements(
-            @PathVariable CourseID courseId,
+            @PathVariable String courseCode,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         
         return ResponseEntity.ok(
-            announcementService.getAnnouncementsByCourse(courseId, page, size));
+            announcementService.getAnnouncementsByCourse(courseCode, page, size));
     }
 
-    @GetMapping("/{courseId}/assignments")
+    @GetMapping("/{courseCode}/assignments")
     public ResponseEntity<List<Assignment>> getCourseAssignments(
-            @PathVariable CourseID courseId,
+            @PathVariable String courseCode,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         
         return ResponseEntity.ok(
-            assignmentService.getAssignmentsByCourse(courseId, page, size));
+            assignmentService.getAssignmentsByCourse(courseCode, page, size));
     }
 
-    @DeleteMapping("/courses/{courseId}")
-    public ResponseEntity<Student> leaveCourse(@PathVariable CourseID courseId) {
+    @DeleteMapping("/courses/{courseCode}")
+    public ResponseEntity<Student> leaveCourse(@PathVariable String courseCode) {
         try {
             var studentId = SecurityUtil.getAuthenticatedUserID();
             Student student = studentService.getStudentById(studentId);
@@ -97,7 +96,7 @@ public class StudentCoursePageController {
             }
             
             Set<Course> courses = student.getCourses();
-            courses.removeIf(c -> c.getCourseID().equals(courseId));
+            courses.removeIf(c -> c.getCourseCode().equals(courseCode));
             student.setCourses(courses);
             
             Student updatedStudent = studentService.updateStudent(studentId, student);

@@ -1,12 +1,8 @@
 package org.cps731.project.team.cps731.pomodoro.controllers.student;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
-import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskState;
-import org.cps731.project.team.cps731.pomodoro.dto.CourseDTO;
-import org.cps731.project.team.cps731.pomodoro.dto.StatusDTO;
-import org.cps731.project.team.cps731.pomodoro.dto.StudentDashboardDTO;
-import org.cps731.project.team.cps731.pomodoro.dto.TaskDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.*;
 import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.cps731.project.team.cps731.pomodoro.services.CourseService;
 import org.cps731.project.team.cps731.pomodoro.services.StudentService;
@@ -65,9 +61,9 @@ public class StudentHomeController {
 
     @PostMapping("/courses/join")
     public ResponseEntity<StatusDTO> joinCourse(
-            @RequestBody CourseID courseId) {
+            @RequestBody JoinCourseRequestDTO body) {
         var studentId = SecurityUtil.getAuthenticatedUserID();
-        Course course = courseService.getCourseById(courseId);
+        Course course = courseService.getCourseById(body.getCourseCode());
         if (course == null) {
             return ResponseEntity.notFound().build();
         }

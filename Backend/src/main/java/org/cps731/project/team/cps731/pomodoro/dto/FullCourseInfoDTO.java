@@ -15,9 +15,9 @@ public class FullCourseInfoDTO {
     private List<AssignmentDTO> assignments;
 
     public FullCourseInfoDTO(Course course, List<Assignment> assignments) {
-        courseName = course.getCourseID().getName();
-        courseTerm = course.getCourseID().getTerm();
-        year = course.getCourseID().getYear();
+        courseName = course.getName();
+        courseTerm = course.getTerm();
+        year = course.getYear();
         announcements = course.getAnnouncements().stream().map(AnnouncementDTO::new).toList();
         this.assignments = assignments.stream().map(AssignmentDTO::new).toList();
     }

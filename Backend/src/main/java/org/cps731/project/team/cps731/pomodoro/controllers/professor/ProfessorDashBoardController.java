@@ -1,7 +1,6 @@
 package org.cps731.project.team.cps731.pomodoro.controllers.professor;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
-import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.services.CourseService;
 import org.cps731.project.team.cps731.pomodoro.services.ProfessorService;
@@ -61,9 +60,9 @@ public class ProfessorDashBoardController {
         }
     }
 
-    @PutMapping("/courses/{courseId}/archive")
-    public ResponseEntity<Course> archiveCourse(@PathVariable CourseID courseId, @RequestParam Boolean archived) {
-        Course updatedCourse = courseService.archiveState(courseId, archived);
+    @PutMapping("/courses/{courseCode}/archive")
+    public ResponseEntity<Course> archiveCourse(@PathVariable String courseCode, @RequestParam Boolean archived) {
+        Course updatedCourse = courseService.archiveState(courseCode, archived);
         if (updatedCourse == null) {
             return ResponseEntity.notFound().build();
         }

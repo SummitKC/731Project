@@ -1,7 +1,6 @@
 package org.cps731.project.team.cps731.pomodoro.services;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
-import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.repo.assignment.AssignmentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -16,15 +15,15 @@ public class AssignmentService {
     @Autowired
     private AssignmentRepo assignmentRepo;
 
-    public List<Assignment> getAssignmentsByCourse(CourseID courseID, int page, int size) {
-        if (courseID == null) {
-            throw new IllegalArgumentException("CourseID cannot be null");
+    public List<Assignment> getAssignmentsByCourse(String courseCode, int page, int size) {
+        if (courseCode == null) {
+            throw new IllegalArgumentException("Course code cannot be null");
         }
         
         PageRequest pageRequest = PageRequest.of(page, size, 
             Sort.by(Sort.Direction.DESC, "dueDate"));
             
-        return assignmentRepo.findAllByAnnouncement_Course_CourseID(courseID, pageRequest);
+        return assignmentRepo.findAllByAnnouncement_Course_CourseCode(courseCode, pageRequest);
     }
 
     public Assignment getAssignmentById(Long id) {

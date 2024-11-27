@@ -1,28 +1,38 @@
 package org.cps731.project.team.cps731.pomodoro.dto;
 
-import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
+import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
+import org.cps731.project.team.cps731.pomodoro.data.model.course.Term;
 
 import java.util.Set;
-
+import java.util.stream.Collectors;
 
 public class CourseDetailsDTO {
-    private CourseID courseInfo;
+    private String courseCode;
+    private String courseName;
+    private Term term;
     private String professor;
     private Set<AnnouncementDTO> announcements;
     private boolean isArchived;
 
-    public CourseDetailsDTO(CourseID courseInfo, String professor, Set<AnnouncementDTO> announcements, boolean isArchived) {
-        this.courseInfo = courseInfo;
-        this.professor = professor;
-        this.announcements = announcements;
-        this.isArchived = isArchived;
-    }
-
     public CourseDetailsDTO() {
     }
 
-    public CourseID getCourseInfo() {
-        return this.courseInfo;
+    public CourseDetailsDTO(Course course) {
+        courseCode = course.getCourseCode();
+        courseName = course.getName();
+        term = course.getTerm();
+        professor = course.getCreatedBy().getUser().getEmail();
+        announcements = course.getAnnouncements().stream().map(AnnouncementDTO::new).collect(Collectors.toSet());
+        isArchived = course.getArchived();
+    }
+
+    public CourseDetailsDTO(String courseCode, String courseName, Term term, String professor, Set<AnnouncementDTO> announcements, boolean isArchived) {
+        this.courseCode = courseCode;
+        this.courseName = courseName;
+        this.term = term;
+        this.professor = professor;
+        this.announcements = announcements;
+        this.isArchived = isArchived;
     }
 
     public String getProfessor() {
@@ -37,10 +47,6 @@ public class CourseDetailsDTO {
         return this.isArchived;
     }
 
-    public void setCourseInfo(CourseID courseInfo) {
-        this.courseInfo = courseInfo;
-    }
-
     public void setProfessor(String professor) {
         this.professor = professor;
     }
@@ -51,5 +57,29 @@ public class CourseDetailsDTO {
 
     public void setArchived(boolean isArchived) {
         this.isArchived = isArchived;
+    }
+
+    public String getCourseCode() {
+        return courseCode;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public Term getTerm() {
+        return term;
+    }
+
+    public void setTerm(Term term) {
+        this.term = term;
     }
 }

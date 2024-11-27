@@ -18,9 +18,9 @@ public class CourseDTO {
     }
 
     public CourseDTO(Course course) {
-        name = course.getCourseID().getName();
-        term = course.getCourseID().getTerm();
-        year = course.getCourseID().getYear();
+        name = course.getName();
+        term = course.getTerm();
+        year = course.getYear();
         archived = course.getArchived();
     }
 

@@ -1,7 +1,6 @@
 package org.cps731.project.team.cps731.pomodoro.services;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
-import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.repo.announcement.AnnouncementRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -15,13 +14,12 @@ public class AnnouncementService {
     @Autowired
     private AnnouncementRepo announcementRepo;
 
-    public List<Announcement> getAnnouncementsByCourse(CourseID courseID, int page, int size) {
-        if (courseID == null) {
-            throw new IllegalArgumentException("CourseID cannot be null");
+    public List<Announcement> getAnnouncementsByCourse(String courseCode, int page, int size) {
+        if (courseCode == null) {
+            throw new IllegalArgumentException("Course code cannot be null");
         }
-        
-        Pageable pageable = PageRequest.of(page, size);
-        return announcementRepo.findAllByCourse_CourseID(courseID, pageable);
+
+        return announcementRepo.findAllByCourse_CourseCode(courseCode);
     }
 
     public Announcement getAnnouncementById(Long id) {
