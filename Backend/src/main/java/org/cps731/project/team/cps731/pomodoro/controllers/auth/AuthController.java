@@ -53,4 +53,13 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/professor/register")
+    public ResponseEntity<Void> professorRegister(@RequestBody AuthRequestDTO body) {
+        if (authService.professorRegister(body)) {
+            return ResponseEntity.noContent().build();
+        } else {
+            throw new RuntimeException("Unable to register professor");
+        }
+    }
+
 }

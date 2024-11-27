@@ -1,6 +1,7 @@
 package org.cps731.project.team.cps731.pomodoro.services;
 
 import jakarta.security.auth.message.AuthException;
+import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.User;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.UserType;
@@ -36,7 +37,7 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public boolean studentRegister(AuthRequestDTO registerRequest){
+    public boolean studentRegister(AuthRequestDTO registerRequest) {
         if (userRepo.existsByEmail(registerRequest.getEmail())) {
             throw new IllegalArgumentException("Account using this email already exists");
         }
@@ -54,6 +55,16 @@ public class AuthService {
             throw new AuthException("Wrong password");
         }
         return jwtUtil.generateToken(student.getUser().getId().toString());
+    }
+
+    public boolean professorRegister(AuthRequestDTO registerRequest) {
+        if (userRepo.existsByEmail(registerRequest.getEmail())) {
+            throw new IllegalArgumentException("Account using this email already exists");
+        }
+        var user = new User(registerRequest.getEmail(), passwordEncoder.encode(registerRequest.getPassword()), UserType.PROFESSOR);
+        userRepo.save(user);
+        var professor = professorService.createProfessor(new Professor(user));
+        return professor != null;
     }
 
     public String professorLogin(AuthRequestDTO loginRequest) throws AuthException {
