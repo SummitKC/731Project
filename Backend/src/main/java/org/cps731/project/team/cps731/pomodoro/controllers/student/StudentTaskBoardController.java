@@ -2,8 +2,8 @@ package org.cps731.project.team.cps731.pomodoro.controllers.student;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskState;
-import org.cps731.project.team.cps731.pomodoro.dto.TaskBoardDTO;
-import org.cps731.project.team.cps731.pomodoro.dto.TaskDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.task.TaskBoardDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.task.TaskDTO;
 import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.cps731.project.team.cps731.pomodoro.security.auth.JwtUtil;
 import org.cps731.project.team.cps731.pomodoro.services.TaskService;

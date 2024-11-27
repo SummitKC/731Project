@@ -1,4 +1,4 @@
-package org.cps731.project.team.cps731.pomodoro.dto;
+package org.cps731.project.team.cps731.pomodoro.dto.assignment;
 
 public class CreateAssignmentRequestDTO {
 

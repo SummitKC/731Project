@@ -1,4 +1,4 @@
-package org.cps731.project.team.cps731.pomodoro.dto;
+package org.cps731.project.team.cps731.pomodoro.dto.task;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskPriority;
