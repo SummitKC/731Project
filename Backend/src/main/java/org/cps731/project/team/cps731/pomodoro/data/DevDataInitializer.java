@@ -49,6 +49,10 @@ public class DevDataInitializer implements ApplicationRunner {
         var studentJohn = new Student(userJohn);
         var userSummit = new User("summit.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.PROFESSOR);
         var profSummit = new Professor(userSummit);
+        var userSyed = new User("syed.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.PROFESSOR);
+        var profSyed = new Professor(userSyed);
+        var userIsabel = new User("isabel.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.STUDENT);
+        var studentIsabel = new Student(userIsabel);
         var introToDbSystems = new Course("CPS510", "Intro To Database Systems", Term.FALL, 2024, false, profSummit);
         var introToSoftEng = new Course("CPS406", "Intro To Software Engineering", Term.FALL, 2023, true, profSummit);
         var introToJava = new Course("CPS209", "Intro To Java", Term.WINTER, 2022, true, profSummit);
@@ -79,8 +83,12 @@ public class DevDataInitializer implements ApplicationRunner {
 
         entityManager.persist(userJohn);
         entityManager.persist(userSummit);
+        entityManager.persist(userSyed);
         entityManager.persist(studentJohn);
         entityManager.persist(profSummit);
+        entityManager.persist(profSyed);
+        entityManager.persist(userIsabel);
+        entityManager.persist(studentIsabel);
         entityManager.persist(introToDbSystems);
         entityManager.persist(introToSoftEng);
         entityManager.persist(announcementForA1);

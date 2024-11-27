@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.util.NoSuchElementException;
+
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
@@ -24,6 +26,11 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<String> handleException(NoResourceFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find: " + e.getResourcePath());
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<String> handleException(NoSuchElementException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

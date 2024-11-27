@@ -6,8 +6,11 @@ import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.repo.course.CourseRepo;
 import org.cps731.project.team.cps731.pomodoro.data.repo.user.ProfessorRepo;
 import org.cps731.project.team.cps731.pomodoro.dto.CourseDTO;
+import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,12 +62,16 @@ public class CourseService {
     }
 
     public Course archiveState(String courseCode, Boolean state) {
-        Course existingCourse = courseRepo.findById(courseCode).orElse(null);
-        if (existingCourse != null) {
-            existingCourse.setArchived(state);
-            return courseRepo.save(existingCourse);
+        var userID = SecurityUtil.getAuthenticatedUserID();
+        Course existingCourse = courseRepo.findById(courseCode).orElseThrow();
+        if (!existingCourse.getCreatedBy().getId().equals(userID)) {
+            throw new AuthorizationDeniedException(
+                    "Cannot archive a course you do not own",
+                    new AuthorizationDecision(false)
+                    );
         }
-        return null;
+        existingCourse.setArchived(state);
+        return courseRepo.save(existingCourse);
     }
 
     public Course addAnnouncementToCourse(String courseCode, Announcement announcement) {
