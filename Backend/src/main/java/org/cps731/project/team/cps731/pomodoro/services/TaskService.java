@@ -3,8 +3,11 @@ package org.cps731.project.team.cps731.pomodoro.services;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
 import org.cps731.project.team.cps731.pomodoro.data.repo.task.TaskRepo;
 import org.cps731.project.team.cps731.pomodoro.dto.TaskDTO;
+import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskState;
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -41,21 +44,29 @@ public class TaskService {
     }
 
     public Task updateTask(Long id, TaskDTO task) {
-        Task existingTask = taskRepo.findById(id).orElse(null);
-        if (existingTask != null) {
-            existingTask.updateFromTaskDTO(task);
-            return taskRepo.save(existingTask);
+        var userID = SecurityUtil.getAuthenticatedUserID();
+        Task existingTask = taskRepo.findById(id).orElseThrow();
+        if (!existingTask.getOwner().getId().equals(userID)) {
+            throw new AuthorizationDeniedException(
+                    "Cannot edit a task you do not own",
+                    new AuthorizationDecision(false)
+            );
         }
-        return null;
+        existingTask.updateFromTaskDTO(task);
+        return taskRepo.save(existingTask);
     }
 
     public Task changeTaskState(Long id, TaskState state) {
-        Task existingTask = taskRepo.findById(id).orElse(null);
-        if (existingTask != null) {
-            existingTask.setState(state);
-            return taskRepo.save(existingTask);
+        var userID = SecurityUtil.getAuthenticatedUserID();
+        var existingTask = taskRepo.findById(id).orElseThrow();
+        if (!existingTask.getOwner().getId().equals(userID)) {
+            throw new AuthorizationDeniedException(
+                    "Cannot edit a task you do not own",
+                    new AuthorizationDecision(false)
+            );
         }
-        return null;
+        existingTask.setState(state);
+        return taskRepo.save(existingTask);
     }
 
     public void deleteTask(Long id) {

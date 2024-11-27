@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManager;
 import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
 import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
-import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Term;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskPriority;
@@ -50,9 +49,13 @@ public class DevDataInitializer implements ApplicationRunner {
         var studentJohn = new Student(userJohn);
         var userSummit = new User("summit.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.PROFESSOR);
         var profSummit = new Professor(userSummit);
-        var introToDbSystems = new Course(new CourseID("Intro To Database Systems", Term.FALL, 2024), false, profSummit);
-        var introToSoftEng = new Course(new CourseID("Intro To Software Engineering", Term.FALL, 2023), true, profSummit);
-        var introToJava = new Course(new CourseID("Intro To Java", Term.WINTER, 2022), true, profSummit);
+        var userSyed = new User("syed.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.PROFESSOR);
+        var profSyed = new Professor(userSyed);
+        var userIsabel = new User("isabel.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.STUDENT);
+        var studentIsabel = new Student(userIsabel);
+        var introToDbSystems = new Course("CPS510", "Intro To Database Systems", Term.FALL, 2024, false, profSummit);
+        var introToSoftEng = new Course("CPS406", "Intro To Software Engineering", Term.FALL, 2023, true, profSummit);
+        var introToJava = new Course("CPS209", "Intro To Java", Term.WINTER, 2022, true, profSummit);
         var announcementForA1 = Announcement.builder()
                 .title("Assignment 1")
                 .description("Assignment 1 is out now!")
@@ -80,8 +83,12 @@ public class DevDataInitializer implements ApplicationRunner {
 
         entityManager.persist(userJohn);
         entityManager.persist(userSummit);
+        entityManager.persist(userSyed);
         entityManager.persist(studentJohn);
         entityManager.persist(profSummit);
+        entityManager.persist(profSyed);
+        entityManager.persist(userIsabel);
+        entityManager.persist(studentIsabel);
         entityManager.persist(introToDbSystems);
         entityManager.persist(introToSoftEng);
         entityManager.persist(announcementForA1);

@@ -3,7 +3,6 @@ package org.cps731.project.team.cps731.pomodoro.data.repo.timeentry;
 import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
 import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
-import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Term;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskState;
@@ -47,7 +46,7 @@ public class TimeEntryRepoTest {
         var studentJohn = new Student(userJohn);
         var userSteve = new User("Steve", "password", UserType.PROFESSOR);
         var profSteve = new Professor(userSteve);
-        var introToDatabaseSystems = new Course(new CourseID("Intro to database system", Term.FALL, 2024), false, profSteve);
+        var introToDatabaseSystems = new Course("CPS510", "Intro to database system", Term.FALL, 2024, false, profSteve);
         var announcementForAssignment1 = new Announcement("Announcement 1 is out", Timestamp.from(Instant.now()), "Hello World", introToDatabaseSystems);
         var oneWeekAgo = Instant.now().minus(7, ChronoUnit.DAYS);
         var twoWeeksAgo = Instant.now().minus(14, ChronoUnit.DAYS);

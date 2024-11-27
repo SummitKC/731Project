@@ -2,7 +2,7 @@ package org.cps731.project.team.cps731.pomodoro.controllers.auth;
 
 import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.http.HttpServletResponse;
-import org.cps731.project.team.cps731.pomodoro.dto.LoginRequestBody;
+import org.cps731.project.team.cps731.pomodoro.dto.LoginRequestDTO;
 import org.cps731.project.team.cps731.pomodoro.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class LoginController {
     }
 
     @PostMapping("/student/login")
-    public ResponseEntity<String> studentLogin(@RequestBody LoginRequestBody body) {
+    public ResponseEntity<String> studentLogin(@RequestBody LoginRequestDTO body) {
         try {
             return ResponseEntity.ok(authService.studentLogin(body));
         } catch (AuthException e) {
@@ -33,7 +33,7 @@ public class LoginController {
     }
 
     @PostMapping("/professor/login")
-    public ResponseEntity<String> professorLogin(@RequestBody LoginRequestBody body) {
+    public ResponseEntity<String> professorLogin(@RequestBody LoginRequestDTO body) {
         try {
             return ResponseEntity.ok(authService.professorLogin(body));
         } catch (AuthException e) {

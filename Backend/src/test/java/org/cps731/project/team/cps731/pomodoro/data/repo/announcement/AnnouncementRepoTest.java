@@ -2,7 +2,6 @@ package org.cps731.project.team.cps731.pomodoro.data.repo.announcement;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
-import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Term;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.User;
@@ -40,7 +39,7 @@ public class AnnouncementRepoTest {
     public void findAllByCourse_CourseIDReturnsAllAnnouncementsForCourse() {
         var userJohn = new User("John", "password", UserType.PROFESSOR);
         var profJohn = new Professor(userJohn);
-        var introToDBSystems = new Course(new CourseID("Introduction To DatabaseSystems", Term.FALL, 2024), false, profJohn);
+        var introToDBSystems = new Course("CPS510", "Introduction To Database Systems", Term.FALL, 2024, false, profJohn);
         var startOfCourseAnnouncement = new Announcement("Welcome to the course", Timestamp.from(Instant.now()), "Hiii", introToDBSystems);
         entityManager.persist(userJohn);
         entityManager.persist(profJohn);
@@ -48,7 +47,7 @@ public class AnnouncementRepoTest {
         entityManager.persist(startOfCourseAnnouncement);
         entityManager.flush();
 
-        var announcements = repo.findAllByCourse_CourseID(introToDBSystems.getCourseID(), PageRequest.of(0, 5));
+        var announcements = repo.findAllByCourse_CourseCode(introToDBSystems.getCourseCode());
 
         assertThat(announcements, equalTo(List.of(startOfCourseAnnouncement)));
     }
