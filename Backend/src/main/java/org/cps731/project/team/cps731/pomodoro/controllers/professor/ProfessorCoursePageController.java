@@ -3,6 +3,7 @@ package org.cps731.project.team.cps731.pomodoro.controllers.professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
 import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
+import org.cps731.project.team.cps731.pomodoro.dto.*;
 import org.cps731.project.team.cps731.pomodoro.services.AnnouncementService;
 import org.cps731.project.team.cps731.pomodoro.services.AssignmentService;
 import org.cps731.project.team.cps731.pomodoro.services.CourseService;
@@ -11,9 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/professor/course")
@@ -30,7 +32,7 @@ public class ProfessorCoursePageController {
     private AssignmentService assignmentService;
 
     @GetMapping("/{courseCode}")
-    public ResponseEntity<Map<String, Object>> getCourseDetails(
+    public ResponseEntity<CourseDetailsDTO> getCourseDetails(
             @PathVariable String courseCode,
             @RequestParam(defaultValue = "0") int announcementPage,
             @RequestParam(defaultValue = "0") int assignmentPage,
@@ -41,57 +43,54 @@ public class ProfessorCoursePageController {
             return ResponseEntity.notFound().build();
         }
 
-        List<Announcement> announcements = announcementService.getAnnouncementsByCourse(
-                courseCode, announcementPage, pageSize);
-        List<Assignment> assignments = assignmentService.getAssignmentsByCourse(
-                courseCode, assignmentPage, pageSize);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("course", course);
-        response.put("announcements", announcements);
-        response.put("assignments", assignments);
-        response.put("isArchived", course.getArchived());
-        response.put("professor", course.getCreatedBy().getUser().getEmail());
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new CourseDetailsDTO(course,
+                assignmentService.getAssignmentsByCourse(courseCode, assignmentPage, pageSize)
+                        .stream()
+                        .map(AssignmentDTO::new)
+                        .collect(Collectors.toSet())
+        ));
     }
 
     @PostMapping("/{courseCode}/announcement") //Would it be better to get coursed by the CreatedCourses method?
-    public ResponseEntity<Course> createAnnouncement(@PathVariable String courseCode, @RequestBody Announcement announcement) {
+    public ResponseEntity<Void> createAnnouncement(@PathVariable String courseCode, @RequestBody AnnouncementDTO announcement) {
         
-        Course course = courseService.getCourseById(courseCode);
+        var course = courseService.getCourseById(courseCode);
         if (course == null) {
             return ResponseEntity.notFound().build();
         }
 
-        announcement.setCourse(course);
-        Course updatedCourse = courseService.addAnnouncementToCourse(courseCode, announcement);
-        
-        return ResponseEntity.ok(updatedCourse);
+        try {
+            var newAnnouncement = new Announcement(announcement, course);
+            courseService.addAnnouncementToCourse(courseCode, newAnnouncement);
+            return ResponseEntity.created(new URI("/api/professor/course/" + courseCode)).build();
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PostMapping("/{courseCode}/assignment")
-    public ResponseEntity<Assignment> createAssignment(@PathVariable String courseCode, @RequestBody Assignment assignment) {
+    public ResponseEntity<AssignmentDTO> createAssignment(@PathVariable String courseCode, @RequestBody CreateAssignmentRequestDTO requestBody) {
         
         Course course = courseService.getCourseById(courseCode);
         if (course == null) {
             return ResponseEntity.notFound().build();
         }
 
-        assignment.getAnnouncement().setCourse(course);
-        Assignment createdAssignment = assignmentService.createAssignment(assignment);
+        Assignment createdAssignment = assignmentService.createAssignment(requestBody, course);
         
-        return ResponseEntity.ok(createdAssignment);
+        return ResponseEntity.ok(new AssignmentDTO(createdAssignment));
     }
 
     @PutMapping("/{courseCode}/archive")
-    public ResponseEntity<Course> archiveCourse(@PathVariable String courseCode, @RequestParam Boolean archived) {
+    public ResponseEntity<CourseDTO> archiveCourse(@PathVariable String courseCode, @RequestParam Boolean archived) {
         
         Course updatedCourse = courseService.archiveState(courseCode, archived);
         if (updatedCourse == null) {
             return ResponseEntity.notFound().build();
         }
         
-        return ResponseEntity.ok(updatedCourse);
+        return ResponseEntity.ok(new CourseDTO(updatedCourse));
     }
 }

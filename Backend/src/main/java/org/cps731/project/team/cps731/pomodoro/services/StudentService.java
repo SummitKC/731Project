@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -84,6 +85,28 @@ public class StudentService {
         
         return studentRepo.save(student);
     }
+
+    public boolean removeStudentFromCourse(Long studentID, String courseCode) {
+        var course = courseRepo.findById(courseCode).orElse(null);
+        var student = studentRepo.findById(studentID).orElseThrow();
+
+        if (course == null) {
+            return false;
+        }
+
+        if (!course.getTakenBy().contains(student)) {
+            throw new IllegalArgumentException("Student is not enrolled in this course");
+        }
+
+        course.setTakenBy(course.getTakenBy().stream().filter(s -> !s.equals(student)).collect(Collectors.toSet()));
+        student.setCourses(student.getCourses().stream().filter(c -> !c.equals(course)).collect(Collectors.toSet()));
+
+        courseRepo.save(course);
+        studentRepo.save(student);
+
+        return true;
+    }
+
     public void deleteStudent(Long id) {
         studentRepo.deleteById(id);
     }

@@ -123,4 +123,28 @@ public class Course {
     public void setTerm(Term term) {
         this.term = term;
     }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof Course)) return false;
+        final Course other = (Course) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$courseCode = this.getCourseCode();
+        final Object other$courseCode = other.getCourseCode();
+        if (this$courseCode == null ? other$courseCode != null : !this$courseCode.equals(other$courseCode))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof Course;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $courseCode = this.getCourseCode();
+        result = result * PRIME + ($courseCode == null ? 43 : $courseCode.hashCode());
+        return result;
+    }
 }

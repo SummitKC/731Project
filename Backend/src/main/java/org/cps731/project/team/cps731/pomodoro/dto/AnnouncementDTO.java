@@ -14,7 +14,7 @@ public class AnnouncementDTO {
     public AnnouncementDTO(Announcement announcement) {
         announcementID = announcement.getID();
         announcementHeader = announcement.getTitle();
-        announcementPostDate = new SimpleDateFormat("MM/dd/yyyy").format(announcement.getIssueTime());
+        announcementPostDate = new SimpleDateFormat("MM/dd/yyyy").format(announcement.getIssueTime().getTime());
         announcementDescription = announcement.getDescription();
     }
 

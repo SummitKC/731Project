@@ -5,6 +5,7 @@ import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcem
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.repo.course.CourseRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public class CourseService {
 
     @Autowired
     private CourseRepo courseRepo;
+    @Autowired
+    private AssignmentService assignmentService;
 
     public List<Course> getAllCourses() {
         return courseRepo.findAll();

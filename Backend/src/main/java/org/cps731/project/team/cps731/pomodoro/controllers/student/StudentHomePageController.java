@@ -5,6 +5,7 @@ import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 import org.cps731.project.team.cps731.pomodoro.dto.*;
 import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
+import org.cps731.project.team.cps731.pomodoro.services.AssignmentService;
 import org.cps731.project.team.cps731.pomodoro.services.CourseService;
 import org.cps731.project.team.cps731.pomodoro.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class StudentHomePageController {
 
     @Autowired
     private CourseService courseService;
+    @Autowired
+    private AssignmentService assignmentService;
 
 
     @GetMapping("/courses")
@@ -55,26 +58,26 @@ public class StudentHomePageController {
     StudentService to get student by ID, and add course, this can be done in 1 call */
     @PostMapping("/courses/join")
     public ResponseEntity<Void> joinCourse(@RequestBody JoinCourseRequestDTO requestBody) {
-        try {
-            var studentId = SecurityUtil.getAuthenticatedUserID();
-            Course course = courseService.getCourseById(requestBody.getCourseCode());
-            if (course == null) {
-                return ResponseEntity.notFound().build();
-            }
-            studentService.addCourseToStudent(studentId, course);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+        var studentId = SecurityUtil.getAuthenticatedUserID();
+        Course course = courseService.getCourseById(requestBody.getCourseCode());
+        if (course == null) {
+            return ResponseEntity.notFound().build();
         }
+        studentService.addCourseToStudent(studentId, course);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/courses/{courseCode}/details")
-    public ResponseEntity<CourseDetailsDTO> getCourseDetails(@PathVariable String courseCode) {
-        Course course = courseService.getCourseById(courseCode);
+    public ResponseEntity<CourseDetailsDTO> getCourseDetails(@PathVariable String courseCode,
+                                                             @RequestParam(defaultValue = "10") int assignmentPageSize,
+                                                             @RequestParam(defaultValue = "0") int assignmentPageNum
+                                                             ) {
+        var course = courseService.getCourseById(courseCode);
+        var assignments = assignmentService.getAssignmentsByCourse(courseCode, assignmentPageNum, assignmentPageSize);
         if (course == null) {
             return ResponseEntity.notFound().build();
         }
         
-        return ResponseEntity.ok(new CourseDetailsDTO(course));
+        return ResponseEntity.ok(new CourseDetailsDTO(course, assignments.stream().map(AssignmentDTO::new).collect(Collectors.toSet())));
     }
 }

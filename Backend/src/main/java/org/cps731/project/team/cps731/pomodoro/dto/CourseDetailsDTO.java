@@ -12,27 +12,20 @@ public class CourseDetailsDTO {
     private Term term;
     private String professor;
     private Set<AnnouncementDTO> announcements;
+    private Set<AssignmentDTO> assignments;
     private boolean isArchived;
 
     public CourseDetailsDTO() {
     }
 
-    public CourseDetailsDTO(Course course) {
+    public CourseDetailsDTO(Course course, Set<AssignmentDTO> assignments) {
         courseCode = course.getCourseCode();
         courseName = course.getName();
         term = course.getTerm();
         professor = course.getCreatedBy().getUser().getEmail();
         announcements = course.getAnnouncements().stream().map(AnnouncementDTO::new).collect(Collectors.toSet());
+        this.assignments = assignments;
         isArchived = course.getArchived();
-    }
-
-    public CourseDetailsDTO(String courseCode, String courseName, Term term, String professor, Set<AnnouncementDTO> announcements, boolean isArchived) {
-        this.courseCode = courseCode;
-        this.courseName = courseName;
-        this.term = term;
-        this.professor = professor;
-        this.announcements = announcements;
-        this.isArchived = isArchived;
     }
 
     public String getProfessor() {
@@ -81,5 +74,13 @@ public class CourseDetailsDTO {
 
     public void setTerm(Term term) {
         this.term = term;
+    }
+
+    public Set<AssignmentDTO> getAssignments() {
+        return assignments;
+    }
+
+    public void setAssignments(Set<AssignmentDTO> assignments) {
+        this.assignments = assignments;
     }
 }

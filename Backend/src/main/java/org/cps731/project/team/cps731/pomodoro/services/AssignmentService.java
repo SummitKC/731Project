@@ -1,12 +1,19 @@
 package org.cps731.project.team.cps731.pomodoro.services;
 
+import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
 import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
+import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.repo.assignment.AssignmentRepo;
+import org.cps731.project.team.cps731.pomodoro.dto.AnnouncementDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.AssignmentDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.CreateAssignmentRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -33,16 +40,13 @@ public class AssignmentService {
         return assignmentRepo.findById(id).orElseThrow(() -> new RuntimeException("Assignment not found with id: " + id));
     }
 
-    public Assignment createAssignment(Assignment assignment) {
-        if (assignment == null) {
-            throw new IllegalArgumentException("Assignment cannot be null");
-        }
-        if (assignment.getAnnouncement() == null) {
-            throw new IllegalArgumentException("Assignment must have an announcement");
-        }
-        if (assignment.getDueDate() == null) {
-            throw new IllegalArgumentException("Assignment must have a due date");
-        }
+    public Assignment createAssignment(CreateAssignmentRequestDTO request, Course course) {
+        var assignment = new Assignment(new Announcement(
+                request.getAssignmentTitle(),
+                new Timestamp(Instant.now().toEpochMilli()),
+                request.getAssignmentDescription(),
+                course
+        ), new Timestamp(request.getAssignmentDueDate()));
         return assignmentRepo.save(assignment);
     }
 

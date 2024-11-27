@@ -3,6 +3,7 @@ package org.cps731.project.team.cps731.pomodoro.dto;
 import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class AssignmentDTO {
 
@@ -14,8 +15,8 @@ public class AssignmentDTO {
     public AssignmentDTO(Assignment assignment) {
         assignmentID = assignment.getID();
         assignmentTitle = assignment.getAnnouncement().getTitle();
-        assignmentDueDate = new SimpleDateFormat("MM/dd/yyyy").format(assignment.getDueDate().toLocalDateTime());
-        assignmentDueTime = new SimpleDateFormat("hh:mm a").format(assignment.getDueDate().toLocalDateTime());
+        assignmentDueDate = new SimpleDateFormat("MM/dd/yyyy").format(new Date(assignment.getDueDate().getTime()));
+        assignmentDueTime = new SimpleDateFormat("hh:mm a").format(new Date(assignment.getDueDate().getTime()));
     }
 
     public AssignmentDTO() {
