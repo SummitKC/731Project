@@ -3,7 +3,6 @@ package org.cps731.project.team.cps731.pomodoro.data.repo.assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
 import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
-import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Term;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.User;
@@ -42,7 +41,7 @@ public class AssignmentRepoTest {
     public void findAllByAnnouncement_Course_CourseIDReturnsAllAssignmentsForCourse() {
         var userJohn = new User("John", "password", UserType.PROFESSOR);
         var profJohn = new Professor(userJohn);
-        var introToDBSystems = new Course(new CourseID("Introduction To DatabaseSystems", Term.FALL, 2024), false, profJohn);
+        var introToDBSystems = new Course("CPS510", "Introduction To Database Systems", Term.FALL, 2024, false, profJohn);
         var assignment1Announcement = new Announcement("Assignment 1", Timestamp.from(Instant.now()), "Do the thing", introToDBSystems);
         var assignment1 = new Assignment(assignment1Announcement, Timestamp.from(Instant.now().plus(14, ChronoUnit.DAYS)));
         entityManager.persist(userJohn);
@@ -52,7 +51,7 @@ public class AssignmentRepoTest {
         entityManager.persist(assignment1);
         entityManager.flush();
 
-        var assignments = repo.findAllByAnnouncement_Course_CourseID(introToDBSystems.getCourseID(), PageRequest.of(0, 5));
+        var assignments = repo.findAllByAnnouncement_Course_CourseCode(introToDBSystems.getCourseCode(), PageRequest.of(0, 5));
 
         assertThat(assignments, equalTo(List.of(assignment1)));
     }

@@ -1,15 +1,15 @@
 package org.cps731.project.team.cps731.pomodoro.dto;
 
-public class LoginRequestBody {
+public class LoginRequestDTO {
     private String email;
     private String password;
 
-    public LoginRequestBody(String email, String password) {
+    public LoginRequestDTO(String email, String password) {
         this.email = email;
         this.password = password;
     }
 
-    public LoginRequestBody() {
+    public LoginRequestDTO() {
     }
 
     public String getEmail() {

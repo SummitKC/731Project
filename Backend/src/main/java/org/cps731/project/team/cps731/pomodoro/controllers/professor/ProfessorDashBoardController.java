@@ -1,8 +1,9 @@
 package org.cps731.project.team.cps731.pomodoro.controllers.professor;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
-import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
+import org.cps731.project.team.cps731.pomodoro.dto.CourseDTO;
+import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.cps731.project.team.cps731.pomodoro.services.CourseService;
 import org.cps731.project.team.cps731.pomodoro.services.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/professor/dashboard")
@@ -23,9 +27,10 @@ public class ProfessorDashBoardController {
     @Autowired
     private CourseService courseService;
 
-    @GetMapping("/profile/{id}")
-    public ResponseEntity<String> getProfessorProfile(@PathVariable Long id) {
-        Professor professor = professorService.getProfessorById(id);
+    @GetMapping("/profile")
+    public ResponseEntity<String> getProfessorProfile() {
+        var userID = SecurityUtil.getAuthenticatedUserID();
+        Professor professor = professorService.getProfessorById(userID);
         if (professor == null) {
             return ResponseEntity.notFound().build();
         }
@@ -33,41 +38,44 @@ public class ProfessorDashBoardController {
         return ResponseEntity.ok(uName);
     }
 
-    @GetMapping("/courses/{professorId}")
-    public ResponseEntity<Set<Course>> getProfessorCourses(@PathVariable Long professorId) {
-        Professor professor = professorService.getProfessorById(professorId);
+    @GetMapping("/courses")
+    public ResponseEntity<Set<CourseDTO>> getProfessorCourses() {
+        var userID = SecurityUtil.getAuthenticatedUserID();
+        Professor professor = professorService.getProfessorById(userID);
         if (professor == null) {
             return ResponseEntity.notFound().build();
         }
         
-        return ResponseEntity.ok(professor.getCreatedCourses());
+        return ResponseEntity.ok(professor.getCreatedCourses().stream().map(CourseDTO::new).collect(Collectors.toSet()));
     }
 
-    @PostMapping("/courses/{professorId}")
-    public ResponseEntity<Course> createCourse(@PathVariable Long professorId, @RequestBody Course course) {
+    @PostMapping("/courses")
+    public ResponseEntity<CourseDTO> createCourse(@RequestBody CourseDTO course) {
+        var userID = SecurityUtil.getAuthenticatedUserID();
+        Professor professor = professorService.getProfessorById(userID);
+        if (professor == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Course createdCourse = courseService.createCourse(course, userID);
+        professorService.createCourseForProfessor(userID, createdCourse);
+
         try {
-            Professor professor = professorService.getProfessorById(professorId);
-            if (professor == null) {
-                return ResponseEntity.notFound().build();
-            }
-            
-            course.setCreatedBy(professor);
-            Course createdCourse = courseService.createCourse(course);
-            professorService.createCourseForProfessor(professorId, createdCourse);
-            
-            return ResponseEntity.ok(createdCourse);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity
+                    .created(new URI("/api/professor/course/" + course.getCourseCode()))
+                    .build();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 
-    @PutMapping("/courses/{courseId}/archive")
-    public ResponseEntity<Course> archiveCourse(@PathVariable CourseID courseId, @RequestParam Boolean archived) {
-        Course updatedCourse = courseService.archiveState(courseId, archived);
+    @PutMapping("/courses/{courseCode}/archive")
+    public ResponseEntity<CourseDTO> archiveCourse(@PathVariable String courseCode, @RequestParam Boolean archived) {
+        Course updatedCourse = courseService.archiveState(courseCode, archived);
         if (updatedCourse == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(updatedCourse);
+        return ResponseEntity.ok(new CourseDTO(updatedCourse));
     }
 }
 

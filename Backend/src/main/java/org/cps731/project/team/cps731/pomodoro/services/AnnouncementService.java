@@ -1,11 +1,13 @@
 package org.cps731.project.team.cps731.pomodoro.services;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
-import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.repo.announcement.AnnouncementRepo;
+import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -14,14 +16,21 @@ public class AnnouncementService {
 
     @Autowired
     private AnnouncementRepo announcementRepo;
+    @Autowired
+    private StudentService studentService;
 
-    public List<Announcement> getAnnouncementsByCourse(CourseID courseID, int page, int size) {
-        if (courseID == null) {
-            throw new IllegalArgumentException("CourseID cannot be null");
+    public List<Announcement> getAnnouncementsByCourse(String courseCode, int page, int size) {
+        var studentID = SecurityUtil.getAuthenticatedUserID();
+        var student = studentService.getStudentById(studentID);
+
+        if (student.getCourses().stream().noneMatch(c -> c.getCourseCode().equals(courseCode))) {
+            throw new AuthorizationDeniedException(
+                    "Student is not enrolled in this course",
+                    new AuthorizationDecision(false)
+                    );
         }
-        
-        Pageable pageable = PageRequest.of(page, size);
-        return announcementRepo.findAllByCourse_CourseID(courseID, pageable);
+
+        return announcementRepo.findAllByCourse_CourseCode(courseCode);
     }
 
     public Announcement getAnnouncementById(Long id) {

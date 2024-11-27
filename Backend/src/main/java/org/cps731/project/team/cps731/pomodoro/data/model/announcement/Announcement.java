@@ -2,8 +2,11 @@ package org.cps731.project.team.cps731.pomodoro.data.model.announcement;
 
 import jakarta.persistence.*;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
+import org.cps731.project.team.cps731.pomodoro.dto.AnnouncementDTO;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 @Entity
 public class Announcement {
@@ -27,6 +30,13 @@ public class Announcement {
         this.title = title;
         this.issueTime = issueTime;
         this.description = description;
+        this.course = course;
+    }
+
+    public Announcement(AnnouncementDTO announcementDTO, Course course) throws ParseException {
+        this.title = announcementDTO.getAnnouncementHeader();
+        this.description = announcementDTO.getAnnouncementDescription();
+        this.issueTime = new Timestamp(new SimpleDateFormat("MM/dd/yyyy").parse(announcementDTO.getAnnouncementPostDate()).getTime());
         this.course = course;
     }
 

@@ -1,7 +1,7 @@
 package org.cps731.project.team.cps731.pomodoro.services;
 
 import jakarta.security.auth.message.AuthException;
-import org.cps731.project.team.cps731.pomodoro.dto.LoginRequestBody;
+import org.cps731.project.team.cps731.pomodoro.dto.LoginRequestDTO;
 import org.cps731.project.team.cps731.pomodoro.security.auth.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +23,7 @@ public class AuthService {
         this.encoder = encoder;
     }
 
-    public String studentLogin(LoginRequestBody loginRequest) throws AuthException {
+    public String studentLogin(LoginRequestDTO loginRequest) throws AuthException {
         var student = studentService.getStudentByEmail(loginRequest.getEmail());
         if (student == null) {
             throw new AuthException("Student not found");
@@ -33,7 +33,7 @@ public class AuthService {
         return jwtUtil.generateToken(student.getUser().getId().toString());
     }
 
-    public String professorLogin(LoginRequestBody loginRequest) throws AuthException {
+    public String professorLogin(LoginRequestDTO loginRequest) throws AuthException {
         var professor = professorService.getProfessorByEmail(loginRequest.getEmail());
         if (professor == null) {
             throw new AuthException("Professor not found");
