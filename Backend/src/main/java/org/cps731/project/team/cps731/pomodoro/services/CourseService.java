@@ -4,6 +4,8 @@ import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcem
 //import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.repo.course.CourseRepo;
+import org.cps731.project.team.cps731.pomodoro.data.repo.user.ProfessorRepo;
+import org.cps731.project.team.cps731.pomodoro.dto.CourseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ public class CourseService {
     private CourseRepo courseRepo;
     @Autowired
     private AssignmentService assignmentService;
+    @Autowired
+    private ProfessorRepo professorRepo;
 
     public List<Course> getAllCourses() {
         return courseRepo.findAll();
@@ -28,8 +32,17 @@ public class CourseService {
         return courseRepo.findById(courseCode).orElse(null);
     }
 
-    public Course createCourse(Course course) {
-        return courseRepo.save(course);
+    public Course createCourse(CourseDTO course, Long professorID) {
+        var professor = professorRepo.findByUser_Id(professorID);
+        var newCourse = Course.builder()
+                .courseCode(course.getCourseCode())
+                .name(course.getName())
+                .createdBy(professor)
+                .archived(false)
+                .term(course.getTerm())
+                .year(course.getYear())
+                .build();
+        return courseRepo.save(newCourse);
     }
 
     public Course updateCourse(String courseCode, Course course) {

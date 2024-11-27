@@ -5,12 +5,14 @@ import org.cps731.project.team.cps731.pomodoro.data.model.course.Term;
 
 public class CourseDTO {
 
+    private String courseCode;
     private String name;
     private Term term;
     private Integer year;
     private boolean archived;
 
-    public CourseDTO(String name, Term term, Integer year, boolean archived) {
+    public CourseDTO(String courseCode, String name, Term term, Integer year, boolean archived) {
+        this.courseCode = courseCode;
         this.name = name;
         this.term = term;
         this.year = year;
@@ -18,6 +20,7 @@ public class CourseDTO {
     }
 
     public CourseDTO(Course course) {
+        courseCode = course.getCourseCode();
         name = course.getName();
         term = course.getTerm();
         year = course.getYear();
@@ -25,6 +28,14 @@ public class CourseDTO {
     }
 
     public CourseDTO() {
+    }
+
+    public String getCourseCode() {
+        return courseCode;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
     }
 
     public String getName() {

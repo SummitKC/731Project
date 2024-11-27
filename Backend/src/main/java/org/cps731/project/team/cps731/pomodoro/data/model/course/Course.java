@@ -60,6 +60,10 @@ public class Course {
         this.announcements = announcements;
     }
 
+    public static CourseBuilder builder() {
+        return new CourseBuilder();
+    }
+
     public Boolean getArchived() {
         return this.archived;
     }
@@ -146,5 +150,55 @@ public class Course {
         final Object $courseCode = this.getCourseCode();
         result = result * PRIME + ($courseCode == null ? 43 : $courseCode.hashCode());
         return result;
+    }
+
+    public static class CourseBuilder {
+        private String courseCode;
+        private String name;
+        private Term term;
+        private Integer year;
+        private Boolean archived;
+        private Professor createdBy;
+
+        CourseBuilder() {
+        }
+
+        public CourseBuilder courseCode(String courseCode) {
+            this.courseCode = courseCode;
+            return this;
+        }
+
+        public CourseBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public CourseBuilder term(Term term) {
+            this.term = term;
+            return this;
+        }
+
+        public CourseBuilder year(Integer year) {
+            this.year = year;
+            return this;
+        }
+
+        public CourseBuilder archived(Boolean archived) {
+            this.archived = archived;
+            return this;
+        }
+
+        public CourseBuilder createdBy(Professor createdBy) {
+            this.createdBy = createdBy;
+            return this;
+        }
+
+        public Course build() {
+            return new Course(this.courseCode, this.name, this.term, this.year, this.archived, this.createdBy);
+        }
+
+        public String toString() {
+            return "Course.CourseBuilder(courseCode=" + this.courseCode + ", name=" + this.name + ", term=" + this.term + ", year=" + this.year + ", archived=" + this.archived + ", createdBy=" + this.createdBy + ")";
+        }
     }
 }
