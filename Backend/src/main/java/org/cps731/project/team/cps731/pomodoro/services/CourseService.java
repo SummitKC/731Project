@@ -52,7 +52,7 @@ public class CourseService {
             var professor = professorRepo.findById(userID).orElseThrow();
             if (professor.getCreatedCourses().stream().noneMatch(c -> c.getCourseCode().equals(courseCode))) {
                 throw new AuthorizationDeniedException(
-                        "Professor is does not own in this course",
+                        "Professor does not own in this course",
                         new AuthorizationDecision(false)
                 );
             }
