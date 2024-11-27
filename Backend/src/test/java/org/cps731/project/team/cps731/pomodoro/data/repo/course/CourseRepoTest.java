@@ -1,7 +1,6 @@
 package org.cps731.project.team.cps731.pomodoro.data.repo.course;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
-import org.cps731.project.team.cps731.pomodoro.data.model.course.CourseID;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Term;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
@@ -39,8 +38,8 @@ public class CourseRepoTest {
         var johnCourses = new HashSet<Course>();
         var professorJohn = new Professor(1L, userJohn, johnCourses);
         johnCourses.addAll(List.of(
-                new Course(new CourseID("Introduction to Database Systems", Term.FALL, 2024), false, professorJohn, Set.of(), Set.of()),
-                new Course(new CourseID("Introduction to Software Engineering", Term.FALL, 2024), false, professorJohn, Set.of(), Set.of())
+                new Course("CPS510", "Introduction to Database Systems", Term.FALL, 2024, false, professorJohn, Set.of(), Set.of()),
+                new Course("CPS406", "Introduction to Software Engineering", Term.FALL, 2024, false, professorJohn, Set.of(), Set.of())
         ));
         entityManager.persist(userJohn);
         entityManager.persist(professorJohn);
@@ -60,7 +59,7 @@ public class CourseRepoTest {
         var userBob = new User("Bob", "password", UserType.PROFESSOR);
         var studentJohn = new Student(userJohn);
         var profBob = new Professor(userBob);
-        var introToDatabaseSystems = new Course(new CourseID("Intro to Database Systems", Term.FALL, 2024), false, profBob);
+        var introToDatabaseSystems = new Course("CPS510", "Intro to Database Systems", Term.FALL, 2024, false, profBob);
         introToDatabaseSystems.setTakenBy(Set.of(studentJohn));
         introToDatabaseSystems.setCreatedBy(profBob);
         profBob.setCreatedCourses(Set.of(introToDatabaseSystems));
