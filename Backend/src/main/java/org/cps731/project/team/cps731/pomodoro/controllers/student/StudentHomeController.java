@@ -63,23 +63,9 @@ public class StudentHomeController {
     public ResponseEntity<StatusDTO> joinCourse(
             @RequestBody JoinCourseRequestDTO body) {
         var studentId = SecurityUtil.getAuthenticatedUserID();
-        Course course = courseService.getCourseById(body.getCourseCode());
-        if (course == null) {
-            return ResponseEntity.notFound().build();
-        }
 
-        if (Boolean.TRUE.equals(course.getArchived())) {
-            return ResponseEntity.badRequest().body(new StatusDTO(
-                    "error",
-                    "Cannot join an archived course"
-            ));
-        }
+        studentService.addCourseToStudent(studentId, body.getCourseCode());
 
-        studentService.addCourseToStudent(studentId, course);
-
-        return ResponseEntity.ok(new StatusDTO(
-                "success",
-                "Successfully joined course"
-        ));
+        return ResponseEntity.noContent().build();
     }
 }

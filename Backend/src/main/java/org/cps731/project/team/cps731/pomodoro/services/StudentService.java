@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -50,13 +51,19 @@ public class StudentService {
         return null;
     }
 
-    public Student addCourseToStudent(Long studentId, Course course) {
-        if (studentId == null || course == null) {
+    public Student addCourseToStudent(Long studentId, String courseCode) {
+        if (studentId == null || courseCode == null) {
             throw new IllegalArgumentException("Student ID and course cannot be null");
         }
 
-        Student student = studentRepo.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found with id: " + studentId));
-
+        var course = courseRepo.findById(courseCode).orElseThrow(() -> new NoSuchElementException("Course not found"));
+        if (course.getArchived()) {
+            throw new IllegalArgumentException("Course is archived");
+        }
+        var student = studentRepo.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found with id: " + studentId));
+        if (course.getTakenBy().contains(student)) {
+            throw new IllegalArgumentException("Student already is enrolled in this course");
+        }
         Set<Course> courses = student.getCourses();
         if (courses == null) {
             courses = new HashSet<>();

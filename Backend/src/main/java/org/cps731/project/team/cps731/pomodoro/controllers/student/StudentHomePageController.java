@@ -56,11 +56,7 @@ public class StudentHomePageController {
     @PostMapping("/courses/join")
     public ResponseEntity<Void> joinCourse(@RequestBody JoinCourseRequestDTO requestBody) {
         var studentId = SecurityUtil.getAuthenticatedUserID();
-        Course course = courseService.getCourseById(requestBody.getCourseCode());
-        if (course == null) {
-            return ResponseEntity.notFound().build();
-        }
-        studentService.addCourseToStudent(studentId, course);
+        studentService.addCourseToStudent(studentId, requestBody.getCourseCode());
         return ResponseEntity.noContent().build();
     }
 
