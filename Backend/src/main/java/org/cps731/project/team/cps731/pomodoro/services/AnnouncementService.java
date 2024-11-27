@@ -28,9 +28,9 @@ public class AnnouncementService {
         return announcementRepo.findById(id).orElse(null);
     }
 
-/*     public Announcement createAnnouncement(Announcement announcement) {
+    public Announcement createAnnouncement(Announcement announcement) {
         return announcementRepo.save(announcement);
-    } */
+    }
 
     public Announcement updateAnnouncement(Long id, Announcement announcement) {
         Announcement existingAnnouncement = announcementRepo.findById(id).orElse(null);
