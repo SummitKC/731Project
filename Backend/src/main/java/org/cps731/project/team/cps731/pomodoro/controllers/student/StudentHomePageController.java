@@ -1,6 +1,5 @@
 package org.cps731.project.team.cps731.pomodoro.controllers.student;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 import org.cps731.project.team.cps731.pomodoro.dto.*;
@@ -11,7 +10,6 @@ import org.cps731.project.team.cps731.pomodoro.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -44,8 +42,7 @@ public class StudentHomePageController {
 
     @GetMapping("/tasks")
     public ResponseEntity<Set<TaskDTO>> getUpcomingTasks() {
-        var decodedJWT = (DecodedJWT) SecurityContextHolder.getContext().getAuthentication().getCredentials();
-        var studentId = Long.parseLong(decodedJWT.getSubject());
+        var studentId = SecurityUtil.getAuthenticatedUserID();
         Student student = studentService.getStudentById(studentId);
         if (student == null) {
             return ResponseEntity.notFound().build();

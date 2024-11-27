@@ -3,8 +3,10 @@ package org.cps731.project.team.cps731.pomodoro.services;
 import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
 //import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
+import org.cps731.project.team.cps731.pomodoro.data.model.user.UserType;
 import org.cps731.project.team.cps731.pomodoro.data.repo.course.CourseRepo;
 import org.cps731.project.team.cps731.pomodoro.data.repo.user.ProfessorRepo;
+import org.cps731.project.team.cps731.pomodoro.data.repo.user.UserRepo;
 import org.cps731.project.team.cps731.pomodoro.dto.CourseDTO;
 import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +28,36 @@ public class CourseService {
     private AssignmentService assignmentService;
     @Autowired
     private ProfessorRepo professorRepo;
+    @Autowired
+    private StudentService studentService;
+    @Autowired
+    private UserRepo userRepo;
 
     public List<Course> getAllCourses() {
         return courseRepo.findAll();
     }
 
     public Course getCourseById(String courseCode) {
+        var userID = SecurityUtil.getAuthenticatedUserID();
+        var userType = userRepo.findById(userID).orElseThrow().getUserType();
+        if (userType.equals(UserType.STUDENT)) {
+            var student = studentService.getStudentById(userID);
+            if (student.getCourses().stream().noneMatch(c -> c.getCourseCode().equals(courseCode))) {
+                throw new AuthorizationDeniedException(
+                        "Student is not enrolled in this course",
+                        new AuthorizationDecision(false)
+                );
+            }
+        } else if (userType.equals(UserType.PROFESSOR)) {
+            var professor = professorRepo.findById(userID).orElseThrow();
+            if (professor.getCreatedCourses().stream().noneMatch(c -> c.getCourseCode().equals(courseCode))) {
+                throw new AuthorizationDeniedException(
+                        "Professor is does not own in this course",
+                        new AuthorizationDecision(false)
+                );
+            }
+        }
+
         return courseRepo.findById(courseCode).orElse(null);
     }
 
