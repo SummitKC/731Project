@@ -8,9 +8,7 @@ import org.cps731.project.team.cps731.pomodoro.data.repo.assignment.AssignmentRe
 import org.cps731.project.team.cps731.pomodoro.data.repo.user.ProfessorRepo;
 import org.cps731.project.team.cps731.pomodoro.data.repo.user.StudentRepo;
 import org.cps731.project.team.cps731.pomodoro.data.repo.user.UserRepo;
-import org.cps731.project.team.cps731.pomodoro.dto.AnnouncementDTO;
-import org.cps731.project.team.cps731.pomodoro.dto.AssignmentDTO;
-import org.cps731.project.team.cps731.pomodoro.dto.CreateAssignmentRequestDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.assignment.CreateAssignmentRequestDTO;
 import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;

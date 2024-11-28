@@ -6,7 +6,7 @@ import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.User;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.UserType;
 import org.cps731.project.team.cps731.pomodoro.data.repo.user.UserRepo;
-import org.cps731.project.team.cps731.pomodoro.dto.AuthRequestDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.auth.AuthRequestDTO;
 import org.cps731.project.team.cps731.pomodoro.security.auth.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

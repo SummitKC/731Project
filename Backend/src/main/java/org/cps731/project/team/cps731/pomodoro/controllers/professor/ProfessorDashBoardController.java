@@ -2,7 +2,7 @@ package org.cps731.project.team.cps731.pomodoro.controllers.professor;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
-import org.cps731.project.team.cps731.pomodoro.dto.CourseDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.course.CourseDTO;
 import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.cps731.project.team.cps731.pomodoro.services.CourseService;
 import org.cps731.project.team.cps731.pomodoro.services.ProfessorService;
