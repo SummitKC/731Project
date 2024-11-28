@@ -25,7 +25,7 @@ public class TaskService {
     }
 
     public Task getTaskById(Long id) {
-        return taskRepo.findById(id).orElse(null);
+        return taskRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Task not found"));
     }
 
     public Set<Task> getTaskByState(Long ownerId, TaskState state) {
