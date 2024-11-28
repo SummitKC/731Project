@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
+=======
+import React, { useState, useEffect } from 'react';
+>>>>>>> 26bde94d31fffb3c37f813185870e538488ac4c6
 import '../assets/studenthome.css';
 import '../assets/global.css';
 import { useMediaQuery } from 'react-responsive';
@@ -6,7 +10,6 @@ import StudentSidebar from '../components/Common/StudentSidebar';
 import Course from '../components/Course/Course';
 import Board from '../components/TaskBoard/Board';
 import { useNavigate } from 'react-router-dom';
-import { placeholderCourses, placeholderTasks, placeholderAssignments, placeholderAnnouncements } from './data';
 
 const StudentHome = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 700px)' });
@@ -18,19 +21,40 @@ const StudentHome = () => {
   const lastName = "Doe";
   const initials = `${firstName[0]}${lastName[0]}`;
 
-  const [courses, setCourses] = useState(placeholderCourses);
-  const [tasks, setTasks] = useState(placeholderTasks);
+  const [courses, setCourses] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const term = "Fall 2024";
 
+  const navigate = useNavigate();
+
   useEffect(() => {
-    fetch('http://localhost:8080/api/student/dashboard/courses', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': localStorage.getItem('token')
-      }
-    })
-  }, [])
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      navigate('/login');
+    } else {
+      // Fetch courses
+      console.log(token); // token is read properly
+      
+      fetch('http://localhost:8080/api/student/dashboard/courses', {
+        method: 'GET',
+        headers: {
+          Authorization: token,
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => setCourses(data))
+      .catch(error => console.error('Error fetching courses:', error));
+      
+      
+    }
+  }, [navigate]);
 
   const groupedTasks = {};
 
@@ -56,18 +80,16 @@ const StudentHome = () => {
 
   const allTasks = convertGroupedTasks(groupedTasks);
 
-  const navigate = useNavigate();
-
   const handleCourseClick = (courseCode, courseName) => {
     navigate(`/course/${courseCode}`, {
       state: {
         courseCode,
         courseName,
-        assignments: placeholderAssignments,
-        announcements: placeholderAnnouncements,
       },
     });
   };
+  
+  console.log(convertGroupedTasks);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
