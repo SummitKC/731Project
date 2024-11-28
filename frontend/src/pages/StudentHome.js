@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../assets/studenthome.css';
 import '../assets/global.css';
 import { useMediaQuery } from 'react-responsive';
@@ -22,7 +22,15 @@ const StudentHome = () => {
   const [tasks, setTasks] = useState(placeholderTasks);
   const term = "Fall 2024";
 
-  
+  useEffect(() => {
+    fetch('http://localhost:8080/api/student/dashboard/courses', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('token')
+      }
+    })
+  }, [])
 
   const groupedTasks = {};
 
