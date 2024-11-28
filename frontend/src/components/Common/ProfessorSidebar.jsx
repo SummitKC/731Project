@@ -34,7 +34,7 @@ const ProfessorSidebar = ({ firstName, lastName }) => {
           <div style={isMobile ? { display:"None" } : {}} className="name">{firstName} {lastName}</div>
           <button style={isMobile ? { display:"None" } : {}} className="button">Logout</button>
           <Link className="sidebar-button" to="/professor/home">Home</Link>
-          <Link className="sidebar-button" to="/archived">Archived Courses</Link>
+          <Link className="sidebar-button" to="/professor/courses/archive">Archived Courses</Link>
           
         </div>
       </div>

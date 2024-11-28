@@ -24,7 +24,7 @@ const Assignment = ({assignmentName , assignmentDueDate, assignmentDueTime, type
           <p className='lmar-30'>{assignmentName}</p>
    
         </div>
-        <div className='priority high'> 
+        <div style={{width: '90px'}} className='priority high'> 
           <p>{assignmentDueTime}</p>
         </div>
 

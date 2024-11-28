@@ -15,7 +15,7 @@ const AssignmentBoard = ({ assignments, title, type }) => {
   }, {});
 
   const sortedDates = Object.keys(groupedAssignments).sort((a, b) => new Date(a) - new Date(b));
-
+  console.log(type);
   return (
     <div className='board-wrapper'>
       <h2>Assignments</h2>
@@ -31,10 +31,10 @@ const AssignmentBoard = ({ assignments, title, type }) => {
             {groupedAssignments[date].map((assignment, idx) => (
               <Assignment
                 key={idx}
-                assignmentName={assignment.assignmentName}
+                assignmentName={assignment.assignmentTitle}
                 assignmentDueDate={assignment.assignmentDueDate}
                 assignmentDueTime={assignment.assignmentDueTime}
-                type={assignment.type}
+                type={type}
               />
             ))}
           </div>

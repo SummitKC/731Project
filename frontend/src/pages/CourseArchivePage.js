@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import '../assets/professorhome.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import ProfessorSidebar from '../components/Common/ProfessorSidebar';
 import Course from '../components/Course/Course';
 import '../assets/global.css';
-import { useNavigate } from 'react-router-dom';
 
-
-const ProfessorHome = () => {
+const CourseArchivePage = () => {
   const isDesktopOrLaptop = useMediaQuery({ query: '(min-width: 1224px)' });
   const isBigScreen = useMediaQuery({ query: '(min-width: 1824px)' });
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
@@ -19,12 +17,10 @@ const ProfessorHome = () => {
   const lastName = "Doe";
   const initials = `${firstName[0]}${lastName[0]}`;
   const isMobile = useMediaQuery({ query: '(max-width: 700px)' });
-  const term = "Fall 2024";
-  
   const navigate = useNavigate();
 
-  const [courses, setCourses] = useState([]);
-  
+  const [groupedCourses, setGroupedCourses] = useState({});
+
   useEffect(() => {
     const token = localStorage.getItem('token');
 
@@ -41,47 +37,23 @@ const ProfessorHome = () => {
         }
       })
       .then(response => response.json())
-      .then(data => setCourses(data))
+      .then(data => {
+        // Filter only the archived courses
+        const archivedCourses = data.filter(course => course.archived === true);
+        
+        // Group courses by term and year
+        const grouped = archivedCourses.reduce((acc, course) => {
+          const key = `${course.term} ${course.year}`;
+          if (!acc[key]) acc[key] = [];
+          acc[key].push(course);
+          return acc;
+        }, {});
+
+        setGroupedCourses(grouped);
+      })
       .catch(error => console.error('Error fetching courses:', error));
     }
   }, [navigate]);
-
-  const handleCourseClick = (courseCode, courseName) => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-    } else {
-      console.log(courseCode);
-      console.log(courseName);
-      
-      fetch(`http://localhost:8080/api/professor/course/${courseCode}`, { 
-        method: 'GET', 
-        headers: {
-          Authorization: token,
-          'Content-Type': 'application/json',
-        }
-      }).then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      }).then(data => {
-        navigate(`/professor/course/${courseCode}`, {
-          state: {
-            courseCode,
-            courseName,
-            professor: data.professor,
-            assignments: data.assignments,
-            announcements: data.announcements
-          },
-        });
-      
-      }).catch(error => {
-        console.error('Error fetching course data:', error);
-      });
-       
-    }
-  };
 
 
   return (
@@ -98,23 +70,26 @@ const ProfessorHome = () => {
             <h1 style={isMobile ? {} : { paddingTop: '10px', paddingLeft: '30px' }}>Welcome to your Dashboard</h1>    
             <Link className="generic-button" to="/professor/home">Create Course</Link>   
           </div>
-          <h2 className='lpad-50'>Here are your courses for <b>{term}</b></h2>
-          <div className='courses-container'>
-            {courses.map((course, index) => (
-              <div key={index} onClick={() => handleCourseClick(course.courseCode, course.name)}>
-                <Course
-                  courseCode={course.courseCode}
-                  courseName={course.name}
-                  courseIcon={{}}
-                />
+          {Object.keys(groupedCourses).map((termYear, index) => (
+            <div key={index} className='term-group'>
+              <h2 className='lpad-50'>{termYear}</h2>
+              <div className='courses-container'>
+                {groupedCourses[termYear].map((course, idx) => (
+                  <div key={idx}>
+                    <Course
+                      courseCode={course.courseCode}
+                      courseName={course.name}
+                      courseIcon={{}}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-
-          </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
   );
 }
 
-export default ProfessorHome;
+export default CourseArchivePage;

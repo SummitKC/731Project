@@ -6,6 +6,8 @@ import StudentSidebar from '../components/Common/StudentSidebar';
 import Course from '../components/Course/Course';
 import Board from '../components/TaskBoard/Board';
 import { useNavigate } from 'react-router-dom';
+import Modal from '../components/Course/Modal';
+
 
 const StudentHome = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 700px)' });
@@ -25,13 +27,10 @@ const StudentHome = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    
     if (!token) {
       navigate('/login');
     } else {
       // Fetch courses
-      console.log(token); // token is read properly
-      
       fetch('http://localhost:8080/api/student/dashboard/courses', {
         method: 'GET',
         headers: {
@@ -39,25 +38,31 @@ const StudentHome = () => {
           'Content-Type': 'application/json',
         }
       })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+        .then(response => response.json())
+        .then(data => setCourses(data))
+        .catch(error => console.error('Error fetching courses:', error));
+      
+      // Fetch tasks
+      fetch('http://localhost:8080/api/student/dashboard/tasks', {
+        method: 'GET',
+        headers: {
+          Authorization: token,
+          'Content-Type': 'application/json',
         }
-        return response.json();
       })
-      .then(data => setCourses(data))
-      .catch(error => console.error('Error fetching courses:', error));
-      
-      
+        .then(response => response.json())
+        .then(data => setTasks(data))
+        .catch(error => console.error('Error fetching tasks:', error));
     }
   }, [navigate]);
+
 
   const groupedTasks = {};
 
   tasks.forEach(task => {
     const { taskDate, taskStatus } = task;
     if (!groupedTasks[taskDate]) {
-      groupedTasks[taskDate] = { TODO: [], 'In Progress': [], Completed: [] };
+      groupedTasks[taskDate] = { TODO: [], 'IN_PROGRESS': [], Completed: [] };
     }
     groupedTasks[taskDate][taskStatus].push(task);
   });
@@ -66,26 +71,119 @@ const StudentHome = () => {
 
   const convertGroupedTasks = (groupedTasks) => {
     return Object.keys(groupedTasks).map(date => {
-      const statuses = groupedTasks[date];
-      return {
-        taskDate: date,
-        tasks: Object.values(statuses).flat()
-      };
+        const dateObj = new Date(date);
+        
+        // Extract year, month, day
+        const year = dateObj.getFullYear();
+        const month = (dateObj.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+        const day = dateObj.getDate().toString().padStart(2, '0');
+
+        // Format the date as YYYY-MM-DD
+        const formattedDate = `${year}-${month}-${day}`;
+
+        const statuses = groupedTasks[date];
+        return {
+            taskDate: formattedDate,
+            tasks: Object.values(statuses).flat()
+        };
     });
-  };
+};
+
 
   const allTasks = convertGroupedTasks(groupedTasks);
 
+  
+
   const handleCourseClick = (courseCode, courseName) => {
-    navigate(`/course/${courseCode}`, {
-      state: {
-        courseCode,
-        courseName,
-      },
-    });
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    } else {
+      console.log(courseCode);
+      fetch(`http://localhost:8080/api/student/course/${courseCode}`, {
+        method: 'GET', 
+        headers: {
+          Authorization: token,
+          'Content-Type': 'application/json',
+        }
+      }).then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      }).then(data => {
+        navigate(`/course/${courseCode}`, {
+          state: {
+            courseCode,
+            courseName,
+            assignments: data.assignments,
+            announcements: data.announcements
+          },
+        });
+      
+      }).catch(error => {
+        console.error('Error fetching course data:', error);
+      });
+       
+    }
   };
   
-  console.log(convertGroupedTasks);
+  const [showModal, setShowModal] = useState(false);
+  const [courseCode, setCourseCode] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  
+  const handleJoinCourseClick = () => {
+    setShowModal(true);
+  };
+  
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+  
+  const handleSubmitJoinCourse = (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    } else {
+      fetch('http://localhost:8080/api/student/home/courses/join', {
+        method: 'POST',
+        headers: {
+          Authorization: token,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ courseCode }),
+      })
+      .then(response => {
+        if (response.status === 204) {
+          return {};
+        } else if (!response.ok) {
+          return response.text().then(text => { throw new Error(text); });
+        }
+        return response.json();
+      })
+      .then(data => {
+        window.location.reload();
+      })
+      .catch(error => {
+        console.error('Error joining course:', error);
+        if (error.message === 'Course not found') {
+          setErrorMessage('Course not found. Please check the course code.');
+        } else if (error.message === 'Course is archived') {
+          setErrorMessage('Course is archived and cannot be joined.');
+        } else if (error.message === 'Student already is enrolled in this course') {
+          setErrorMessage('You are already enrolled in this course.');
+        } else {
+          setErrorMessage('Error joining course. Please try again.');
+        }
+      });
+    }
+  };
+  
+  
+  
+  
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -104,21 +202,31 @@ const StudentHome = () => {
               <h2>Your Courses for {term}</h2>
               <div className='courses-container'>
                 {courses.map((course, index) => (
-                  <div key={index} onClick={() => handleCourseClick(course.courseCode, course.courseName)}>
+                  <div key={index} onClick={() => handleCourseClick(course.courseCode, course.name)}>
                     <Course
                       courseCode={course.courseCode}
-                      courseName={course.courseName}
+                      courseName={course.name}
                       courseIcon={{}}
                     />
                   </div>
                 ))}
               </div>
-              <button className='generic-button font' style={{ alignSelf: 'end' }}>Join Course</button>
+              <button className='generic-button font' style={{ alignSelf: 'end' }} onClick={handleJoinCourseClick}>Join Course</button>
             </div>
             <Board title="Tasks Overview" tasks={allTasks} />
           </div>
         </div>
       </div>
+      <Modal
+        show={showModal}
+        handleClose={handleCloseModal}
+        handleSubmit={handleSubmitJoinCourse}
+        courseCode={courseCode}
+        setCourseCode={setCourseCode}
+        errorMessage={errorMessage}
+      />
+
+
     </div>
   );
 };
