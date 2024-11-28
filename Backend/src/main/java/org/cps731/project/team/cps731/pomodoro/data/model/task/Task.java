@@ -3,7 +3,7 @@ package org.cps731.project.team.cps731.pomodoro.data.model.task;
 import jakarta.persistence.*;
 import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
-import org.cps731.project.team.cps731.pomodoro.dto.TaskDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.task.TaskDTO;
 
 import java.sql.Timestamp;
 

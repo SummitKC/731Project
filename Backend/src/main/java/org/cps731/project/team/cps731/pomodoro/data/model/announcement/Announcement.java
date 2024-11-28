@@ -2,7 +2,7 @@ package org.cps731.project.team.cps731.pomodoro.data.model.announcement;
 
 import jakarta.persistence.*;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
-import org.cps731.project.team.cps731.pomodoro.dto.AnnouncementDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.announcement.AnnouncementDTO;
 
 import java.sql.Timestamp;
 import java.text.ParseException;

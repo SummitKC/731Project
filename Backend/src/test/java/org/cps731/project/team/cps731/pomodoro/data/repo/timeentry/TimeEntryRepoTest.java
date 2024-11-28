@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
@@ -58,9 +59,17 @@ public class TimeEntryRepoTest {
                 .owner(studentJohn)
                 .derivedFrom(assignment1)
                 .build();
-        var timeEntry1 = new TimeEntry(assignment1Task, Timestamp.from(twoWeeksAgo), Timestamp.from(twoWeeksAgo.plus(25, ChronoUnit.MINUTES)), 1);
+        var timeEntry1 = new TimeEntry(assignment1Task,
+                Timestamp.from(twoWeeksAgo),
+                Timestamp.from(twoWeeksAgo.plus(25, ChronoUnit.MINUTES)),
+                Duration.of(25, ChronoUnit.MINUTES).toMillis(),
+                1);
         var sixDaysAgo = Instant.now().minus(6, ChronoUnit.DAYS);
-        var timeEntry2 = new TimeEntry(assignment1Task, Timestamp.from(sixDaysAgo), Timestamp.from(sixDaysAgo.plus(25, ChronoUnit.MINUTES)), 2);
+        var timeEntry2 = new TimeEntry(assignment1Task,
+                Timestamp.from(sixDaysAgo),
+                Timestamp.from(sixDaysAgo.plus(25, ChronoUnit.MINUTES)),
+                Duration.of(25, ChronoUnit.MINUTES).toMillis(),
+                2);
         studentJohn.setCourses(Set.of(introToDatabaseSystems));
         studentJohn.setTasks(Set.of(assignment1Task));
         profSteve.setCreatedCourses(Set.of(introToDatabaseSystems));

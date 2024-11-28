@@ -1,8 +1,11 @@
 package org.cps731.project.team.cps731.pomodoro.controllers.student;
 
-import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskState;
 import org.cps731.project.team.cps731.pomodoro.dto.*;
+import org.cps731.project.team.cps731.pomodoro.dto.course.CourseDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.course.JoinCourseRequestDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.student.StudentDashboardDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.task.TaskDTO;
 import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.cps731.project.team.cps731.pomodoro.services.CourseService;
 import org.cps731.project.team.cps731.pomodoro.services.StudentService;

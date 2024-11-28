@@ -2,7 +2,7 @@ package org.cps731.project.team.cps731.pomodoro.controllers.auth;
 
 import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.http.HttpServletResponse;
-import org.cps731.project.team.cps731.pomodoro.dto.AuthRequestDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.auth.AuthRequestDTO;
 import org.cps731.project.team.cps731.pomodoro.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.net.URI;
 
 @RestController
 @RequestMapping("/auth")

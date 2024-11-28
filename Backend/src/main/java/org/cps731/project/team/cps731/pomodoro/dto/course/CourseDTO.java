@@ -1,4 +1,4 @@
-package org.cps731.project.team.cps731.pomodoro.dto;
+package org.cps731.project.team.cps731.pomodoro.dto.course;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Term;
