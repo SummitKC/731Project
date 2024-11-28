@@ -1,13 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../assets/course.css';
 
-const Course = ( { courseCode, courseName, courseIcon }) => {
-  
-  let placeholder = '';
-  
-  if (courseIcon == null){
-    placeholder = courseName;
-  }
+const Course = ({ courseCode, courseName, courseIcon }) => {
 
   return (
     <div className='course-wrapper'>
@@ -17,7 +12,6 @@ const Course = ( { courseCode, courseName, courseIcon }) => {
       </div>
     </div>
   );
-
-}
+};
 
 export default Course;

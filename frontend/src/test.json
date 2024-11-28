@@ -1,0 +1,39 @@
+{
+  "course" : {
+    "courseName" : "Name",
+    "courseCode" : "CPSXXX",
+    "courseTerm" : "Fall 2024",
+    "Announcments" : [ 
+      { 
+        "announcmentsID" : 1, 
+        "announcmentsHeader" : "Title1",
+        "announcmentsPostDate" : "10/10/2024",
+        "announcmentsDescription" : "DESCRIPTION 1 ZZZ ZZZ"
+      },
+      { 
+        "announcmentsID" : 2, 
+        "announcmentsHeader" : "Title2",
+        "announcmentsPostDate" : "10/11/2024",
+        "announcmentsDescription" : "DESCRIPTION 2 ZZZ ZZZ XXX"
+      }
+    
+    ],
+    "Assignments" : [ 
+      { 
+        "assignmentID" : 1, 
+        "assignmentTitle" : "A Title 1",
+        "assignmentDueDate" : "10/10/2024",
+        "announcmentDueTime" : "11:59 PM"
+      },
+      { 
+        "assignmentID" : 2, 
+        "assignmentTitle" : "A Title 2",
+        "assignmentDueDate" : "10/11/2024",
+        "announcmentDueTime" : "11:59 PM"
+      }
+    
+    ]
+    
+    
+  }
+}

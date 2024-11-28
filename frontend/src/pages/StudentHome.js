@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import '../assets/studenthome.css';
-import '../assets/global.css'
+import '../assets/global.css';
 import { useMediaQuery } from 'react-responsive';
 import StudentSidebar from '../components/Common/StudentSidebar';
 import Course from '../components/Course/Course';
-import Task from '../components/TaskBoard/Task';
 import Board from '../components/TaskBoard/Board';
+import { useNavigate } from 'react-router-dom';
+import { placeholderCourses, placeholderTasks, placeholderAssignments, placeholderAnnouncements } from './data';
 
 const StudentHome = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 700px)' });
@@ -17,23 +18,11 @@ const StudentHome = () => {
   const lastName = "Doe";
   const initials = `${firstName[0]}${lastName[0]}`;
 
-  const placeholderCourses = [
-    { courseCode: 'CPS 510', courseName: 'Database Systems I' },
-    { courseCode: 'CPS 310', courseName: 'Computer Architecture II' },
-  ];
-
-  const placeholderTasks = [
-    { taskName: 'This is a really long named task', taskStatus: 'TODO', taskPriority: 'HIGH', taskDate: '2024-11-20'},
-    { taskName: 'TASK 2', taskStatus: 'In Progress', taskPriority: 'LOW', taskDate: '2024-11-22'},
-    { taskName: 'TASK 3', taskStatus: 'In Progress', taskPriority: 'NORMAL', taskDate: '2024-11-22' },
-    { taskName: 'TASK 4', taskStatus: 'TODO', taskPriority: 'URGENT', taskDate: '2024-11-23' },
-    { taskName: 'TASK 5', taskStatus: 'TODO', taskPriority: 'HIGH', taskDate: '2024-11-24' },
-  ];
-
   const [courses, setCourses] = useState(placeholderCourses);
   const [tasks, setTasks] = useState(placeholderTasks);
   const term = "Fall 2024";
 
+  
 
   const groupedTasks = {};
 
@@ -44,7 +33,6 @@ const StudentHome = () => {
     }
     groupedTasks[taskDate][taskStatus].push(task);
   });
-
 
   const sortedDates = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
 
@@ -57,9 +45,22 @@ const StudentHome = () => {
       };
     });
   };
-  
+
   const allTasks = convertGroupedTasks(groupedTasks);
-  
+
+  const navigate = useNavigate();
+
+  const handleCourseClick = (courseCode, courseName) => {
+    navigate(`/course/${courseCode}`, {
+      state: {
+        courseCode,
+        courseName,
+        assignments: placeholderAssignments,
+        announcements: placeholderAnnouncements,
+      },
+    });
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <StudentSidebar firstName="John" lastName="Doe" />
@@ -68,32 +69,32 @@ const StudentHome = () => {
           <div className="profile-placeholder">{initials}</div>
           <div className="name">{firstName} {lastName}</div>
         </div>
-        
+
         <div className="main-content">
-          <h1 style={isDesktopOrLaptop ? { paddingTop: '30px', paddingLeft: '30px' } : { }}>Welcome to your Dashboard</h1>      
-          
+          <h1 style={isDesktopOrLaptop ? { paddingTop: '30px', paddingLeft: '30px' } : { }}>Welcome to your Dashboard</h1>
+
           <div className='dashboard-wrapper'>
             <div className='courses-box'>
               <h2>Your Courses for {term}</h2>
               <div className='courses-container'>
                 {courses.map((course, index) => (
-                  <Course
-                    key={index}
-                    courseCode={course.courseCode}
-                    courseName={course.courseName}
-                    courseIcon={{}}
-                  />
+                  <div key={index} onClick={() => handleCourseClick(course.courseCode, course.courseName)}>
+                    <Course
+                      courseCode={course.courseCode}
+                      courseName={course.courseName}
+                      courseIcon={{}}
+                    />
+                  </div>
                 ))}
               </div>
               <button className='generic-button font' style={{ alignSelf: 'end' }}>Join Course</button>
             </div>
-            
-            <Board title="Tasks Overview" tasks={allTasks}/>
+            <Board title="Tasks Overview" tasks={allTasks} />
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default StudentHome;
