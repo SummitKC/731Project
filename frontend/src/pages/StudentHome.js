@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from 'react';
-=======
 import React, { useState, useEffect } from 'react';
->>>>>>> 26bde94d31fffb3c37f813185870e538488ac4c6
 import '../assets/studenthome.css';
 import '../assets/global.css';
 import { useMediaQuery } from 'react-responsive';
