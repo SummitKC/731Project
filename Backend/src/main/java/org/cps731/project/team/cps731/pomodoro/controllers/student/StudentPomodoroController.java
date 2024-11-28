@@ -1,6 +1,5 @@
 package org.cps731.project.team.cps731.pomodoro.controllers.student;
 
-import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
 import org.cps731.project.team.cps731.pomodoro.data.model.timeentry.TimeEntry;
 import org.cps731.project.team.cps731.pomodoro.dto.PomSession;
 import org.cps731.project.team.cps731.pomodoro.dto.task.TaskDTO;
@@ -28,11 +27,19 @@ public class StudentPomodoroController {
     @Autowired
     private TaskService taskService;
 
-    private Map<Long, PomSession> activePomSession = new HashMap<>();
+    private final Map<Long, PomSession> activePomSessions = new HashMap<>();
+
+    /**
+     * Used to mock the activePomSessions during test
+     * @return
+     */
+    protected Map<Long, PomSession> getActivePomSessions() {
+        return activePomSessions;
+    }
 
     @PostMapping("/start/{TaskID}")
-    public ResponseEntity<Map<String, PomSession>> startPomodoro(@PathVariable Long TaskID, @RequestParam int mins) {
-        PomSession session = activePomSession.get(TaskID);
+    public ResponseEntity<PomSession> startPomodoro(@PathVariable Long TaskID, @RequestParam int mins) {
+        PomSession session = getActivePomSessions().get(TaskID);
         if (session == null) {
             var task = taskService.getTaskById(TaskID);
             session = PomSession.builder()
@@ -43,16 +50,16 @@ public class StudentPomodoroController {
 
             session.setStartTime(Instant.now().toEpochMilli());
             session.setTask(new TaskDTO(task));
-            activePomSession.put(TaskID, session);
+            getActivePomSessions().put(TaskID, session);
             
-            return ResponseEntity.ok(Map.of("Start Time", session));
+            return ResponseEntity.ok(session);
         }
         throw new IllegalArgumentException("Pomodoro session already exists");
     }
 
     @PostMapping("/pause/{TaskID}")
-    public ResponseEntity<Map<String, Object>> pausePomodoro(@PathVariable Long TaskID) {
-        PomSession session = activePomSession.get(TaskID);
+    public ResponseEntity<PomSession> pausePomodoro(@PathVariable Long TaskID) {
+        PomSession session = getActivePomSessions().get(TaskID);
         if (session == null) {
             throw new IllegalArgumentException("Session does not exist");
         } else if (session.isPaused()) {
@@ -60,13 +67,13 @@ public class StudentPomodoroController {
         }
         session.setPauseTime(Instant.now().toEpochMilli());
         session.setPaused(true);
-        return ResponseEntity.ok(Map.of("Pause Time", session));
+        return ResponseEntity.ok(session);
 
     }
     
     @PostMapping("/resume/{TaskID}")
-    public ResponseEntity<Map<String, Object>> resumePomodoro(@PathVariable Long TaskID) {
-        PomSession session = activePomSession.get(TaskID);
+    public ResponseEntity<PomSession> resumePomodoro(@PathVariable Long TaskID) {
+        PomSession session = getActivePomSessions().get(TaskID);
         if (session == null) {
             throw new IllegalArgumentException("Session does not exist");
         } else if (!session.isPaused()) {
@@ -77,12 +84,12 @@ public class StudentPomodoroController {
         long pauseDuration = session.getResumeTime() - session.getPauseTime();
         session.setEndTime(session.getEndTime() + pauseDuration);
         session.addPause(pauseDuration);
-        return ResponseEntity.ok(Map.of("Resume Time", session));
+        return ResponseEntity.ok(session);
     }
 
     @PostMapping("/end/{taskID}")
-    public ResponseEntity<Map<String, Object>> endPomodoro(@PathVariable Long taskID) {
-        PomSession session = activePomSession.get(taskID);
+    public ResponseEntity<PomSession> endPomodoro(@PathVariable Long taskID) {
+        PomSession session = getActivePomSessions().get(taskID);
         if (session == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -98,14 +105,14 @@ public class StudentPomodoroController {
                 .pomodoros(1)
                 .build();
         timeEntryService.createTimeEntry(timeEntry);
-        activePomSession.remove(taskID);
-        return ResponseEntity.ok(Map.of("End Time", session));
+        getActivePomSessions().remove(taskID);
+        return ResponseEntity.ok(session);
     }
 
 
     @GetMapping("/break/{TaskID}") //Work in progress
     public ResponseEntity<Integer> pomoBreak(@PathVariable Long TaskID) {
-        PomSession session = activePomSession.get(TaskID);
+        PomSession session = getActivePomSessions().get(TaskID);
         if (session == null) {
             return ResponseEntity.badRequest().build();
         }
