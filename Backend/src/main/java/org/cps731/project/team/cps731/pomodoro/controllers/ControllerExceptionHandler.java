@@ -15,8 +15,12 @@ import java.util.NoSuchElementException;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
+    private final UserDetailsService userDetailsService;
+
     @Autowired
-    private UserDetailsService userDetailsService;
+    public ControllerExceptionHandler(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception e) {

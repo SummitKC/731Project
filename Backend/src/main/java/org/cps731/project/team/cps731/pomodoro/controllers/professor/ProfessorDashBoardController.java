@@ -21,11 +21,14 @@ import java.util.stream.Collectors;
 @PreAuthorize("hasRole('PROFESSOR')")
 public class ProfessorDashBoardController {
 
-    @Autowired
     private ProfessorService professorService;
+    private CourseService courseService;
 
     @Autowired
-    private CourseService courseService;
+    public ProfessorDashBoardController(ProfessorService professorService, CourseService courseService) {
+        this.professorService = professorService;
+        this.courseService = courseService;
+    }
 
     @GetMapping("/profile")
     public ResponseEntity<String> getProfessorProfile() {
