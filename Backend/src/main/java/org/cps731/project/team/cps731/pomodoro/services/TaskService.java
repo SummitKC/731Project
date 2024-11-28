@@ -17,8 +17,12 @@ import java.util.Set;
 @Service
 public class TaskService {
 
+    private final TaskRepo taskRepo;
+
     @Autowired
-    private TaskRepo taskRepo;
+    public TaskService(TaskRepo taskRepo) {
+        this.taskRepo = taskRepo;
+    }
 
     public List<Task> getAllTasks() {
         return taskRepo.findAll();

@@ -12,8 +12,12 @@ import java.util.Set;
 @Service
 public class TimeEntryService {
 
+    private final TimeEntryRepo timeEntryRepo;
+
     @Autowired
-    private TimeEntryRepo timeEntryRepo;
+    public TimeEntryService(TimeEntryRepo timeEntryRepo) {
+        this.timeEntryRepo = timeEntryRepo;
+    }
 
     public List<TimeEntry> getAllTimeEntries() {
         return timeEntryRepo.findAll();
