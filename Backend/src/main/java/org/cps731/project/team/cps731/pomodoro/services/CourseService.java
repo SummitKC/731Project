@@ -42,7 +42,11 @@ public class CourseService {
     }
 
     public Set<Course> getStudentsCurrentCourses(Long userID) {
-        return courseRepo.findCoursesByTakenByIDAndAndArchivedIsFalse(userID);
+        return courseRepo.findCoursesByTakenByIDAndArchivedIsFalse(userID);
+    }
+
+    public Set<Course> getProfessorsArchivedCourses(Long userID) {
+        return courseRepo.findAllByCreatedBy_UserIDAndArchivedIsTrue(userID);
     }
 
     public Course getCourseById(String courseCode) {

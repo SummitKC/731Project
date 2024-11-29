@@ -55,11 +55,14 @@ public class ProfessorDashBoardController {
     public ResponseEntity<Set<CourseDTO>> getProfessorCourses() {
         var userID = SecurityUtil.getAuthenticatedUserID();
         Professor professor = professorService.getProfessorById(userID);
-        if (professor == null) {
-            return ResponseEntity.notFound().build();
-        }
-        
         return ResponseEntity.ok(professor.getCreatedCourses().stream().map(CourseDTO::new).collect(Collectors.toSet()));
+    }
+
+    @GetMapping("/courses/archived")
+    public ResponseEntity<Set<CourseDTO>> getProfessorArchivedCourses() {
+        var userID = SecurityUtil.getAuthenticatedUserID();
+        var archivedCourses = courseService.getProfessorsArchivedCourses(SecurityUtil.getAuthenticatedUserID());
+        return ResponseEntity.ok(archivedCourses.stream().map(CourseDTO::new).collect(Collectors.toSet()));
     }
 
     @PostMapping("/courses")

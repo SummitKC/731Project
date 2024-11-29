@@ -24,7 +24,7 @@ public class ProfessorService {
     }
 
     public Professor getProfessorById(Long id) {
-        return professorRepo.findById(id).orElse(null);
+        return professorRepo.findById(id).orElseThrow();
     }
 
     public Professor getProfessorByEmail(String email) {
