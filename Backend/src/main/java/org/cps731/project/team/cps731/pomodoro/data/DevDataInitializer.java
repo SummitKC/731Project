@@ -43,15 +43,15 @@ public class DevDataInitializer implements ApplicationRunner {
 
     @Override
     @Transactional
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         LOG.info("Initializing DEV Data");
-        var userJohn = new User("john.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.STUDENT);
+        var userJohn = new User(1L, "John Smith", "john.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.STUDENT);
         var studentJohn = new Student(userJohn);
-        var userSummit = new User("summit.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.PROFESSOR);
+        var userSummit = new User(2L, "Summit Smith" , "summit.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.PROFESSOR);
         var profSummit = new Professor(userSummit);
-        var userSyed = new User("syed.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.PROFESSOR);
+        var userSyed = new User(3L, "Syed Smith", "syed.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.PROFESSOR);
         var profSyed = new Professor(userSyed);
-        var userIsabel = new User("isabel.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.STUDENT);
+        var userIsabel = new User(4L, "Isabel Smith", "isabel.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.STUDENT);
         var studentIsabel = new Student(userIsabel);
         var introToDbSystems = new Course("CPS510", "Intro To Database Systems", Term.FALL, 2024, false, profSummit);
         var introToSoftEng = new Course("CPS406", "Intro To Software Engineering", Term.FALL, 2023, true, profSummit);

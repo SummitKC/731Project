@@ -10,7 +10,7 @@ public class WorkAnalytics {
     private WorkAnalyticsID id;
     @ManyToOne
     @MapsId("studentID")
-    @JoinColumn(name = "student", referencedColumnName = "ID")
+    @JoinColumn(name = "student", referencedColumnName = "studentID")
     private Student student;
     private Long pomodorosCompleted;
     private Integer timeLogged;

@@ -9,30 +9,30 @@ import java.util.Set;
 public class Professor {
 
     @Id
-    private Long id;
+    private Long employeeID;
     @OneToOne(cascade = CascadeType.ALL)
     @MapsId
-    @JoinColumn(name = "ID")
+    @JoinColumn(name = "employeeID")
     private User user;
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
     private Set<Course> createdCourses;
 
-    public Professor(Long id, User user, Set<Course> createdCourses) {
-        this.id = id;
+    public Professor(Long employeeID, User user, Set<Course> createdCourses) {
+        this.employeeID = employeeID;
         this.user = user;
         this.createdCourses = createdCourses;
     }
 
     public Professor(User user) {
-        this.id = user.getId();
+        this.employeeID = user.getId();
         this.user = user;
     }
 
     public Professor() {
     }
 
-    public Long getId() {
-        return this.id;
+    public Long getEmployeeID() {
+        return this.employeeID;
     }
 
     public User getUser() {
@@ -43,8 +43,8 @@ public class Professor {
         return this.createdCourses;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setEmployeeID(Long id) {
+        this.employeeID = id;
     }
 
     public void setUser(User user) {
@@ -60,8 +60,8 @@ public class Professor {
         if (!(o instanceof Professor)) return false;
         final Professor other = (Professor) o;
         if (!other.canEqual((Object) this)) return false;
-        final Object this$id = this.getId();
-        final Object other$id = other.getId();
+        final Object this$id = this.getEmployeeID();
+        final Object other$id = other.getEmployeeID();
         if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
         return true;
     }
@@ -73,7 +73,7 @@ public class Professor {
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
-        final Object $id = this.getId();
+        final Object $id = this.getEmployeeID();
         result = result * PRIME + ($id == null ? 43 : $id.hashCode());
         return result;
     }

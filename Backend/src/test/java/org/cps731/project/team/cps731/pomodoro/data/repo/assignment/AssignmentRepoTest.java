@@ -39,7 +39,7 @@ public class AssignmentRepoTest {
 
     @Test
     public void findAllByAnnouncement_Course_CourseIDReturnsAllAssignmentsForCourse() {
-        var userJohn = new User("John", "password", UserType.PROFESSOR);
+        var userJohn = new User(1L,"John Smith", "john.smith@torontomu.ca", "password", UserType.PROFESSOR);
         var profJohn = new Professor(userJohn);
         var introToDBSystems = new Course("CPS510", "Introduction To Database Systems", Term.FALL, 2024, false, profJohn);
         var assignment1Announcement = new Announcement("Assignment 1", Timestamp.from(Instant.now()), "Do the thing", introToDBSystems);

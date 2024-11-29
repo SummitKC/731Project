@@ -31,7 +31,7 @@ public class Course {
                     @JoinColumn(name = "school_term", referencedColumnName = "school_term"),
                     @JoinColumn(name = "school_year", referencedColumnName = "school_year")
             },
-            inverseJoinColumns = {@JoinColumn(name = "student_id", referencedColumnName = "id")}
+            inverseJoinColumns = {@JoinColumn(name = "student_id", referencedColumnName = "studentID")}
     )
     private Set<Student> takenBy;
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)

@@ -5,6 +5,7 @@ import org.cps731.project.team.cps731.pomodoro.dto.*;
 import org.cps731.project.team.cps731.pomodoro.dto.course.CourseDTO;
 import org.cps731.project.team.cps731.pomodoro.dto.course.JoinCourseRequestDTO;
 import org.cps731.project.team.cps731.pomodoro.dto.student.StudentDashboardDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.student.StudentProfileDTO;
 import org.cps731.project.team.cps731.pomodoro.dto.task.TaskDTO;
 import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.cps731.project.team.cps731.pomodoro.services.CourseService;
@@ -26,14 +27,21 @@ import java.util.stream.Collectors;
 @PreAuthorize("hasRole('ROLE_STUDENT')")
 public class StudentHomeController {
 
-    @Autowired
-    private StudentService studentService;
+    private final StudentService studentService;
+    private final CourseService courseService;
+    private final TaskService taskService;
 
     @Autowired
-    private CourseService courseService;
+    public StudentHomeController(StudentService studentService, CourseService courseService, TaskService taskService) {
+        this.studentService = studentService;
+        this.courseService = courseService;
+        this.taskService = taskService;
+    }
 
-    @Autowired
-    private TaskService taskService;
+    @GetMapping("/profile")
+    public ResponseEntity<StudentProfileDTO> getProfile() {
+        return ResponseEntity.ok(studentService.getStudentProfile(SecurityUtil.getAuthenticatedUserID()));
+    }
 
     @GetMapping("/dashboard")
     public ResponseEntity<StudentDashboardDTO> getDashboard() {
