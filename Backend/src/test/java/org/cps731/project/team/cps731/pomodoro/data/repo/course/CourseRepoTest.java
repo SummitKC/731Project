@@ -54,26 +54,57 @@ public class CourseRepoTest {
     }
 
     @Test
-    public void getCoursesTakeByContainsStudentJohnReturnsIntoToDBSystems() {
+    public void getCoursesTakenByAndArchivedIsFalseContainsStudentJohnReturnsIntoToDBSystems() {
         var userJohn = new User("John", "john.smith@torontomu.ca", "password", UserType.STUDENT);
         var userBob = new User("Bob", "bob.smith@torontomu.ca", "password", UserType.PROFESSOR);
         var studentJohn = new Student(userJohn, 1L);
         var profBob = new Professor(userBob, 2L);
         var introToDatabaseSystems = new Course("CPS510", "Intro to Database Systems", Term.FALL, 2024, false, profBob);
+        var introToSoftEng = new Course("CPS406", "Intro to Soft Eng", Term.FALL, 2024, true, profBob);
         introToDatabaseSystems.setTakenBy(Set.of(studentJohn));
         introToDatabaseSystems.setCreatedBy(profBob);
-        profBob.setCreatedCourses(Set.of(introToDatabaseSystems));
-        studentJohn.setCourses(Set.of(introToDatabaseSystems));
+        introToSoftEng.setTakenBy(Set.of(studentJohn));
+        introToSoftEng.setCreatedBy(profBob);
+        profBob.setCreatedCourses(Set.of(introToDatabaseSystems, introToSoftEng));
+        studentJohn.setCourses(Set.of(introToDatabaseSystems, introToSoftEng));
 
         entityManager.persist(userJohn);
         entityManager.persist(userBob);
         entityManager.persist(studentJohn);
         entityManager.persist(profBob);
         entityManager.persist(introToDatabaseSystems);
+        entityManager.persist(introToSoftEng);
         entityManager.flush();
 
-        var courses = repo.findCoursesByTakenByID(studentJohn.getID());
+        var courses = repo.findCoursesByTakenByIDAndArchivedIsFalse(studentJohn.getID());
         assertThat(courses, equalTo(Set.of(introToDatabaseSystems)));
+    }
+
+    @Test
+    public void getCoursesByCreatedByAndArchivedIsTrueReturnsIntroToSoftEng() {
+        var userJohn = new User("John", "john.smith@torontomu.ca", "password", UserType.STUDENT);
+        var userBob = new User("Bob", "bob.smith@torontomu.ca", "password", UserType.PROFESSOR);
+        var studentJohn = new Student(userJohn, 1L);
+        var profBob = new Professor(userBob, 2L);
+        var introToDatabaseSystems = new Course("CPS510", "Intro to Database Systems", Term.FALL, 2024, false, profBob);
+        var introToSoftEng = new Course("CPS406", "Intro to Soft Eng", Term.FALL, 2024, true, profBob);
+        introToDatabaseSystems.setTakenBy(Set.of(studentJohn));
+        introToDatabaseSystems.setCreatedBy(profBob);
+        introToSoftEng.setTakenBy(Set.of(studentJohn));
+        introToSoftEng.setCreatedBy(profBob);
+        profBob.setCreatedCourses(Set.of(introToDatabaseSystems, introToSoftEng));
+        studentJohn.setCourses(Set.of(introToDatabaseSystems, introToSoftEng));
+
+        entityManager.persist(userJohn);
+        entityManager.persist(userBob);
+        entityManager.persist(studentJohn);
+        entityManager.persist(profBob);
+        entityManager.persist(introToDatabaseSystems);
+        entityManager.persist(introToSoftEng);
+        entityManager.flush();
+
+        var courses = repo.findAllByCreatedBy_UserIDAndArchivedIsTrue(profBob.getUserID());
+        assertThat(courses, equalTo(Set.of(introToSoftEng)));
     }
 
 }

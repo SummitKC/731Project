@@ -41,6 +41,14 @@ public class CourseService {
         return courseRepo.findAll();
     }
 
+    public Set<Course> getStudentsCurrentCourses(Long userID) {
+        return courseRepo.findCoursesByTakenByIDAndArchivedIsFalse(userID);
+    }
+
+    public Set<Course> getProfessorsArchivedCourses(Long userID) {
+        return courseRepo.findAllByCreatedBy_UserIDAndArchivedIsTrue(userID);
+    }
+
     public Course getCourseById(String courseCode) {
         var userID = SecurityUtil.getAuthenticatedUserID();
         var userType = userRepo.findById(userID).orElseThrow().getUserType();

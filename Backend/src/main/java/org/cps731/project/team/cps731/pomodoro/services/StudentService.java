@@ -36,7 +36,7 @@ public class StudentService {
     }
 
     public Student getStudentById(Long id) {
-        return studentRepo.findById(id).orElse(null);
+        return studentRepo.findById(id).orElseThrow();
     }
 
     public Student createStudent(Student student) {
