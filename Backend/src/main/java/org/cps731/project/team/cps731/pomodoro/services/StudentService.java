@@ -4,6 +4,7 @@ import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 import org.cps731.project.team.cps731.pomodoro.data.repo.course.CourseRepo;
 import org.cps731.project.team.cps731.pomodoro.data.repo.user.StudentRepo;
+import org.cps731.project.team.cps731.pomodoro.dto.student.StudentProfileDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,10 @@ public class StudentService {
 
     public Student createStudent(Student student) {
         return studentRepo.save(student);
+    }
+
+    public StudentProfileDTO getStudentProfile(Long id) {
+        return new StudentProfileDTO(studentRepo.findById(id).orElseThrow());
     }
 
     public Student updateStudent(Long id, Student student) {

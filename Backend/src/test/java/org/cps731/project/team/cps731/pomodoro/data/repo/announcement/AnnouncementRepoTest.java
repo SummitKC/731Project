@@ -37,7 +37,7 @@ public class AnnouncementRepoTest {
 
     @Test
     public void findAllByCourse_CourseIDReturnsAllAnnouncementsForCourse() {
-        var userJohn = new User("John", "password", UserType.PROFESSOR);
+        var userJohn = new User(1L, "John Smith", "john.smith@torontomu.ca", "password", UserType.PROFESSOR);
         var profJohn = new Professor(userJohn);
         var introToDBSystems = new Course("CPS510", "Introduction To Database Systems", Term.FALL, 2024, false, profJohn);
         var startOfCourseAnnouncement = new Announcement("Welcome to the course", Timestamp.from(Instant.now()), "Hiii", introToDBSystems);

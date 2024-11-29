@@ -2,7 +2,8 @@ package org.cps731.project.team.cps731.pomodoro.controllers.auth;
 
 import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.http.HttpServletResponse;
-import org.cps731.project.team.cps731.pomodoro.dto.auth.AuthRequestDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.auth.LoginRequestDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterRequestDTO;
 import org.cps731.project.team.cps731.pomodoro.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping("/student/login")
-    public ResponseEntity<String> studentLogin(@RequestBody AuthRequestDTO body) {
+    public ResponseEntity<String> studentLogin(@RequestBody LoginRequestDTO body) {
         try {
             return ResponseEntity.ok(authService.studentLogin(body));
         } catch (AuthException e) {
@@ -33,7 +34,7 @@ public class AuthController {
     }
 
     @PostMapping("/student/register")
-    public ResponseEntity<Void> studentRegister(@RequestBody AuthRequestDTO body) {
+    public ResponseEntity<Void> studentRegister(@RequestBody RegisterRequestDTO body) {
         if (authService.studentRegister(body)) {
             return ResponseEntity.noContent().build();
         } else {
@@ -42,7 +43,7 @@ public class AuthController {
     }
 
     @PostMapping("/professor/login")
-    public ResponseEntity<String> professorLogin(@RequestBody AuthRequestDTO body) {
+    public ResponseEntity<String> professorLogin(@RequestBody LoginRequestDTO body) {
         try {
             return ResponseEntity.ok(authService.professorLogin(body));
         } catch (AuthException e) {
@@ -52,7 +53,7 @@ public class AuthController {
     }
 
     @PostMapping("/professor/register")
-    public ResponseEntity<Void> professorRegister(@RequestBody AuthRequestDTO body) {
+    public ResponseEntity<Void> professorRegister(@RequestBody RegisterRequestDTO body) {
         if (authService.professorRegister(body)) {
             return ResponseEntity.noContent().build();
         } else {
