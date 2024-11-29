@@ -1,8 +1,11 @@
 package org.cps731.project.team.cps731.pomodoro.services;
 
+import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
+import org.cps731.project.team.cps731.pomodoro.data.repo.user.ProfessorRepo;
 import org.cps731.project.team.cps731.pomodoro.data.repo.user.StudentRepo;
 import org.cps731.project.team.cps731.pomodoro.data.repo.user.UserRepo;
+import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterProfessorRequestDTO;
 import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterStudentRequestDTO;
 import org.cps731.project.team.cps731.pomodoro.security.auth.JwtUtil;
 import org.junit.jupiter.api.Test;
@@ -26,6 +29,7 @@ import static org.mockito.Mockito.*;
         ProfessorService.class,
         UserRepo.class,
         StudentRepo.class,
+        ProfessorRepo.class,
         PasswordEncoder.class})
 @ActiveProfiles("test")
 public class AuthServiceTest {
@@ -44,10 +48,12 @@ public class AuthServiceTest {
     private PasswordEncoder passwordEncoder;
     @MockBean
     private StudentRepo studentRepo;
+    @MockBean
+    private ProfessorRepo professorRepo;
 
     @Test
     public void shouldThrowIllegalArgumentExceptionWhenAccountWithEmailAlreadyExists() {
-        var registerRequest = registerRequest();
+        var registerRequest = registerStudentRequest();
         when(userRepo.existsByEmail(registerRequest.getEmail()))
                 .thenReturn(true);
 
@@ -55,8 +61,8 @@ public class AuthServiceTest {
     }
 
     @Test
-    public void shouldThrowIllegalArgumentExceptionWhenAccountWithUserIDAlreadyExists() {
-        var registerRequest = registerRequest();
+    public void shouldThrowIllegalArgumentExceptionWhenAccountWithStudentIDAlreadyExists() {
+        var registerRequest = registerStudentRequest();
         when(studentRepo.existsByStudentID(registerRequest.getStudentID()))
                 .thenReturn(true);
 
@@ -64,8 +70,17 @@ public class AuthServiceTest {
     }
 
     @Test
-    public void shouldReturnTrueWhenStudentRegisterRequestIsValid() {
-        var registerRequest = registerRequest();
+    public void shouldThrowIllegalArgumentExceptionWhenAccountWithProfessorIDAlreadyExists() {
+        var registerRequest = registerProfessorRequest();
+        when(professorRepo.existsByEmployeeID(registerRequest.getProfessorID()))
+                .thenReturn(true);
+
+        assertThrows(IllegalArgumentException.class, () -> authService.professorRegister(registerRequest));
+    }
+
+    @Test
+    public void shouldReturnTrueWhenStudentRegisterStudentRequestIsValid() {
+        var registerRequest = registerStudentRequest();
         when(studentService.createStudent(any(Student.class)))
                 .thenReturn(mock(Student.class));
 
@@ -74,8 +89,41 @@ public class AuthServiceTest {
         assertThat(result, equalTo(true));
     }
 
-    private static RegisterStudentRequestDTO registerRequest() {
+    @Test
+    public void shouldReturnTrueWhenProfessorRegisterProfessorRequestIsValid() {
+        var registerRequest = registerProfessorRequest();
+        when(professorService.createProfessor(any(Professor.class)))
+                .thenReturn(mock(Professor.class));
+
+        var result = authService.professorRegister(registerRequest);
+
+        assertThat(result, equalTo(true));
+    }
+
+    @Test
+    public void shouldThrowIllegalArgumentExceptionForStudentRegisterWhenEmailAlreadyExists() {
+        var registerRequest = registerStudentRequest();
+        when(userRepo.existsByEmail(registerRequest.getEmail()))
+                .thenReturn(true);
+
+        assertThrows(IllegalArgumentException.class, () -> authService.studentRegister(registerRequest));
+    }
+
+    @Test
+    public void shouldThrowIllegalArgumentExceptionForProfessorRegisterWhenEmailAlreadyExists() {
+        var registerRequest = registerProfessorRequest();
+        when(userRepo.existsByEmail(registerRequest.getEmail()))
+                .thenReturn(true);
+
+        assertThrows(IllegalArgumentException.class, () -> authService.professorRegister(registerRequest));
+    }
+
+    private static RegisterStudentRequestDTO registerStudentRequest() {
         return new RegisterStudentRequestDTO(1L, "John", "john.amiscaray@torontomu.ca", "password");
+    }
+
+    private static RegisterProfessorRequestDTO registerProfessorRequest() {
+        return new RegisterProfessorRequestDTO(1L, "John", "john.amiscaray@torontomu.ca", "password");
     }
 
 }
