@@ -4,8 +4,6 @@ import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcem
 import org.cps731.project.team.cps731.pomodoro.data.repo.announcement.AnnouncementRepo;
 import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
@@ -37,9 +35,9 @@ public class AnnouncementService {
         return announcementRepo.findById(id).orElse(null);
     }
 
-/*     public Announcement createAnnouncement(Announcement announcement) {
+    public Announcement createAnnouncement(Announcement announcement) {
         return announcementRepo.save(announcement);
-    } */
+    }
 
     public Announcement updateAnnouncement(Long id, Announcement announcement) {
         Announcement existingAnnouncement = announcementRepo.findById(id).orElse(null);

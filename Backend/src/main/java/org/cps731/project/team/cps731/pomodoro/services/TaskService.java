@@ -32,6 +32,10 @@ public class TaskService {
         return taskRepo.findAllByOwnerStudentIDAndStateIsIn(ownerId, Set.of(state));
     }
 
+    public Set<Task> getAllTasksByOwnnerID(Long ownerId) {
+        return taskRepo.findAllByOwnerId(ownerId);
+    }
+
     public Set<Task> getTaskByStateAndIssueTime(Long ownerId, TaskState state, Timestamp issueTime) {
         return taskRepo.findAllByOwnerStudentIDAndStateIsInAndDerivedFrom_Announcement_IssueTimeAfter(ownerId, Set.of(state), issueTime);
     }
