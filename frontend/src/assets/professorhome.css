@@ -11,7 +11,8 @@ body {
   display: flex;
   flex-direction: column;  
   width: 85%; 
-  height: 85%;
+  height: auto;
+  min-height: 85%;
   max-width: 1500px;
   background-color: white;
   margin-top: 40px;

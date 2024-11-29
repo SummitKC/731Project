@@ -16,8 +16,8 @@ const CoursePageStudent = () => {
   const isTablet = useMediaQuery({ query: '(max-width: 1224px)' });
   const isDesktopOrLaptop = useMediaQuery({ query: '(min-width: 1224px)' });
 
-  const firstName = "John";
-  const lastName = "Doe";
+  const firstName = localStorage.getItem('name')?.split(' ')[0] || " ";
+  const lastName = localStorage.getItem('name')?.split(' ')[1] || " ";
   const initials = `${firstName[0]}${lastName[0]}`;
 
   const navigate = useNavigate();
@@ -61,8 +61,8 @@ const CoursePageStudent = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
-      <StudentSidebar firstName="John" lastName="Doe" />
-      
+      <StudentSidebar firstName={firstName} lastName={lastName} />
+
       <div style={{ width: '100vw' }}>
         <div id="profile-container" style={isMobile ? {} : { display: 'none' }}>
           <div className="profile-placeholder">{initials}</div>

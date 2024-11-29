@@ -12,8 +12,8 @@ const TaskBoard = () => {
   const isDesktopOrLaptop = useMediaQuery({ query: '(min-width: 1224px)' });
   const isPortrait = useMediaQuery({ query: '(orientation: portrait)' });
 
-  const firstName = "John";
-  const lastName = "Doe";
+  const firstName = localStorage.getItem('name')?.split(' ')[0] || " ";
+  const lastName = localStorage.getItem('name')?.split(' ')[1] || " ";
   const initials = `${firstName[0]}${lastName[0]}`;
 
   const [tasks, setTasks] = useState([]);
@@ -83,7 +83,7 @@ const TaskBoard = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
-      <StudentSidebar firstName="John" lastName="Doe" />
+      <StudentSidebar firstName={firstName} lastName={lastName} />
       <div style={{ width: '100vw' }}>
         <div id="profile-container" style={isMobile ? {} : { display: 'none' }}>
           <div className="profile-placeholder">{initials}</div>

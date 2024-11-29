@@ -58,7 +58,7 @@ const CourseArchivePage = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}> 
-      <ProfessorSidebar firstName="Jane" lastName="Doe" />
+      <ProfessorSidebar firstName={firstName} lastName={lastName} />
       <div style={{ width: '100vw' }}>
         <div id="profile-container" style={isMobile ? {} : { display: 'none' }}>
           <div className="profile-placeholder">{initials}</div>
