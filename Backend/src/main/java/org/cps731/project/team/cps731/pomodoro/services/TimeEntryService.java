@@ -12,8 +12,12 @@ import java.util.Set;
 @Service
 public class TimeEntryService {
 
+    private final TimeEntryRepo timeEntryRepo;
+
     @Autowired
-    private TimeEntryRepo timeEntryRepo;
+    public TimeEntryService(TimeEntryRepo timeEntryRepo) {
+        this.timeEntryRepo = timeEntryRepo;
+    }
 
     public List<TimeEntry> getAllTimeEntries() {
         return timeEntryRepo.findAll();
@@ -44,6 +48,6 @@ public class TimeEntryService {
     }
 
     public Set<TimeEntry> findAllByTaskOwnerIdAndStartTimeAfter(Long studentID, Timestamp after) {
-        return timeEntryRepo.findAllByTask_OwnerStudentIDAndStartTimeAfter(studentID, after);
+        return timeEntryRepo.findAllByTask_OwnerIDAndStartTimeAfter(studentID, after);
     }
 }

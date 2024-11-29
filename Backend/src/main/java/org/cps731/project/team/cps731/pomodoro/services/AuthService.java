@@ -5,9 +5,11 @@ import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.User;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.UserType;
+import org.cps731.project.team.cps731.pomodoro.data.repo.user.StudentRepo;
 import org.cps731.project.team.cps731.pomodoro.data.repo.user.UserRepo;
 import org.cps731.project.team.cps731.pomodoro.dto.auth.LoginRequestDTO;
-import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterRequestDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterProfessorRequestDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterStudentRequestDTO;
 import org.cps731.project.team.cps731.pomodoro.security.auth.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,32 +21,34 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final StudentService studentService;
     private final ProfessorService professorService;
-    private final PasswordEncoder encoder;
-    private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final StudentRepo studentRepo;
+    private final UserRepo userRepo;
 
     @Autowired
     public AuthService(JwtUtil jwtUtil,
                        StudentService studentService,
                        ProfessorService professorService,
-                       PasswordEncoder encoder,
-                       UserRepo userRepo,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       StudentRepo studentRepo,
+                       UserRepo userRepo) {
         this.jwtUtil = jwtUtil;
         this.studentService = studentService;
         this.professorService = professorService;
-        this.encoder = encoder;
-        this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.studentRepo = studentRepo;
+        this.userRepo = userRepo;
     }
 
-    public boolean studentRegister(RegisterRequestDTO registerRequest) {
+    public boolean studentRegister(RegisterStudentRequestDTO registerRequest) {
         if (userRepo.existsByEmail(registerRequest.getEmail())) {
             throw new IllegalArgumentException("Account using this email already exists");
+        } else if (studentRepo.existsByStudentID(registerRequest.getStudentID())) {
+            throw new IllegalArgumentException("Student with this ID already exists");
         }
-        var user = new User(registerRequest.getUserID(), registerRequest.getName(), registerRequest.getEmail(), passwordEncoder.encode(registerRequest.getPassword()), UserType.STUDENT);
+        var user = new User(registerRequest.getName(), registerRequest.getEmail(), passwordEncoder.encode(registerRequest.getPassword()), UserType.STUDENT);
         userRepo.save(user);
-        var student = studentService.createStudent(new Student(user));
+        var student = studentService.createStudent(new Student(user, registerRequest.getStudentID()));
         return student != null;
     }
 
@@ -52,19 +56,19 @@ public class AuthService {
         var student = studentService.getStudentByEmail(loginRequest.getEmail());
         if (student == null) {
             throw new AuthException("Student not found");
-        } else if (!encoder.matches(loginRequest.getPassword(), student.getUser().getPassword())) {
+        } else if (!passwordEncoder.matches(loginRequest.getPassword(), student.getUser().getPassword())) {
             throw new AuthException("Wrong password");
         }
         return jwtUtil.generateToken(student.getUser().getId().toString(), student.getUser().getName());
     }
 
-    public boolean professorRegister(RegisterRequestDTO registerRequest) {
+    public boolean professorRegister(RegisterProfessorRequestDTO registerRequest) {
         if (userRepo.existsByEmail(registerRequest.getEmail())) {
             throw new IllegalArgumentException("Account using this email already exists");
         }
-        var user = new User(registerRequest.getUserID(), registerRequest.getName(),registerRequest.getEmail(), passwordEncoder.encode(registerRequest.getPassword()), UserType.PROFESSOR);
+        var user = new User(registerRequest.getName(),registerRequest.getEmail(), passwordEncoder.encode(registerRequest.getPassword()), UserType.PROFESSOR);
         userRepo.save(user);
-        var professor = professorService.createProfessor(new Professor(user));
+        var professor = professorService.createProfessor(new Professor(user, registerRequest.getProfessorID()));
         return professor != null;
     }
 
@@ -72,7 +76,7 @@ public class AuthService {
         var professor = professorService.getProfessorByEmail(loginRequest.getEmail());
         if (professor == null) {
             throw new AuthException("Professor not found");
-        } else if (!encoder.matches(loginRequest.getPassword(), professor.getUser().getPassword())) {
+        } else if (!passwordEncoder.matches(loginRequest.getPassword(), professor.getUser().getPassword())) {
             throw new AuthException("Wrong password");
         }
         return jwtUtil.generateToken(professor.getUser().getId().toString(), professor.getUser().getName());

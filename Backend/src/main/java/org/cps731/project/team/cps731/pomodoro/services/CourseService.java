@@ -1,7 +1,6 @@
 package org.cps731.project.team.cps731.pomodoro.services;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
-//import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.UserType;
 import org.cps731.project.team.cps731.pomodoro.data.repo.course.CourseRepo;
@@ -17,20 +16,26 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 
+//import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
+
 
 @Service
 public class CourseService {
 
+    private final CourseRepo courseRepo;
+    private final AssignmentService assignmentService;
+    private final ProfessorRepo professorRepo;
+    private final StudentService studentService;
+    private final UserRepo userRepo;
+
     @Autowired
-    private CourseRepo courseRepo;
-    @Autowired
-    private AssignmentService assignmentService;
-    @Autowired
-    private ProfessorRepo professorRepo;
-    @Autowired
-    private StudentService studentService;
-    @Autowired
-    private UserRepo userRepo;
+    public CourseService(CourseRepo courseRepo, AssignmentService assignmentService, ProfessorRepo professorRepo, StudentService studentService, UserRepo userRepo) {
+        this.courseRepo = courseRepo;
+        this.assignmentService = assignmentService;
+        this.professorRepo = professorRepo;
+        this.studentService = studentService;
+        this.userRepo = userRepo;
+    }
 
     public List<Course> getAllCourses() {
         return courseRepo.findAll();
@@ -89,11 +94,11 @@ public class CourseService {
     public Course archiveState(String courseCode, Boolean state) {
         var userID = SecurityUtil.getAuthenticatedUserID();
         Course existingCourse = courseRepo.findById(courseCode).orElseThrow();
-        if (!existingCourse.getCreatedBy().getEmployeeID().equals(userID)) {
+        if (!existingCourse.getCreatedBy().getUserID().equals(userID)) {
             throw new AuthorizationDeniedException(
                     "Cannot archive a course you do not own",
                     new AuthorizationDecision(false)
-                    );
+            );
         }
         existingCourse.setArchived(state);
         return courseRepo.save(existingCourse);
@@ -110,17 +115,17 @@ public class CourseService {
         return null;
     }
 
-/*     public Course addAssignmentToCourse(CourseID id, Assignment assignment) {
-        Course existingCourse = courseRepo.findById(id).orElse(null);
-        if (existingCourse != null) {
-            Set<Announcement> announcements = existingCourse.getAnnouncements();
-            announcements.add(announcement);
-            existingCourse.setAnnouncements(announcements);
-            return courseRepo.save(existingCourse);
+    /*     public Course addAssignmentToCourse(CourseID id, Assignment assignment) {
+            Course existingCourse = courseRepo.findById(id).orElse(null);
+            if (existingCourse != null) {
+                Set<Announcement> announcements = existingCourse.getAnnouncements();
+                announcements.add(announcement);
+                existingCourse.setAnnouncements(announcements);
+                return courseRepo.save(existingCourse);
+            }
+            return null;
         }
-        return null;
-    }
- */
+     */
     public void deleteCourse(String courseCode) {
         courseRepo.deleteById(courseCode);
     }

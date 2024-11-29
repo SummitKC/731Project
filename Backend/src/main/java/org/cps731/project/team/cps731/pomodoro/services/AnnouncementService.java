@@ -4,20 +4,23 @@ import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcem
 import org.cps731.project.team.cps731.pomodoro.data.repo.announcement.AnnouncementRepo;
 import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
 public class AnnouncementService {
 
+    private final AnnouncementRepo announcementRepo;
+    private final StudentService studentService;
+
     @Autowired
-    private AnnouncementRepo announcementRepo;
-    @Autowired
-    private StudentService studentService;
+    public AnnouncementService(AnnouncementRepo announcementRepo, StudentService studentService) {
+        this.announcementRepo = announcementRepo;
+        this.studentService = studentService;
+    }
 
     public List<Announcement> getAnnouncementsByCourse(String courseCode, int page, int size) {
         var studentID = SecurityUtil.getAuthenticatedUserID();
@@ -27,7 +30,7 @@ public class AnnouncementService {
             throw new AuthorizationDeniedException(
                     "Student is not enrolled in this course",
                     new AuthorizationDecision(false)
-                    );
+            );
         }
 
         return announcementRepo.findAllByCourse_CourseCode(courseCode);
