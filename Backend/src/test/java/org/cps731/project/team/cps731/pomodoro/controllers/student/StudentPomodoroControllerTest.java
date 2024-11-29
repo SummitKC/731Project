@@ -51,19 +51,14 @@ public class StudentPomodoroControllerTest {
 
     @LocalServerPort
     private int port;
-
     @Autowired
     private TestRestTemplate restTemplate;
-
     @MockBean
     private TaskService taskService;
-
     @MockBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
-
     @MockBean
     private TimeEntryService timeEntryService;
-
     @SpyBean
     private StudentPomodoroController pomodoroController;
 
