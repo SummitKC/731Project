@@ -1,6 +1,10 @@
 package org.cps731.project.team.cps731.pomodoro.data;
 
-import jakarta.persistence.EntityManager;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Set;
+
 import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
 import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
@@ -22,10 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Set;
+import jakarta.persistence.EntityManager;
 
 @Component
 @Profile({"dev", "mysqldev"})
@@ -66,6 +67,7 @@ public class DevDataInitializer implements ApplicationRunner {
                         .announcement(announcementForA1)
                         .dueDate(Timestamp.from(Instant.now().plus(14, ChronoUnit.DAYS)))
                         .build();
+        
         var task1 = Task.builder()
                 .owner(studentJohn)
                 .state(TaskState.IN_PROGRESS)
@@ -80,6 +82,11 @@ public class DevDataInitializer implements ApplicationRunner {
         a1.setDerivingTasks(Set.of(task1));
         introToDbSystems.setAnnouncements(Set.of(announcementForA1));
         profSummit.setCreatedCourses(Set.of(introToDbSystems, introToSoftEng, introToJava));
+
+        studentJohn.setCourses(Set.of(introToDbSystems));
+        introToDbSystems.setTakenBy(Set.of(studentJohn));
+        
+        
 
         entityManager.persist(userJohn);
         entityManager.persist(userSummit);

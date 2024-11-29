@@ -22,6 +22,11 @@ const ProfessorSidebar = ({ firstName, lastName }) => {
     setIsCollapsed(!isCollapsed);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userType');
+    window.location.href = '/';
+  };
 
   return (
       <div className='sidebar-wrapper'>
@@ -32,9 +37,12 @@ const ProfessorSidebar = ({ firstName, lastName }) => {
         <div className={`sidebar-container ${(isCollapsed && !isMobile) ? 'hidden' : ''} ${isMobile ? 'bottom-nav' : ''}`}> 
           <div style={isMobile ? { display:"None" } : {}} className="profile-placeholder">{initials}</div>
           <div style={isMobile ? { display:"None" } : {}} className="name">{firstName} {lastName}</div>
-          <button style={isMobile ? { display:"None" } : {}} className="button">Logout</button>
+          <button
+            style={isMobile ? { display:"None" } : {}}
+            className="button"
+            onClick={handleLogout}>Logout</button>
           <Link className="sidebar-button" to="/professor/home">Home</Link>
-          <Link className="sidebar-button" to="/archived">Archived Courses</Link>
+          <Link className="sidebar-button" to="/professor/courses/archive">Archived Courses</Link>
           
         </div>
       </div>

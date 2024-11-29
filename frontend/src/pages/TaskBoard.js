@@ -3,10 +3,8 @@ import '../assets/taskboard.css';
 import '../assets/global.css';
 import { useMediaQuery } from 'react-responsive';
 import StudentSidebar from '../components/Common/StudentSidebar';
-import Task from '../components/TaskBoard/Task';
-import '../assets/task.css';
-import TaskDetailOverlay from '../components/TaskBoard/TaskOverlayDetail';
 import Board from '../components/TaskBoard/Board';
+import { useNavigate } from 'react-router-dom';
 
 const TaskBoard = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 700px)' });
@@ -14,38 +12,62 @@ const TaskBoard = () => {
   const isDesktopOrLaptop = useMediaQuery({ query: '(min-width: 1224px)' });
   const isPortrait = useMediaQuery({ query: '(orientation: portrait)' });
 
-  const firstName = "John";
-  const lastName = "Doe";
+  const firstName = localStorage.getItem('name')?.split(' ')[0] || " ";
+  const lastName = localStorage.getItem('name')?.split(' ')[1] || " ";
   const initials = `${firstName[0]}${lastName[0]}`;
 
-  const placeholderTasks = [
-    { taskName: 'This is a really long named task', taskStatus: 'TODO', taskPriority: 'HIGH', taskDate: '2024-11-20' },
-    { taskName: 'TASK 2', taskStatus: 'In Progress', taskPriority: 'LOW', taskDate: '2024-11-22' },
-    { taskName: 'TASK 3', taskStatus: 'In Progress', taskPriority: 'NORMAL', taskDate: '2024-11-22' },
-    { taskName: 'TASK 4', taskStatus: 'TODO', taskPriority: 'URGENT', taskDate: '2024-11-23' },
-    { taskName: 'TASK 7', taskStatus: 'TODO', taskPriority: 'URGENT', taskDate: '2024-11-23' },
-    
-    { taskName: 'TASK 5', taskStatus: 'Completed', taskPriority: 'HIGH', taskDate: '2024-11-24' },
-    
-  ];
-
-  const [tasks, setTasks] = useState(placeholderTasks);
+  const [tasks, setTasks] = useState([]);
   const term = "Fall 2024";
-
+  const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      console.log('Expired or bad token, login again!');
+      navigate('/login');
+    } else {
+      // Fetch tasks
+      fetch('http://localhost:8080/api/student/taskboard/tasks', {
+        method: 'GET',
+        headers: {
+          Authorization: `${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        const fetchedTasks = [
+          ...data.todoTasks,
+          ...data.inProgressTasks,
+          ...data.reviewingTasks,
+          ...data.completedTasks
+        ];
+        setTasks(fetchedTasks);
+      })
+      .catch(error => console.error('Error fetching tasks:', error));
+    }
+  }, []);
 
   const groupedTasks = {};
 
   tasks.forEach(task => {
     const { taskDate, taskStatus } = task;
-    if (!groupedTasks[taskDate]) {
-      groupedTasks[taskDate] = { TODO: [], 'In Progress': [], Completed: [] };
+    const dateObj = new Date(taskDate);
+    const year = dateObj.getFullYear();
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+    const day = dateObj.getDate().toString().padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+  
+    if (!groupedTasks[formattedDate]) {
+      groupedTasks[formattedDate] = { TODO: [], IN_PROGRESS: [], COMPLETED: [] };
     }
-    groupedTasks[taskDate][taskStatus].push(task);
+    const status = taskStatus === 'REVIEWING' ? 'IN_PROGRESS' : taskStatus;
+    groupedTasks[formattedDate][status].push(task);
   });
-
+  
 
   const sortedDates = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
-  
+
   const getTasksByStatus = (status) => {
     return sortedDates
       .filter(date => groupedTasks[date][status].length > 0)
@@ -56,13 +78,12 @@ const TaskBoard = () => {
   };
   
   const todoTasks = getTasksByStatus('TODO');
-  const inProgressTasks = getTasksByStatus('In Progress');
-  const completedTasks = getTasksByStatus('Completed');
-
+  const inProgressTasks = getTasksByStatus('IN_PROGRESS');
+  const completedTasks = getTasksByStatus('COMPLETED');
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
-      <StudentSidebar firstName="John" lastName="Doe" />
+      <StudentSidebar firstName={firstName} lastName={lastName} />
       <div style={{ width: '100vw' }}>
         <div id="profile-container" style={isMobile ? {} : { display: 'none' }}>
           <div className="profile-placeholder">{initials}</div>
@@ -76,14 +97,13 @@ const TaskBoard = () => {
           </div>
           <div className='dashboard-wrapper'>  
             <Board title="TODO" tasks={todoTasks} />
-            <Board title="In Progress" tasks={inProgressTasks} />
-            <Board title="Completed" tasks={completedTasks} />
+            <Board title="IN PROGRESS" tasks={inProgressTasks} />
+            <Board title="COMPLETED" tasks={completedTasks} />
           </div>
-          
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default TaskBoard;

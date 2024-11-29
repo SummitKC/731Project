@@ -1,20 +1,28 @@
 package org.cps731.project.team.cps731.pomodoro.controllers.professor;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.dto.course.CourseDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.professor.ProfessorProfileDTO;
 import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.cps731.project.team.cps731.pomodoro.services.CourseService;
 import org.cps731.project.team.cps731.pomodoro.services.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Set;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/professor/dashboard")
@@ -31,15 +39,17 @@ public class ProfessorDashBoardController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<String> getProfessorProfile() {
+    public ResponseEntity<ProfessorProfileDTO> getProfessorProfile() 
+    {
         var userID = SecurityUtil.getAuthenticatedUserID();
         Professor professor = professorService.getProfessorById(userID);
         if (professor == null) {
-            return ResponseEntity.notFound().build();
+          return ResponseEntity.notFound().build();
         }
-        String uName =  professor.getUser().getEmail();
-        return ResponseEntity.ok(uName);
+        ProfessorProfileDTO response = new ProfessorProfileDTO(professor);
+        return ResponseEntity.ok(response);
     }
+
 
     @GetMapping("/courses")
     public ResponseEntity<Set<CourseDTO>> getProfessorCourses() {
