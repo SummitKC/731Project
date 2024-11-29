@@ -5,6 +5,7 @@ import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.User;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.UserType;
+import org.cps731.project.team.cps731.pomodoro.data.repo.user.ProfessorRepo;
 import org.cps731.project.team.cps731.pomodoro.data.repo.user.StudentRepo;
 import org.cps731.project.team.cps731.pomodoro.data.repo.user.UserRepo;
 import org.cps731.project.team.cps731.pomodoro.dto.auth.LoginRequestDTO;
@@ -23,6 +24,7 @@ public class AuthService {
     private final ProfessorService professorService;
     private final PasswordEncoder passwordEncoder;
     private final StudentRepo studentRepo;
+    private final ProfessorRepo professorRepo;
     private final UserRepo userRepo;
 
     @Autowired
@@ -31,12 +33,14 @@ public class AuthService {
                        ProfessorService professorService,
                        PasswordEncoder passwordEncoder,
                        StudentRepo studentRepo,
+                       ProfessorRepo professorRepo,
                        UserRepo userRepo) {
         this.jwtUtil = jwtUtil;
         this.studentService = studentService;
         this.professorService = professorService;
         this.passwordEncoder = passwordEncoder;
         this.studentRepo = studentRepo;
+        this.professorRepo = professorRepo;
         this.userRepo = userRepo;
     }
 
@@ -65,6 +69,8 @@ public class AuthService {
     public boolean professorRegister(RegisterProfessorRequestDTO registerRequest) {
         if (userRepo.existsByEmail(registerRequest.getEmail())) {
             throw new IllegalArgumentException("Account using this email already exists");
+        } else if (professorRepo.existsByEmployeeID(registerRequest.getProfessorID())) {
+            throw new IllegalArgumentException("Professor with this ID already exists");
         }
         var user = new User(registerRequest.getName(),registerRequest.getEmail(), passwordEncoder.encode(registerRequest.getPassword()), UserType.PROFESSOR);
         userRepo.save(user);
