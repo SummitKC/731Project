@@ -34,7 +34,7 @@ public class CourseRepoTest {
 
     @Test
     public void getCoursesByCreatedByJohnReturnsIntroToDBSystemsAndSoftEng() {
-        var userJohn = new User("John", "password", UserType.PROFESSOR);
+        var userJohn = new User(1L, "John Smith", "john.smith@torontomu.ca", "password", UserType.PROFESSOR);
         var johnCourses = new HashSet<Course>();
         var professorJohn = new Professor(1L, userJohn, johnCourses);
         johnCourses.addAll(List.of(
@@ -48,15 +48,15 @@ public class CourseRepoTest {
         }
         entityManager.flush();
 
-        var courses = repo.findCoursesByCreatedById(userJohn.getId());
+        var courses = repo.findCoursesByCreatedByEmployeeID(userJohn.getId());
 
         assertThat(courses, equalTo(johnCourses));
     }
 
     @Test
     public void getCoursesTakeByContainsStudentJohnReturnsIntoToDBSystems() {
-        var userJohn = new User("John", "password", UserType.STUDENT);
-        var userBob = new User("Bob", "password", UserType.PROFESSOR);
+        var userJohn = new User(1L, "John", "john.smith@torontomu.ca", "password", UserType.STUDENT);
+        var userBob = new User(2L, "Bob", "bob.smith@torontomu.ca", "password", UserType.PROFESSOR);
         var studentJohn = new Student(userJohn);
         var profBob = new Professor(userBob);
         var introToDatabaseSystems = new Course("CPS510", "Intro to Database Systems", Term.FALL, 2024, false, profBob);
@@ -72,7 +72,7 @@ public class CourseRepoTest {
         entityManager.persist(introToDatabaseSystems);
         entityManager.flush();
 
-        var courses = repo.findCoursesByTakenById(studentJohn.getId());
+        var courses = repo.findCoursesByTakenByStudentID(studentJohn.getStudentID());
         assertThat(courses, equalTo(Set.of(introToDatabaseSystems)));
     }
 

@@ -29,11 +29,11 @@ public class TaskService {
     }
 
     public Set<Task> getTaskByState(Long ownerId, TaskState state) {
-        return taskRepo.findAllByOwnerIdAndStateIsIn(ownerId, Set.of(state));
+        return taskRepo.findAllByOwnerStudentIDAndStateIsIn(ownerId, Set.of(state));
     }
 
     public Set<Task> getTaskByStateAndIssueTime(Long ownerId, TaskState state, Timestamp issueTime) {
-        return taskRepo.findAllByOwnerIdAndStateIsInAndDerivedFrom_Announcement_IssueTimeAfter(ownerId, Set.of(state), issueTime);
+        return taskRepo.findAllByOwnerStudentIDAndStateIsInAndDerivedFrom_Announcement_IssueTimeAfter(ownerId, Set.of(state), issueTime);
     }
     public Task createTask(Task task) {
         return taskRepo.save(task);
@@ -42,7 +42,7 @@ public class TaskService {
     public Task updateTask(Long id, TaskDTO task) {
         var userID = SecurityUtil.getAuthenticatedUserID();
         Task existingTask = taskRepo.findById(id).orElseThrow();
-        if (!existingTask.getOwner().getId().equals(userID)) {
+        if (!existingTask.getOwner().getStudentID().equals(userID)) {
             throw new AuthorizationDeniedException(
                     "Cannot edit a task you do not own",
                     new AuthorizationDecision(false)
@@ -55,7 +55,7 @@ public class TaskService {
     public Task changeTaskState(Long id, TaskState state) {
         var userID = SecurityUtil.getAuthenticatedUserID();
         var existingTask = taskRepo.findById(id).orElseThrow();
-        if (!existingTask.getOwner().getId().equals(userID)) {
+        if (!existingTask.getOwner().getStudentID().equals(userID)) {
             throw new AuthorizationDeniedException(
                     "Cannot edit a task you do not own",
                     new AuthorizationDecision(false)

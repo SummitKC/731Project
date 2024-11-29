@@ -43,9 +43,9 @@ public class TimeEntryRepoTest {
 
     @Test
     public void findAllByOwnerIdAndStartTimeBeforeReturnsAllStudentTimeEntriesBeforeTime() {
-        var userJohn = new User("John", "password", UserType.STUDENT);
+        var userJohn = new User(1L, "John", "john.smith@torontomu.ca", "password", UserType.STUDENT);
         var studentJohn = new Student(userJohn);
-        var userSteve = new User("Steve", "password", UserType.PROFESSOR);
+        var userSteve = new User(2L, "Steve", "steve.smith@torontomu.ca", "password", UserType.PROFESSOR);
         var profSteve = new Professor(userSteve);
         var introToDatabaseSystems = new Course("CPS510", "Intro to database system", Term.FALL, 2024, false, profSteve);
         var announcementForAssignment1 = new Announcement("Announcement 1 is out", Timestamp.from(Instant.now()), "Hello World", introToDatabaseSystems);
@@ -86,7 +86,7 @@ public class TimeEntryRepoTest {
         entityManager.persist(timeEntry2);
         entityManager.flush();
 
-        var timeEntriesBeforeAWeekAgo = repo.findAllByTask_OwnerIdAndStartTimeAfter(studentJohn.getId(), Timestamp.from(oneWeekAgo));
+        var timeEntriesBeforeAWeekAgo = repo.findAllByTask_OwnerStudentIDAndStartTimeAfter(studentJohn.getStudentID(), Timestamp.from(oneWeekAgo));
 
         assertThat(timeEntriesBeforeAWeekAgo, equalTo(Set.of(timeEntry2)));
     }

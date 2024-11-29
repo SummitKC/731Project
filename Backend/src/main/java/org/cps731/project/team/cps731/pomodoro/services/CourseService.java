@@ -89,7 +89,7 @@ public class CourseService {
     public Course archiveState(String courseCode, Boolean state) {
         var userID = SecurityUtil.getAuthenticatedUserID();
         Course existingCourse = courseRepo.findById(courseCode).orElseThrow();
-        if (!existingCourse.getCreatedBy().getId().equals(userID)) {
+        if (!existingCourse.getCreatedBy().getEmployeeID().equals(userID)) {
             throw new AuthorizationDeniedException(
                     "Cannot archive a course you do not own",
                     new AuthorizationDecision(false)

@@ -1,15 +1,15 @@
 package org.cps731.project.team.cps731.pomodoro.dto.auth;
 
-public class AuthRequestDTO {
+public class LoginRequestDTO {
     private String email;
     private String password;
 
-    public AuthRequestDTO(String email, String password) {
+    public LoginRequestDTO(String email, String password) {
         this.email = email;
         this.password = password;
     }
 
-    public AuthRequestDTO() {
+    public LoginRequestDTO() {
     }
 
     public String getEmail() {

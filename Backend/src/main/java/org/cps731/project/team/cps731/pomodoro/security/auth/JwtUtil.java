@@ -26,12 +26,14 @@ public class JwtUtil {
     /**
      * Generates JWT from a user's email
      * @param email The user's email
+     * @param name The user's name
      * @return The JWT
      */
-    public String generateToken(String email) {
+    public String generateToken(String email, String name) {
         return JWT.create()
                 .withSubject(email)
                 .withIssuedAt(new Date())
+                .withClaim("name", name)
                 .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime))
                 .sign(algorithm);
     }

@@ -38,12 +38,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     try {
                         var decodedToken = jwtUtil.validateTokenAndGetDecoded(token);
                         var idString = decodedToken.getSubject();
-                        UserDetails userDetails = userDetailsService.loadUserByUsername(idString);
+                        var userDetails = userDetailsService.loadUserByUsername(idString);
                         if (userDetails == null) {
                             filterChain.doFilter(request, response);
                             return;
                         }
-                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        var authToken = new UsernamePasswordAuthenticationToken(
                                 userDetails, decodedToken, userDetails.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     } catch (JWTVerificationException ex) {
