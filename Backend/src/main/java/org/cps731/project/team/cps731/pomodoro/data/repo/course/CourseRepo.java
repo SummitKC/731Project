@@ -9,7 +9,8 @@ import java.util.Set;
 @Repository
 public interface CourseRepo extends JpaRepository<Course, String> {
 
-    Set<Course> findCoursesByTakenByID(Long takenById);
+    Set<Course> findCoursesByTakenByIDAndAndArchivedIsFalse(Long takenById);
     Set<Course> findCoursesByCreatedByUserID(Long id);
 
 }
+

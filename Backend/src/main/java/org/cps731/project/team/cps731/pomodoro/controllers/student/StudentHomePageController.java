@@ -24,23 +24,23 @@ import java.util.stream.Collectors;
 @PreAuthorize("hasRole('ROLE_STUDENT')")
 public class StudentHomePageController {
 
-    @Autowired
-    private StudentService studentService;
+    private final StudentService studentService;
+    private final CourseService courseService;
+    private final AssignmentService assignmentService;
 
-    @Autowired
-    private CourseService courseService;
-    @Autowired
-    private AssignmentService assignmentService;
-
+    public StudentHomePageController(StudentService studentService,
+                                 CourseService courseService,
+                                 AssignmentService assignmentService) {
+        this.studentService = studentService;
+        this.courseService = courseService;
+        this.assignmentService = assignmentService;
+    }
 
     @GetMapping("/courses")
     public ResponseEntity<Set<CourseDTO>> getStudentCourses() {
-        var studentId = SecurityUtil.getAuthenticatedUserID();
-        Student student = studentService.getStudentById(studentId);
-        if (student == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(student.getCourses().stream().map(CourseDTO::new).collect(Collectors.toSet()));
+        var userId = SecurityUtil.getAuthenticatedUserID();
+        var courses = courseService.getStudentsCurrentCourses(userId);
+        return ResponseEntity.ok(courses.stream().map(CourseDTO::new).collect(Collectors.toSet()));
     }
 
     @GetMapping("/tasks")
