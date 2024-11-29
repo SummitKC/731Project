@@ -3,7 +3,8 @@ package org.cps731.project.team.cps731.pomodoro.controllers.auth;
 import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.cps731.project.team.cps731.pomodoro.dto.auth.LoginRequestDTO;
-import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterRequestDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterProfessorRequestDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterStudentRequestDTO;
 import org.cps731.project.team.cps731.pomodoro.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class AuthController {
     }
 
     @PostMapping("/student/register")
-    public ResponseEntity<Void> studentRegister(@RequestBody RegisterRequestDTO body) {
+    public ResponseEntity<Void> studentRegister(@RequestBody RegisterStudentRequestDTO body) {
         if (authService.studentRegister(body)) {
             return ResponseEntity.noContent().build();
         } else {
@@ -53,7 +54,7 @@ public class AuthController {
     }
 
     @PostMapping("/professor/register")
-    public ResponseEntity<Void> professorRegister(@RequestBody RegisterRequestDTO body) {
+    public ResponseEntity<Void> professorRegister(@RequestBody RegisterProfessorRequestDTO body) {
         if (authService.professorRegister(body)) {
             return ResponseEntity.noContent().build();
         } else {

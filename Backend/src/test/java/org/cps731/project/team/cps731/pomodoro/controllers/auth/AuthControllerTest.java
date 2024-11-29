@@ -2,7 +2,8 @@ package org.cps731.project.team.cps731.pomodoro.controllers.auth;
 
 import jakarta.security.auth.message.AuthException;
 import org.cps731.project.team.cps731.pomodoro.dto.auth.LoginRequestDTO;
-import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterRequestDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterProfessorRequestDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterStudentRequestDTO;
 import org.cps731.project.team.cps731.pomodoro.services.AuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,9 @@ public class AuthControllerTest {
 
     @Test
     public void shouldYieldHttp204WhenRegisteringStudent() {
-        when(authService.studentRegister(registerRequest())).thenReturn(true);
+        when(authService.studentRegister(registerStudentRequest())).thenReturn(true);
 
-        var requestEntity = new HttpEntity<>(registerRequest(), null);
+        var requestEntity = new HttpEntity<>(registerStudentRequest(), null);
         var response = restTemplate
                 .exchange(
                         "http://localhost:" + port + "/api/auth/student/register",
@@ -48,9 +49,9 @@ public class AuthControllerTest {
 
     @Test
     public void shouldYieldHttp204WhenRegisteringProfessor() {
-        when(authService.professorRegister(registerRequest())).thenReturn(true);
+        when(authService.professorRegister(registerProfessorRequest())).thenReturn(true);
 
-        var requestEntity = new HttpEntity<>(registerRequest(), null);
+        var requestEntity = new HttpEntity<>(registerProfessorRequest(), null);
         var response = restTemplate
                 .exchange(
                         "http://localhost:" + port + "/api/auth/professor/register",
@@ -96,8 +97,12 @@ public class AuthControllerTest {
         assertThat(response.getBody(), equalTo(jwtString()));
     }
 
-    private RegisterRequestDTO registerRequest() {
-        return new RegisterRequestDTO(1L, "John", "john.smith@torontomu.ca", "password");
+    private RegisterStudentRequestDTO registerStudentRequest() {
+        return new RegisterStudentRequestDTO(1L, "John", "john.smith@torontomu.ca", "password");
+    }
+
+    private RegisterProfessorRequestDTO registerProfessorRequest() {
+        return new RegisterProfessorRequestDTO(1L, "John", "john.smith@torontomu.ca", "password");
     }
 
     private LoginRequestDTO loginRequest() {

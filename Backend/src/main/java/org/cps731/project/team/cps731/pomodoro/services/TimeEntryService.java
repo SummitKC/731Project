@@ -48,6 +48,6 @@ public class TimeEntryService {
     }
 
     public Set<TimeEntry> findAllByTaskOwnerIdAndStartTimeAfter(Long studentID, Timestamp after) {
-        return timeEntryRepo.findAllByTask_OwnerStudentIDAndStartTimeAfter(studentID, after);
+        return timeEntryRepo.findAllByTask_OwnerIDAndStartTimeAfter(studentID, after);
     }
 }

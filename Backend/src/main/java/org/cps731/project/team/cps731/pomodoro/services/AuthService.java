@@ -5,9 +5,11 @@ import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.User;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.UserType;
+import org.cps731.project.team.cps731.pomodoro.data.repo.user.StudentRepo;
 import org.cps731.project.team.cps731.pomodoro.data.repo.user.UserRepo;
 import org.cps731.project.team.cps731.pomodoro.dto.auth.LoginRequestDTO;
-import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterRequestDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterProfessorRequestDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterStudentRequestDTO;
 import org.cps731.project.team.cps731.pomodoro.security.auth.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +22,7 @@ public class AuthService {
     private final StudentService studentService;
     private final ProfessorService professorService;
     private final PasswordEncoder passwordEncoder;
+    private final StudentRepo studentRepo;
     private final UserRepo userRepo;
 
     @Autowired
@@ -27,21 +30,25 @@ public class AuthService {
                        StudentService studentService,
                        ProfessorService professorService,
                        PasswordEncoder passwordEncoder,
+                       StudentRepo studentRepo,
                        UserRepo userRepo) {
         this.jwtUtil = jwtUtil;
         this.studentService = studentService;
         this.professorService = professorService;
         this.passwordEncoder = passwordEncoder;
+        this.studentRepo = studentRepo;
         this.userRepo = userRepo;
     }
 
-    public boolean studentRegister(RegisterRequestDTO registerRequest) {
+    public boolean studentRegister(RegisterStudentRequestDTO registerRequest) {
         if (userRepo.existsByEmail(registerRequest.getEmail())) {
             throw new IllegalArgumentException("Account using this email already exists");
+        } else if (studentRepo.existsByStudentID(registerRequest.getStudentID())) {
+            throw new IllegalArgumentException("Student with this ID already exists");
         }
-        var user = new User(registerRequest.getUserID(), registerRequest.getName(), registerRequest.getEmail(), passwordEncoder.encode(registerRequest.getPassword()), UserType.STUDENT);
+        var user = new User(registerRequest.getName(), registerRequest.getEmail(), passwordEncoder.encode(registerRequest.getPassword()), UserType.STUDENT);
         userRepo.save(user);
-        var student = studentService.createStudent(new Student(user));
+        var student = studentService.createStudent(new Student(user, registerRequest.getStudentID()));
         return student != null;
     }
 
@@ -55,13 +62,13 @@ public class AuthService {
         return jwtUtil.generateToken(student.getUser().getId().toString(), student.getUser().getName());
     }
 
-    public boolean professorRegister(RegisterRequestDTO registerRequest) {
+    public boolean professorRegister(RegisterProfessorRequestDTO registerRequest) {
         if (userRepo.existsByEmail(registerRequest.getEmail())) {
             throw new IllegalArgumentException("Account using this email already exists");
         }
-        var user = new User(registerRequest.getUserID(), registerRequest.getName(),registerRequest.getEmail(), passwordEncoder.encode(registerRequest.getPassword()), UserType.PROFESSOR);
+        var user = new User(registerRequest.getName(),registerRequest.getEmail(), passwordEncoder.encode(registerRequest.getPassword()), UserType.PROFESSOR);
         userRepo.save(user);
-        var professor = professorService.createProfessor(new Professor(user));
+        var professor = professorService.createProfessor(new Professor(user, registerRequest.getProfessorID()));
         return professor != null;
     }
 

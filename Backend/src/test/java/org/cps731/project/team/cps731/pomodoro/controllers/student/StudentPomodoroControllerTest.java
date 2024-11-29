@@ -66,9 +66,10 @@ public class StudentPomodoroControllerTest {
     @Test
     public void shouldReturnPomSessionForStartedPom() throws ServletException, IOException {
         var taskID = 1L;
-        var mockUser = new User(1L, "John Smith", "john.something@torontomu.ca", "password", UserType.STUDENT);
-        var mockStudent = new Student(mockUser);
-        mockStudent.setStudentID(mockUser.getId());
+        var mockUser = new User("John Smith", "john.something@torontomu.ca", "password", UserType.STUDENT);
+        mockUser.setId(1L);
+        var mockStudent = new Student(mockUser, mockUser.getId());
+        mockStudent.setID(mockUser.getId());
         var mockTask = Task.builder()
                 .name("Finish a1")
                 .priority(TaskPriority.NORMAL)
@@ -78,7 +79,7 @@ public class StudentPomodoroControllerTest {
                 .build();
         mockTask.setID(taskID);
         var mockDecodedJWT = mock(DecodedJWT.class);
-        when(mockDecodedJWT.getSubject()).thenReturn(mockStudent.getStudentID().toString());
+        when(mockDecodedJWT.getSubject()).thenReturn(mockStudent.getID().toString());
         doAnswer((Answer<Void>) invocation -> {
             var request = (ServletRequest) invocation.getArgument(0);
             var response = (ServletResponse) invocation.getArgument(1);
@@ -114,9 +115,10 @@ public class StudentPomodoroControllerTest {
     @Test
     public void shouldReturnPomSessionWhenPausingPomAndBeUpdatedWithPauseTimeAndPaused() throws ServletException, IOException {
         var taskID = 1L;
-        var mockUser = new User(1L, "John Something", "john.something@torontomu.ca", "password", UserType.STUDENT);
-        var mockStudent = new Student(mockUser);
-        mockStudent.setStudentID(mockUser.getId());
+        var mockUser = new User("John Something", "john.something@torontomu.ca", "password", UserType.STUDENT);
+        mockUser.setId(1L);
+        var mockStudent = new Student(mockUser, mockUser.getId());
+        mockStudent.setID(mockUser.getId());
         var mockTask = Task.builder()
                 .name("Finish a1")
                 .priority(TaskPriority.NORMAL)
@@ -126,7 +128,7 @@ public class StudentPomodoroControllerTest {
                 .build();
         mockTask.setID(taskID);
         var mockDecodedJWT = mock(DecodedJWT.class);
-        when(mockDecodedJWT.getSubject()).thenReturn(mockStudent.getStudentID().toString());
+        when(mockDecodedJWT.getSubject()).thenReturn(mockStudent.getID().toString());
         when(taskService.getTaskById(taskID)).thenReturn(mockTask);
         var mockPomSession = PomSession.builder()
                 .task(new TaskDTO(mockTask))
@@ -183,9 +185,10 @@ public class StudentPomodoroControllerTest {
     @Test
     public void shouldReturnPomSessionWhenResumingPomAndBeUpdatedWithResumeTimeAndPausedFalse() throws ServletException, IOException {
         var taskID = 1L;
-        var mockUser = new User(1L, "John Something", "john.something@torontomu.ca", "password", UserType.STUDENT);
-        var mockStudent = new Student(mockUser);
-        mockStudent.setStudentID(mockUser.getId());
+        var mockUser = new User("John Something", "john.something@torontomu.ca", "password", UserType.STUDENT);
+        mockUser.setId(1L);
+        var mockStudent = new Student(mockUser, mockUser.getId());
+        mockStudent.setID(mockUser.getId());
         var mockTask = Task.builder()
                 .name("Finish a1")
                 .priority(TaskPriority.NORMAL)
@@ -195,7 +198,7 @@ public class StudentPomodoroControllerTest {
                 .build();
         mockTask.setID(taskID);
         var mockDecodedJWT = mock(DecodedJWT.class);
-        when(mockDecodedJWT.getSubject()).thenReturn(mockStudent.getStudentID().toString());
+        when(mockDecodedJWT.getSubject()).thenReturn(mockStudent.getID().toString());
         when(taskService.getTaskById(taskID)).thenReturn(mockTask);
         var mockPomSession = PomSession.builder()
                 .task(new TaskDTO(mockTask))
@@ -255,9 +258,10 @@ public class StudentPomodoroControllerTest {
     @Test
     public void shouldReturnPomSessionWhenEndingPomAndSaveTimeLog() throws ServletException, IOException {
         var taskID = 1L;
-        var mockUser = new User(1L, "John Something", "john.something@torontomu.ca", "password", UserType.STUDENT);
-        var mockStudent = new Student(mockUser);
-        mockStudent.setStudentID(mockUser.getId());
+        var mockUser = new User("John Something", "john.something@torontomu.ca", "password", UserType.STUDENT);
+        mockUser.setId(1L);
+        var mockStudent = new Student(mockUser, mockUser.getId());
+        mockStudent.setID(mockUser.getId());
         var mockTask = Task.builder()
                 .name("Finish a1")
                 .priority(TaskPriority.NORMAL)
@@ -267,7 +271,7 @@ public class StudentPomodoroControllerTest {
                 .build();
         mockTask.setID(taskID);
         var mockDecodedJWT = mock(DecodedJWT.class);
-        when(mockDecodedJWT.getSubject()).thenReturn(mockStudent.getStudentID().toString());
+        when(mockDecodedJWT.getSubject()).thenReturn(mockStudent.getID().toString());
         when(taskService.getTaskById(taskID)).thenReturn(mockTask);
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
                 new AppUserDetails(mockStudent.getUser()),

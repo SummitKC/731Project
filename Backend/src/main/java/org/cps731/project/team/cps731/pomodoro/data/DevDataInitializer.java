@@ -45,14 +45,14 @@ public class DevDataInitializer implements ApplicationRunner {
     @Transactional
     public void run(ApplicationArguments args) {
         LOG.info("Initializing DEV Data");
-        var userJohn = new User(1L, "John Smith", "john.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.STUDENT);
-        var studentJohn = new Student(userJohn);
-        var userSummit = new User(2L, "Summit Smith" , "summit.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.PROFESSOR);
-        var profSummit = new Professor(userSummit);
-        var userSyed = new User(3L, "Syed Smith", "syed.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.PROFESSOR);
-        var profSyed = new Professor(userSyed);
-        var userIsabel = new User(4L, "Isabel Smith", "isabel.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.STUDENT);
-        var studentIsabel = new Student(userIsabel);
+        var userJohn = new User("John Smith", "john.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.STUDENT);
+        var studentJohn = new Student(userJohn, 1L);
+        var userSummit = new User("Summit Smith" , "summit.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.PROFESSOR);
+        var profSummit = new Professor(userSummit, 2L);
+        var userSyed = new User("Syed Smith", "syed.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.PROFESSOR);
+        var profSyed = new Professor(userSyed, 3L);
+        var userIsabel = new User("Isabel Smith", "isabel.smith@torontomu.ca", passwordEncoder.encode("password"), UserType.STUDENT);
+        var studentIsabel = new Student(userIsabel, 4L);
         var introToDbSystems = new Course("CPS510", "Intro To Database Systems", Term.FALL, 2024, false, profSummit);
         var introToSoftEng = new Course("CPS406", "Intro To Software Engineering", Term.FALL, 2023, true, profSummit);
         var introToJava = new Course("CPS209", "Intro To Java", Term.WINTER, 2022, true, profSummit);
