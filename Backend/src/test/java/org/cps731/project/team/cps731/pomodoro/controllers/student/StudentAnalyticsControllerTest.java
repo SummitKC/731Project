@@ -24,9 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Set;
 
 import static org.mockito.Mockito.*;
