@@ -19,7 +19,8 @@ const ProfessorHome = () => {
 
   const isMobile = useMediaQuery({ query: '(max-width: 700px)' });
   const [year, setYear] = useState('');
-  const [term, setTerm] = useState('')
+  const [term, setTerm] = useState(currentTerm);
+
   
   const [showModal, setShowModal] = useState(false);
   const [courseCode, setCourseCode] = useState('');
@@ -76,7 +77,10 @@ const ProfessorHome = () => {
         }
       })
       .then(response => response.json())
-      .then(data => setCourses(data))
+      .then(data => {
+        const filteredCourses = data.filter(course => course.archived === false); 
+        setCourses(filteredCourses);
+      })
       .catch(error => console.error('Error fetching courses:', error));
     }
   }, [navigate]);
@@ -92,6 +96,7 @@ const ProfessorHome = () => {
   const handleSubmitCreateCourse = (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
+
     if (!token) {
       navigate('/login');
     } else {
@@ -105,7 +110,7 @@ const ProfessorHome = () => {
           courseCode: courseCode,
           name: courseName,
           term: String(term),
-          year: Number(year), // Ensure year is a number
+          year: Number(year),
           archived: false
         }),
       })
@@ -121,8 +126,8 @@ const ProfessorHome = () => {
         window.location.reload();
       })
       .catch(error => {
-        console.error('Error creating course:', error);
-        setErrorMessage(error.message || 'Error creating course. Please try again.');
+        console.error(error)
+        setErrorMessage('Error creating course. Please Ensure course code is unique.');
       });
     }
   };
@@ -221,7 +226,7 @@ const ProfessorHome = () => {
       <CreateCourseModal
         show={showModal}
         handleClose={handleCloseModal}
-        handleSubmit={handleSubmitCreateCourse}
+        handleSubmitCreateCourse={handleSubmitCreateCourse} // Ensure this prop name matches
         courseCode={courseCode}
         setCourseCode={setCourseCode}
         courseName={courseName}
@@ -231,7 +236,9 @@ const ProfessorHome = () => {
         term={term}
         setTerm={setTerm}
         errorMessage={errorMessage}
-      />
+        setErrorMessage={setErrorMessage} // Pass setErrorMessage to modal
+        />
+
     </div>
   );
   

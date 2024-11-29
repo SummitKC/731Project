@@ -71,7 +71,7 @@ const CoursePageStudent = () => {
         
         <div className="main-content">
           <div className='course-page-header'>
-            <h1 style={isDesktopOrLaptop ? { paddingTop: '10px', paddingLeft: '30px' } : {}}>{courseCode} - {courseName} Course Page</h1>
+            <h1 style={isDesktopOrLaptop ? { paddingTop: '10px', paddingLeft: '30px' } : {}}>{courseName} Course Page</h1>
             <button style={{marginTop:'30px'}} className='generic-button' onClick={handleLeaveCourse}>Leave Course</button>
           </div>
           <div className='course-page-content-wrapper'>

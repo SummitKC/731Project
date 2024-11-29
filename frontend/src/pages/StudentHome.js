@@ -113,7 +113,7 @@ const StudentHome = () => {
             tasks: Object.values(statuses).flat()
         };
     });
-};
+  };
 
 
   const allTasks = convertGroupedTasks(groupedTasks);
