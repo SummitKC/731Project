@@ -15,6 +15,9 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
 
@@ -50,12 +53,19 @@ public class TaskService {
         return task;
     }
 
-    public Set<Task> getTaskByState(Long ownerId, TaskState state) {
+    public Set<Task> getAllTasksByState(Long ownerId, TaskState state) {
         return taskRepo.findAllByOwnerIDAndStateIsIn(ownerId, Set.of(state));
     }
 
     public Set<Task> getAllTasksByOwnerID(Long ownerId) {
         return taskRepo.findAllByOwnerID(ownerId);
+    }
+
+    public Set<Task> getTasksCompletedThisMonth(Long userID) {
+        return taskRepo.findAllByOwnerIDAndStateIsInAndDerivedFrom_Announcement_IssueTimeAfter(
+                userID,
+                Set.of(TaskState.COMPLETE),
+                Timestamp.from(Instant.from(LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0))));
     }
 
     public Set<Task> getTaskByStateAndIssueTime(Long ownerId, TaskState state, Timestamp issueTime) {

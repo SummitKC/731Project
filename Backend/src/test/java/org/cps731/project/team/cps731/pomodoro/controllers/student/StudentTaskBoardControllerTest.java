@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import org.cps731.project.team.cps731.pomodoro.controllers.student.config.StudentTaskBoardControllerTestConfig;
+import org.cps731.project.team.cps731.pomodoro.config.WebTestConfig;
 import org.cps731.project.team.cps731.pomodoro.data.model.announcement.Announcement;
 import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = StudentTaskBoardController.class)
-@Import(StudentTaskBoardControllerTestConfig.class)
+@Import(WebTestConfig.class)
 @ActiveProfiles("test")
 public class StudentTaskBoardControllerTest {
 

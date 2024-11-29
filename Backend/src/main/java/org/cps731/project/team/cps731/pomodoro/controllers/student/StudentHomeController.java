@@ -58,7 +58,7 @@ public class StudentHomeController {
         ).stream().map(TaskDTO::new).collect(Collectors.toSet());
 
         // Get in-progress tasks
-        Set<TaskDTO> inProgressTasks = taskService.getTaskByState(
+        Set<TaskDTO> inProgressTasks = taskService.getAllTasksByState(
             studentId,
             TaskState.IN_PROGRESS
         ).stream().map(TaskDTO::new).collect(Collectors.toSet());

@@ -14,7 +14,6 @@ public interface TaskRepo extends JpaRepository<Task, Long> {
 
     Set<Task> findAllByOwnerID(Long id);
     Set<Task> findAllByOwnerIDAndStateIsIn(Long id, Collection<TaskState> states);
-
     /**
      * Find all tasks from a student such that its state is in the given collection and the assignment the task is for was issued after the given issueTime
      * @param ownerId The ID of the student.

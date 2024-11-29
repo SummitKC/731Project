@@ -2,6 +2,7 @@ package org.cps731.project.team.cps731.pomodoro.controllers.student;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskState;
 import org.cps731.project.team.cps731.pomodoro.data.model.timeentry.TimeEntry;
+import org.cps731.project.team.cps731.pomodoro.dto.analytics.StudentAnalyticsDTO;
 import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.cps731.project.team.cps731.pomodoro.services.TaskService;
 import org.cps731.project.team.cps731.pomodoro.services.TimeEntryService;
@@ -9,14 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/student/analytics")
@@ -32,12 +31,12 @@ public class StudentAnalyticsController {
     }
 
     @GetMapping("/dashboard")
-    public ResponseEntity<Map<String, Object>> getAnalyticsDashboard() {
+    public ResponseEntity<StudentAnalyticsDTO> getAnalyticsDashboard() {
         var studentId = SecurityUtil.getAuthenticatedUserID();
         
         // Get all tasks
         var allTasks = taskService.getAllTasksByOwnerID(studentId);
-        var completedTasks = taskService.getTaskByState(studentId, TaskState.COMPLETE);
+        var completedTasks = taskService.getAllTasksByState(studentId, TaskState.COMPLETE);
         
         // Get this month's completed tasks
         var startOfMonth = Timestamp.valueOf(LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0));
@@ -51,25 +50,22 @@ public class StudentAnalyticsController {
         // Calculate pomodoro session statistics
         var sessionStats = calculateSessionStats(timeEntries);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("totalTasks", totalTasks);
-        response.put("completedTasks", totalCompleted);
-        response.put("completionRate", Math.round(completionRate * 100.0) / 100.0);
-        response.put("thisMonthCompleted", 5);
-        response.putAll(sessionStats);
+        sessionStats.setTotalTasks(totalTasks);
+        sessionStats.setCompletedTasks(totalCompleted);
+        sessionStats.setCompletionRate(Math.round(completionRate * 100.0) / 100.0);
+        sessionStats.setTaskCompletedThisMonth(taskService.getTasksCompletedThisMonth(studentId).size());
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(sessionStats);
     }
 
-    private Map<String, Object> calculateSessionStats(Set<TimeEntry> timeEntries) {
-        Map<String, Object> stats = new HashMap<>();
-        
+    private StudentAnalyticsDTO calculateSessionStats(Set<TimeEntry> timeEntries) {
         if (timeEntries.isEmpty()) {
-            stats.put("averageSessionTime", 0);
-            stats.put("maxSessionTime", 0);
-            stats.put("minSessionTime", 0);
-            stats.put("totalSessionTime", 0);
-            return stats;
+            return StudentAnalyticsDTO.builder()
+                    .averageSessionTime(0)
+                    .maxSessionTime(0)
+                    .minSessionTime(0)
+                    .totalSessionTime(0)
+                    .build();
         }
 
         // Calculate session durations in minutes
@@ -77,7 +73,7 @@ public class StudentAnalyticsController {
             .map(entry -> ChronoUnit.MINUTES.between(
                 entry.getStartTime().toInstant(),
                 entry.getEndTime().toInstant()))
-            .collect(Collectors.toList());
+            .toList();
 
         double averageTime = sessionDurations.stream()
             .mapToLong(Long::longValue)
@@ -98,12 +94,12 @@ public class StudentAnalyticsController {
             .mapToLong(Long::longValue)
             .sum();
 
-        stats.put("averageSessionTime", Math.round(averageTime * 100.0) / 100.0);
-        stats.put("maxSessionTime", maxTime);
-        stats.put("minSessionTime", minTime);
-        stats.put("totalSessionTime", totalTime);
-        stats.put("totalSessions", timeEntries.size());
-
-        return stats;
+        return StudentAnalyticsDTO.builder()
+                .averageSessionTime(Math.round(averageTime * 100.0) / 100.0)
+                .maxSessionTime(maxTime)
+                .minSessionTime(minTime)
+                .totalSessionTime(totalTime)
+                .totalSessions(timeEntries.size())
+                .build();
     }
 }

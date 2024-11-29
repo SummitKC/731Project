@@ -1,4 +1,4 @@
-package org.cps731.project.team.cps731.pomodoro.controllers.student.config;
+package org.cps731.project.team.cps731.pomodoro.config;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -8,14 +8,13 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 
 @TestConfiguration
-public class StudentTaskBoardControllerTestConfig {
+public class WebTestConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/**").permitAll()
-                    .requestMatchers(HttpMethod.POST).permitAll();
+                    auth.requestMatchers("/**").permitAll();
                 })
                 .csrf(AbstractHttpConfigurer::disable).build();
     }
