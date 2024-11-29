@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -50,6 +52,27 @@ public class StudentTaskBoardController {
                 .stream().map(TaskDTO::new).collect(Collectors.toSet());
 
         return ResponseEntity.ok(new TaskBoardDTO(todoTasks, inProgressTasks, reviewingTasks, completedTasks));
+    }
+
+    @GetMapping("/tasks/{taskId}")
+    public ResponseEntity<TaskDTO> getTask(@PathVariable Long taskId) {
+        return ResponseEntity.ok(new TaskDTO(taskService.getTaskById(taskId)));
+    }
+
+    @PostMapping("/tasks")
+    public ResponseEntity<Void> createTask(@RequestBody TaskDTO taskDTO, @RequestParam Long assignment) throws URISyntaxException {
+        var createdTask = taskService.createTask(taskDTO, assignment);
+        if (createdTask != null) {
+            return ResponseEntity.created(new URI("/api/tasks/" + createdTask.getID()))
+                    .build();
+        }
+        throw new RuntimeException("Unable to create task");
+    }
+
+    @DeleteMapping("/tasks/{taskID}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long taskID) {
+        taskService.deleteTask(taskID);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/tasks/{taskId}/state")

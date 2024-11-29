@@ -1,7 +1,11 @@
 package org.cps731.project.team.cps731.pomodoro.services;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
+import org.cps731.project.team.cps731.pomodoro.data.model.user.UserType;
+import org.cps731.project.team.cps731.pomodoro.data.repo.assignment.AssignmentRepo;
 import org.cps731.project.team.cps731.pomodoro.data.repo.task.TaskRepo;
+import org.cps731.project.team.cps731.pomodoro.data.repo.user.StudentRepo;
+import org.cps731.project.team.cps731.pomodoro.data.repo.user.UserRepo;
 import org.cps731.project.team.cps731.pomodoro.dto.task.TaskDTO;
 import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +22,16 @@ import java.util.Set;
 public class TaskService {
 
     private final TaskRepo taskRepo;
+    private final StudentRepo studentRepo;
+    private final UserRepo userRepo;
+    private final AssignmentRepo assignmentRepo;
 
     @Autowired
-    public TaskService(TaskRepo taskRepo) {
+    public TaskService(TaskRepo taskRepo, StudentRepo studentRepo, UserRepo userRepo, AssignmentRepo assignmentRepo) {
         this.taskRepo = taskRepo;
+        this.studentRepo = studentRepo;
+        this.userRepo = userRepo;
+        this.assignmentRepo = assignmentRepo;
     }
 
     public List<Task> getAllTasks() {
@@ -29,7 +39,15 @@ public class TaskService {
     }
 
     public Task getTaskById(Long id) {
-        return taskRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Task not found"));
+        var task = taskRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Task not found"));
+        var currentUserID = SecurityUtil.getAuthenticatedUserID();
+        if (!task.getOwner().getID().equals(currentUserID)) {
+            throw new AuthorizationDeniedException(
+                    "Cannot access this task",
+                    new AuthorizationDecision(false)
+            );
+        }
+        return task;
     }
 
     public Set<Task> getTaskByState(Long ownerId, TaskState state) {
@@ -43,8 +61,26 @@ public class TaskService {
     public Set<Task> getTaskByStateAndIssueTime(Long ownerId, TaskState state, Timestamp issueTime) {
         return taskRepo.findAllByOwnerIDAndStateIsInAndDerivedFrom_Announcement_IssueTimeAfter(ownerId, Set.of(state), issueTime);
     }
-    public Task createTask(Task task) {
-        return taskRepo.save(task);
+    public Task createTask(TaskDTO task, Long assignmentID) {
+        var userID = SecurityUtil.getAuthenticatedUserID();
+        var user = userRepo.findById(userID).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        if (!user.getUserType().equals(UserType.STUDENT)) {
+            throw new AuthorizationDeniedException(
+                    "Only students can create tasks",
+                    new AuthorizationDecision(false)
+            );
+        }
+        var student = studentRepo.findById(userID).orElseThrow(() -> new IllegalArgumentException("Student not found"));
+        var assignment = assignmentRepo.findById(assignmentID).orElseThrow(() -> new IllegalArgumentException("Assignment not found"));
+
+        return taskRepo.save(new Task(
+                task.getTaskName(),
+                new Timestamp(task.getTaskDate().getTime()),
+                task.getTaskStatus() != null ? task.getTaskStatus() : TaskState.TODO,
+                task.getTaskPriority(),
+                student,
+                assignment
+        ));
     }
 
     public Task updateTask(Long id, TaskDTO task) {
@@ -74,6 +110,14 @@ public class TaskService {
     }
 
     public void deleteTask(Long id) {
+        var userID = SecurityUtil.getAuthenticatedUserID();
+        var task = taskRepo.findById(id).orElseThrow();
+        if (!task.getOwner().getID().equals(userID)) {
+            throw new AuthorizationDeniedException(
+                    "Cannot delete a task you do not own",
+                    new AuthorizationDecision(false)
+            );
+        }
         taskRepo.deleteById(id);
     }
 }
