@@ -18,23 +18,20 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final StudentService studentService;
     private final ProfessorService professorService;
-    private final PasswordEncoder encoder;
-    private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final UserRepo userRepo;
 
     @Autowired
     public AuthService(JwtUtil jwtUtil,
                        StudentService studentService,
                        ProfessorService professorService,
-                       PasswordEncoder encoder,
-                       UserRepo userRepo,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       UserRepo userRepo) {
         this.jwtUtil = jwtUtil;
         this.studentService = studentService;
         this.professorService = professorService;
-        this.encoder = encoder;
-        this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.userRepo = userRepo;
     }
 
     public boolean studentRegister(AuthRequestDTO registerRequest) {
@@ -51,7 +48,7 @@ public class AuthService {
         var student = studentService.getStudentByEmail(loginRequest.getEmail());
         if (student == null) {
             throw new AuthException("Student not found");
-        } else if (!encoder.matches(loginRequest.getPassword(), student.getUser().getPassword())) {
+        } else if (!passwordEncoder.matches(loginRequest.getPassword(), student.getUser().getPassword())) {
             throw new AuthException("Wrong password");
         }
         return jwtUtil.generateToken(student.getUser().getId().toString());
@@ -71,7 +68,7 @@ public class AuthService {
         var professor = professorService.getProfessorByEmail(loginRequest.getEmail());
         if (professor == null) {
             throw new AuthException("Professor not found");
-        } else if (!encoder.matches(loginRequest.getPassword(), professor.getUser().getPassword())) {
+        } else if (!passwordEncoder.matches(loginRequest.getPassword(), professor.getUser().getPassword())) {
             throw new AuthException("Wrong password");
         }
         return jwtUtil.generateToken(professor.getUser().getId().toString());
