@@ -43,8 +43,7 @@ const LoginPage = () => {
         // storing token and user types in local storage
         localStorage.setItem('token', `Bearer ${token}`);
         localStorage.setItem('userType', userType);
-
-
+ 
         navigate(`/${userType.toLowerCase()}/home`);
       } else {
         const data = await response.json();

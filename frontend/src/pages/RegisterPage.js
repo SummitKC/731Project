@@ -31,13 +31,14 @@ const RegisterPage = () => {
   const handleRegister = (e) => {
     e.preventDefault();
     const endpoint = `http://localhost:8080/api/auth/${userType.toLowerCase()}/register`;
-
+    const idField = userType.toLowerCase() === 'professor' ? 'employeeID' : 'studentID';
+    const requestBody = { [idField]: id, name: fullName, email: email, password: password };
     fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ email: email, password: password})
+      body: JSON.stringify(requestBody)
     })
     .then(response => {
       console.log('Response status:', response.status); // Debugging line
@@ -46,7 +47,7 @@ const RegisterPage = () => {
         setTimeout(() => {
           navigate('/');
         }, 1000);
-        return; // No need to parse the response body if status is 204
+        return;
       } else if (!response.ok) {
         return response.text().then(text => { throw new Error(text); });
       }

@@ -15,26 +15,50 @@ const StudentHome = () => {
   const isDesktopOrLaptop = useMediaQuery({ query: '(min-width: 1224px)' });
   const isPortrait = useMediaQuery({ query: '(orientation: portrait)' });
 
-  const firstName = "John";
-  const lastName = "Doe";
-  const initials = `${firstName[0]}${lastName[0]}`;
 
   const [courses, setCourses] = useState([]);
   const [tasks, setTasks] = useState([]);
   const term = "Fall 2024";
 
   const navigate = useNavigate();
+  
+  const name = ""; 
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');
     } else {
+      const fetchProfile = async () => {
+        try {
+          const response = await fetch('http://localhost:8080/api/student/home/profile', {
+            method: 'GET',
+            headers: {
+              Authorization: `${token}`,
+              'Content-Type': 'application/json',
+            }
+          });
+          if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            localStorage.setItem('name', data.name);
+            localStorage.setItem('email', data.email);
+            localStorage.setItem('studentID', data.studentID);
+          } else {
+            console.error('Error fetching profile:', response.statusText);
+          }
+        } catch (error) {
+          console.error('Error fetching profile:', error);
+        }
+      };
+  
+      fetchProfile();
+      
       // Fetch courses
       fetch('http://localhost:8080/api/student/dashboard/courses', {
         method: 'GET',
         headers: {
-          Authorization: token,
+          Authorization: `${token}`,
           'Content-Type': 'application/json',
         }
       })
@@ -56,7 +80,9 @@ const StudentHome = () => {
     }
   }, [navigate]);
 
-
+  const firstName = localStorage.getItem('name')?.split(' ')[0] || "John";
+  const lastName = localStorage.getItem('name')?.split(' ')[1] || "Doe";
+  const initials = `${firstName[0]}${lastName[0]}`;
   const groupedTasks = {};
 
   tasks.forEach(task => {
@@ -181,13 +207,9 @@ const StudentHome = () => {
     }
   };
   
-  
-  
-  
-
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
-      <StudentSidebar firstName="John" lastName="Doe" />
+      <StudentSidebar firstName={firstName} lastName={lastName} />
       <div style={{ width: '100vw' }}>
         <div id="profile-container" style={isMobile ? {} : { display: 'none' }}>
           <div className="profile-placeholder">{initials}</div>

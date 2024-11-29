@@ -15,9 +15,7 @@ const ProfessorHome = () => {
   const isPortrait = useMediaQuery({ query: '(orientation: portrait)' });
   const isRetina = useMediaQuery({ query: '(min-resolution: 2dppx)' });
 
-  const firstName = "Jane";
-  const lastName = "Doe";
-  const initials = `${firstName[0]}${lastName[0]}`;
+
   const isMobile = useMediaQuery({ query: '(max-width: 700px)' });
   const term = "Fall 2024";
   
@@ -32,6 +30,32 @@ const ProfessorHome = () => {
       console.log('Expired or bad token, login again!');
       navigate('/login');
     } else {
+      const fetchProfile = async () => {
+        try {
+          const response = await fetch('http://localhost:8080/api/professor/dashboard/profile', {
+            method: 'GET',
+            headers: {
+              Authorization: `${token}`,
+              'Content-Type': 'application/json',
+            }
+          });
+          if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            localStorage.setItem('name', data.name);
+            localStorage.setItem('email', data.email);
+            localStorage.setItem('professorID', data.professorID);
+          } else {
+            console.error('Error fetching profile:', response.statusText);
+          }
+        } catch (error) {
+          console.error('Error fetching profile:', error);
+        }
+      };
+  
+      fetchProfile();
+      
+      
       // Fetch courses
       fetch('http://localhost:8080/api/professor/dashboard/courses', {
         method: 'GET',
@@ -82,11 +106,13 @@ const ProfessorHome = () => {
        
     }
   };
-
+  const firstName = localStorage.getItem('name')?.split(' ')[0] || " ";
+  const lastName = localStorage.getItem('name')?.split(' ')[1] || " ";
+  const initials = `${firstName[0]}${lastName[0]}`;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}> 
-      <ProfessorSidebar firstName="Jane" lastName="Doe" />
+      <ProfessorSidebar firstName={firstName} lastName={lastName} />
       <div style={{ width: '100vw' }}>
         <div id="profile-container" style={isMobile ? {} : { display: 'none' }}>
           <div className="profile-placeholder">{initials}</div>
