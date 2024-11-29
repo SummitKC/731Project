@@ -5,7 +5,6 @@ import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskState;
 import org.cps731.project.team.cps731.pomodoro.dto.task.TaskBoardDTO;
 import org.cps731.project.team.cps731.pomodoro.dto.task.TaskDTO;
 import org.cps731.project.team.cps731.pomodoro.security.SecurityUtil;
-import org.cps731.project.team.cps731.pomodoro.security.auth.JwtUtil;
 import org.cps731.project.team.cps731.pomodoro.services.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,10 +36,10 @@ public class StudentTaskBoardController {
 
         var studentId = SecurityUtil.getAuthenticatedUserID();
         // Get tasks by state
-        var todoTasks = taskService.getTaskByState(studentId, TaskState.TODO).stream().map(TaskDTO::new).collect(Collectors.toSet());
-        var inProgressTasks = taskService.getTaskByState(studentId, TaskState.IN_PROGRESS).stream().map(TaskDTO::new).collect(Collectors.toSet());
-        var completedTasks = taskService.getTaskByState(studentId, TaskState.COMPLETE).stream().map(TaskDTO::new).collect(Collectors.toSet());
-        var reviewingTasks = taskService.getTaskByState(studentId, TaskState.REVIEWING).stream().map(TaskDTO::new).collect(Collectors.toSet());
+        var todoTasks = taskService.getAllTasksByState(studentId, TaskState.TODO).stream().map(TaskDTO::new).collect(Collectors.toSet());
+        var inProgressTasks = taskService.getAllTasksByState(studentId, TaskState.IN_PROGRESS).stream().map(TaskDTO::new).collect(Collectors.toSet());
+        var completedTasks = taskService.getAllTasksByState(studentId, TaskState.COMPLETE).stream().map(TaskDTO::new).collect(Collectors.toSet());
+        var reviewingTasks = taskService.getAllTasksByState(studentId, TaskState.REVIEWING).stream().map(TaskDTO::new).collect(Collectors.toSet());
 
         // Get only recent tasks (last week)
         //Timestamp oneWeekAgo = Timestamp.from(Instant.now().minusSeconds(7 * 24 * 60 * 60));
