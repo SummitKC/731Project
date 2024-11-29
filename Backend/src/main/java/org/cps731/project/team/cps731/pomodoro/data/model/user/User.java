@@ -9,6 +9,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(nullable = false)
+    private String name;
     @Column(unique = true, nullable = false)
     private String email;
     @Column(nullable = false)
@@ -17,7 +19,8 @@ public class User {
     @Column(nullable = false)
     private UserType userType;
 
-    public User(String email, String password, UserType userType) {
+    public User(String name, String email, String password, UserType userType) {
+        this.name = name;
         this.email = email;
         this.password = password;
         this.userType = userType;
@@ -32,6 +35,14 @@ public class User {
 
     public String getEmail() {
         return this.email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword() {

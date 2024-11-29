@@ -22,14 +22,18 @@ import java.util.List;
 @Service
 public class AssignmentService {
 
+    private final AssignmentRepo assignmentRepo;
+    private final StudentRepo studentRepo;
+    private final UserRepo userRepo;
+    private final ProfessorRepo professorRepo;
+
     @Autowired
-    private AssignmentRepo assignmentRepo;
-    @Autowired
-    private StudentRepo studentRepo;
-    @Autowired
-    private UserRepo userRepo;
-    @Autowired
-    private ProfessorRepo professorRepo;
+    public AssignmentService(AssignmentRepo assignmentRepo, StudentRepo studentRepo, UserRepo userRepo, ProfessorRepo professorRepo) {
+        this.assignmentRepo = assignmentRepo;
+        this.studentRepo = studentRepo;
+        this.userRepo = userRepo;
+        this.professorRepo = professorRepo;
+    }
 
     public List<Assignment> getAssignmentsByCourse(String courseCode, int page, int size) {
         var userID = SecurityUtil.getAuthenticatedUserID();
@@ -47,9 +51,9 @@ public class AssignmentService {
             }
         }
 
-        PageRequest pageRequest = PageRequest.of(page, size, 
-            Sort.by(Sort.Direction.DESC, "dueDate"));
-            
+        PageRequest pageRequest = PageRequest.of(page, size,
+                Sort.by(Sort.Direction.DESC, "dueDate"));
+
         return assignmentRepo.findAllByAnnouncement_Course_CourseCode(courseCode, pageRequest);
     }
 
@@ -76,11 +80,11 @@ public class AssignmentService {
         }
 
         Assignment existingAssignment = getAssignmentById(id);
-        
+
         existingAssignment.setAnnouncement(assignment.getAnnouncement());
         existingAssignment.setDueDate(assignment.getDueDate());
         existingAssignment.setDerivingTasks(assignment.getDerivingTasks());
-        
+
         return assignmentRepo.save(existingAssignment);
     }
 

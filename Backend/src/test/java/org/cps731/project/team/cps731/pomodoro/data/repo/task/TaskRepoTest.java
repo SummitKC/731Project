@@ -39,10 +39,10 @@ public class TaskRepoTest {
 
     @Test
     public void findAllByOwnerIsJohnReturnsTasks() {
-        var userJohn = new User("John", "password", UserType.STUDENT);
-        var studentJohn = new Student(userJohn);
-        var userSteve = new User("Steve", "password", UserType.PROFESSOR);
-        var profSteve = new Professor(userSteve);
+        var userJohn = new User("John", "john.smith@torontomu.ca", "password", UserType.STUDENT);
+        var studentJohn = new Student(userJohn, 1L);
+        var userSteve = new User("Steve", "steve.smith@torontomu.ca", "password", UserType.PROFESSOR);
+        var profSteve = new Professor(userSteve, 2L);
         var introToDatabaseSystems = new Course("CPS510", "Intro to database system", Term.FALL, 2024, false, profSteve);
         var announcementForAssignment1 = new Announcement("Announcement 1 is out", Timestamp.from(Instant.now()), "Hello World", introToDatabaseSystems);
         var assignment1 = new Assignment(announcementForAssignment1, Timestamp.from(Instant.now().plus(14, ChronoUnit.DAYS)));
@@ -67,17 +67,17 @@ public class TaskRepoTest {
         entityManager.persist(assignment1Task);
         entityManager.flush();
 
-        var tasks = repo.findAllByOwnerId(studentJohn.getId());
+        var tasks = repo.findAllByOwnerID(studentJohn.getID());
 
         assertThat(tasks, equalTo(Set.of(assignment1Task)));
     }
 
     @Test
     public void findAllByOwnerIsJohnAndStateIsInProgressReturnsEmptySet() {
-        var userJohn = new User("John", "password", UserType.STUDENT);
-        var studentJohn = new Student(userJohn);
-        var userSteve = new User("Steve", "password", UserType.PROFESSOR);
-        var profSteve = new Professor(userSteve);
+        var userJohn = new User("John", "john.smith@torontomu.ca", "password", UserType.STUDENT);
+        var studentJohn = new Student(userJohn, 1L);
+        var userSteve = new User("Steve", "steve.smith@torontomu.ca", "password", UserType.PROFESSOR);
+        var profSteve = new Professor(userSteve, 2L);
         var introToDatabaseSystems = new Course("CPS510", "Intro to database system", Term.FALL, 2024, false, profSteve);
         var announcementForAssignment1 = new Announcement("Announcement 1 is out", Timestamp.from(Instant.now()), "Hello World", introToDatabaseSystems);
         var assignment1 = new Assignment(announcementForAssignment1, Timestamp.from(Instant.now().plus(14, ChronoUnit.DAYS)));
@@ -102,17 +102,17 @@ public class TaskRepoTest {
         entityManager.persist(assignment1Task);
         entityManager.flush();
 
-        var tasks = repo.findAllByOwnerIdAndStateIsIn(studentJohn.getId(), Set.of(TaskState.IN_PROGRESS));
+        var tasks = repo.findAllByOwnerIDAndStateIsIn(studentJohn.getID(), Set.of(TaskState.IN_PROGRESS));
 
         assertThat(tasks, empty());
     }
 
     @Test
     public void findAllByOwnerIsJohnAndStateIsInProgressToDoReviewingOrDoneAndAssignmentIssueTimeBeforeOneMonthAgoReturnsJohnsAssignmentsFromThePastMonth() {
-        var userJohn = new User("John", "password", UserType.STUDENT);
-        var studentJohn = new Student(userJohn);
-        var userSteve = new User("Steve", "password", UserType.PROFESSOR);
-        var profSteve = new Professor(userSteve);
+        var userJohn = new User("John", "john.smith@torontomu.ca", "password", UserType.STUDENT);
+        var studentJohn = new Student(userJohn, 1L);
+        var userSteve = new User("Steve", "steve.smith@torontomu.ca", "password", UserType.PROFESSOR);
+        var profSteve = new Professor(userSteve, 2L);
         var introToDatabaseSystems = new Course("CPS510", "Intro to database system", Term.FALL, 2024, false, profSteve);
         var announcementForAssignment1 = new Announcement("Announcement 1 is out", Timestamp.from(Instant.now().minus(50, ChronoUnit.DAYS)), "Hello World", introToDatabaseSystems);
         var assignment1 = new Assignment(announcementForAssignment1, Timestamp.from(Instant.now().minus(14, ChronoUnit.DAYS)));
@@ -161,7 +161,7 @@ public class TaskRepoTest {
         entityManager.persist(assignment3Task);
         entityManager.flush();
 
-        var tasks = repo.findAllByOwnerIdAndStateIsInAndDerivedFrom_Announcement_IssueTimeAfter(studentJohn.getId(), Set.of(TaskState.TODO, TaskState.IN_PROGRESS, TaskState.REVIEWING, TaskState.COMPLETE), Timestamp.from(Instant.now().minus(30, ChronoUnit.DAYS)));
+        var tasks = repo.findAllByOwnerIDAndStateIsInAndDerivedFrom_Announcement_IssueTimeAfter(studentJohn.getID(), Set.of(TaskState.TODO, TaskState.IN_PROGRESS, TaskState.REVIEWING, TaskState.COMPLETE), Timestamp.from(Instant.now().minus(30, ChronoUnit.DAYS)));
 
         assertThat(tasks, equalTo(Set.of(assignment2Task, assignment3Task)));
     }

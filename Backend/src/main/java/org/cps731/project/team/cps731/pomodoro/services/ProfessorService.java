@@ -12,8 +12,12 @@ import java.util.Set;
 @Service
 public class ProfessorService {
 
+    private final ProfessorRepo professorRepo;
+
     @Autowired
-    private ProfessorRepo professorRepo;
+    public ProfessorService(ProfessorRepo professorRepo) {
+        this.professorRepo = professorRepo;
+    }
 
     public List<Professor> getAllProfessors() {
         return professorRepo.findAll();

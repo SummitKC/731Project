@@ -9,7 +9,7 @@ public class WorkAnalytics {
     @EmbeddedId
     private WorkAnalyticsID id;
     @ManyToOne
-    @MapsId("studentID")
+    @MapsId("ID")
     @JoinColumn(name = "student", referencedColumnName = "ID")
     private Student student;
     private Long pomodorosCompleted;

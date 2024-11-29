@@ -86,7 +86,7 @@ public class JWTAuthenticationFilterTest {
         var response = mock(HttpServletResponse.class);
         var filterChain = mock(FilterChain.class);
         var userID = 1L;
-        var user = new User("john.smith@torontomu.ca", "password", UserType.STUDENT);
+        var user = new User("John", "john.smith@torontomu.ca", "password", UserType.STUDENT);
         user.setId(userID);
         var token = "sometokengoeshere";
         var decodedJWT = mock(DecodedJWT.class);

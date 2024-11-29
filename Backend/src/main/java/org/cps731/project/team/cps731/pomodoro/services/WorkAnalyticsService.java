@@ -13,8 +13,12 @@ import java.util.List;
 @Transactional
 public class WorkAnalyticsService {
 
+    private final WorkAnalyticsRepo workAnalyticsRepo;
+
     @Autowired
-    private WorkAnalyticsRepo workAnalyticsRepo;
+    public WorkAnalyticsService(WorkAnalyticsRepo workAnalyticsRepo) {
+        this.workAnalyticsRepo = workAnalyticsRepo;
+    }
 
     public List<WorkAnalytics> getAllWorkAnalytics() {
         return workAnalyticsRepo.findAll();

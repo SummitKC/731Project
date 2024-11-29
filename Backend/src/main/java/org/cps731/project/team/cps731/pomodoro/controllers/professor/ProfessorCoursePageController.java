@@ -26,14 +26,16 @@ import java.util.stream.Collectors;
 @PreAuthorize("hasRole('PROFESSOR')")
 public class ProfessorCoursePageController {
 
-    @Autowired
-    private CourseService courseService;
+    private final CourseService courseService;
+    private final AnnouncementService announcementService;
+    private final AssignmentService assignmentService;
 
     @Autowired
-    private AnnouncementService announcementService;
-
-    @Autowired
-    private AssignmentService assignmentService;
+    public ProfessorCoursePageController(CourseService courseService, AssignmentService assignmentService, AnnouncementService announcementService) {
+        this.courseService = courseService;
+        this.assignmentService = assignmentService;
+        this.announcementService = announcementService;
+    }
 
     @GetMapping("/{courseCode}")
     public ResponseEntity<CourseDetailsDTO> getCourseDetails(

@@ -34,31 +34,31 @@ public class CourseRepoTest {
 
     @Test
     public void getCoursesByCreatedByJohnReturnsIntroToDBSystemsAndSoftEng() {
-        var userJohn = new User("John", "password", UserType.PROFESSOR);
+        var userJohn = new User("John Smith", "john.smith@torontomu.ca", "password", UserType.PROFESSOR);
         var johnCourses = new HashSet<Course>();
-        var professorJohn = new Professor(1L, userJohn, johnCourses);
+        entityManager.persist(userJohn);
+        var professorJohn = new Professor(userJohn.getId(), 1L, userJohn, johnCourses);
         johnCourses.addAll(List.of(
                 new Course("CPS510", "Introduction to Database Systems", Term.FALL, 2024, false, professorJohn, Set.of(), Set.of()),
                 new Course("CPS406", "Introduction to Software Engineering", Term.FALL, 2024, false, professorJohn, Set.of(), Set.of())
         ));
-        entityManager.persist(userJohn);
         entityManager.persist(professorJohn);
         for(var course : johnCourses) {
             entityManager.persist(course);
         }
         entityManager.flush();
 
-        var courses = repo.findCoursesByCreatedById(userJohn.getId());
+        var courses = repo.findCoursesByCreatedByUserID(userJohn.getId());
 
         assertThat(courses, equalTo(johnCourses));
     }
 
     @Test
     public void getCoursesTakeByContainsStudentJohnReturnsIntoToDBSystems() {
-        var userJohn = new User("John", "password", UserType.STUDENT);
-        var userBob = new User("Bob", "password", UserType.PROFESSOR);
-        var studentJohn = new Student(userJohn);
-        var profBob = new Professor(userBob);
+        var userJohn = new User("John", "john.smith@torontomu.ca", "password", UserType.STUDENT);
+        var userBob = new User("Bob", "bob.smith@torontomu.ca", "password", UserType.PROFESSOR);
+        var studentJohn = new Student(userJohn, 1L);
+        var profBob = new Professor(userBob, 2L);
         var introToDatabaseSystems = new Course("CPS510", "Intro to Database Systems", Term.FALL, 2024, false, profBob);
         introToDatabaseSystems.setTakenBy(Set.of(studentJohn));
         introToDatabaseSystems.setCreatedBy(profBob);
@@ -72,7 +72,7 @@ public class CourseRepoTest {
         entityManager.persist(introToDatabaseSystems);
         entityManager.flush();
 
-        var courses = repo.findCoursesByTakenById(studentJohn.getId());
+        var courses = repo.findCoursesByTakenByID(studentJohn.getID());
         assertThat(courses, equalTo(Set.of(introToDatabaseSystems)));
     }
 

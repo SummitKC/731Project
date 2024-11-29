@@ -16,6 +16,6 @@ public interface TimeEntryRepo extends JpaRepository<TimeEntry, Long> {
      * @param after The time stamp the time entries must be after.
      * @return A set of time entries matching this criteria.
      */
-    Set<TimeEntry> findAllByTask_OwnerIdAndStartTimeAfter(Long studentID, Timestamp after);
+    Set<TimeEntry> findAllByTask_OwnerIDAndStartTimeAfter(Long studentID, Timestamp after);
 
 }

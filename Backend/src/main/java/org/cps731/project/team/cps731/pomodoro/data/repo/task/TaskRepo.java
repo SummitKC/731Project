@@ -12,8 +12,8 @@ import java.util.Set;
 @Repository
 public interface TaskRepo extends JpaRepository<Task, Long> {
 
-    Set<Task> findAllByOwnerId(Long id);
-    Set<Task> findAllByOwnerIdAndStateIsIn(Long id, Collection<TaskState> states);
+    Set<Task> findAllByOwnerID(Long id);
+    Set<Task> findAllByOwnerIDAndStateIsIn(Long id, Collection<TaskState> states);
 
     /**
      * Find all tasks from a student such that its state is in the given collection and the assignment the task is for was issued after the given issueTime
@@ -22,6 +22,6 @@ public interface TaskRepo extends JpaRepository<Task, Long> {
      * @param assignmentIssuedAfter A time the assignments are issued after.
      * @return A set of tasks matching this criteria.
      */
-    Set<Task> findAllByOwnerIdAndStateIsInAndDerivedFrom_Announcement_IssueTimeAfter(Long ownerId, Collection<TaskState> validStates, Timestamp assignmentIssuedAfter);
+    Set<Task> findAllByOwnerIDAndStateIsInAndDerivedFrom_Announcement_IssueTimeAfter(Long ownerId, Collection<TaskState> validStates, Timestamp assignmentIssuedAfter);
 
 }

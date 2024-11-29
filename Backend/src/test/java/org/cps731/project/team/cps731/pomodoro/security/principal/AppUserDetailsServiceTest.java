@@ -28,7 +28,7 @@ public class AppUserDetailsServiceTest {
     @Test
     public void shouldReturnAppUserDetailsWithStudentRoleForStudentsID() {
         var userID = 1L;
-        var user = new User("john.smith@torontomu.ca", "password", UserType.STUDENT);
+        var user = new User( "John", "john.smith@torontomu.ca", "password", UserType.STUDENT);
         user.setId(userID);
         when(userRepo.findById(userID))
                 .thenReturn(Optional.of(user));
@@ -43,7 +43,7 @@ public class AppUserDetailsServiceTest {
     @Test
     public void shouldReturnAppUserDetailsWithProfessorRoleForProfessorsID() {
         var userID = 1L;
-        var user = new User("jane.smith@torontomu.ca", "password", UserType.PROFESSOR);
+        var user = new User("Jane Smith", "jane.smith@torontomu.ca", "password", UserType.PROFESSOR);
         user.setId(userID);
         when(userRepo.findById(userID))
                 .thenReturn(Optional.of(user));
