@@ -8,7 +8,7 @@ const Course = ({ courseCode, courseName, courseIcon }) => {
     <div className='course-wrapper'>
       <div className='course'></div>
       <div className='course-text'>
-        <span>{courseCode} - {courseName}</span>
+        <span>{courseName}</span>
       </div>
     </div>
   );

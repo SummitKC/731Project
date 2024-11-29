@@ -3,17 +3,48 @@ import '../../assets/modal.css';
 import '../../assets/global.css';
 
 
-const CreateCourseModal = ({ show, handleClose, handleSubmit, courseCode, setCourseCode, courseName, setCourseName, year, setYear, term, setTerm, errorMessage }) => {
+const CreateCourseModal = (
+  { show, 
+    handleClose, 
+    handleSubmitCreateCourse, 
+    courseCode, 
+    setCourseCode, 
+    courseName, 
+    setCourseName, 
+    year, 
+    setYear, 
+    term, 
+    setTerm, 
+    setErrorMessage,
+    errorMessage }) => {
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (Number(year) < 2023 || Number(year) > 2040){
+      setErrorMessage('Please Enter a valid year.');
+      return;
+    }
+    
+    if (String(term) === " " || !(String(term) === "FALL" || String(term) === "WINTER" || String(term) === "SPRING")){
+      setErrorMessage('Invalid Term');
+      
+    }
+    
+    handleSubmitCreateCourse(e);
+  };
+  
+  
   return (
     <div className={`modal ${show ? 'show' : ''}`}>
       <div className="modal-content">
         <span className="close" onClick={handleClose}>&times;</span>
         <h2>Create Course</h2>
         <form onSubmit={handleSubmit}>
-          <label>Course Code:</label>
-          <input type="text" value={courseCode} onChange={(e) => setCourseCode(e.target.value)} required />
+          <label>Unique Course Code:</label>
+          <input maxLength={255} minLength={1} type="text" value={courseCode} onChange={(e) => setCourseCode(e.target.value)} required />
           <label>Course Name:</label>
-          <input type="text" value={courseName} onChange={(e) => setCourseName(e.target.value)} required />
+          <input maxLength={255} minLength={1} type="text" value={courseName} onChange={(e) => setCourseName(e.target.value)} required />
           
           <label>Year:</label>
           <input type="number" value={year} onChange={(e) => setYear(e.target.value)} required />

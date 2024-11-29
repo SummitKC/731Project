@@ -1,8 +1,16 @@
-import React from 'react';
-import Announcement from './Announcement'; // Adjust the path if necessary
-import '../../assets/coursepage.css';
+import React, { useState } from 'react';
+import Announcement from './Announcement';
+import { useNavigate } from 'react-router-dom';
 
-const AnnouncementBoard = ({ announcements, type }) => {
+import '../../assets/coursepage.css';
+import NewAnnouncementModal from '../Course/NewAnnouncementModal';
+
+const AnnouncementBoard = ({ announcements, type, courseCode, fetchCourseData }) => {
+  const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  
+  const navigate = useNavigate();
+
   // Group announcements by post date
   const groupedAnnouncements = announcements.reduce((acc, announcement) => {
     const { announcementPostDate } = announcement;
@@ -16,13 +24,42 @@ const AnnouncementBoard = ({ announcements, type }) => {
   // Sort dates in descending order
   const sortedDatesDesc = Object.keys(groupedAnnouncements).sort((a, b) => new Date(b) - new Date(a));
 
+  const handleNewAnnouncement = (data) => {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      console.log('Expired or bad token, login again!');
+      navigate('/login');
+    } else {
+    
+      fetch(`http://localhost:8080/api/professor/course/${courseCode}/announcement`, {
+        method: 'POST',
+        headers: {
+          Authorization: `${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(result => {
+        console.log('New announcement created:', result);
+        setShowAnnouncementModal(false);
+        fetchCourseData();
+      })
+      .catch(error => {
+        console.error('Error creating announcement:', error);
+        setErrorMessage('Error creating announcement. Please try again.');
+      }); 
+    }
+  };
+
   return (
     <div className='announcement-wrapper'>
       <h2>Announcements</h2>
       
       <div className='announcement-box'>
         <div style={type === 'professor' ? {} : { display: 'none' }} className='announcement-wrapper-header'>
-          <button className='generic-button'>New Announcement</button>
+          <button className='generic-button' onClick={() => setShowAnnouncementModal(true)}>New Announcement</button>
         </div>
         <br style={type === 'professor' ? { display: 'none' } : {}} />
         <br style={type === 'professor' ? { display: 'none' } : {}} />
@@ -44,6 +81,13 @@ const AnnouncementBoard = ({ announcements, type }) => {
           </div>
         ))}
       </div>
+      <NewAnnouncementModal
+        show={showAnnouncementModal}
+        handleClose={() => setShowAnnouncementModal(false)}
+        handleSubmit={handleNewAnnouncement}
+        courseCode={courseCode}
+        setErrorMessage={setErrorMessage}
+      />
     </div>
   );
 };

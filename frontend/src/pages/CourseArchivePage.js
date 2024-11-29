@@ -13,8 +13,8 @@ const CourseArchivePage = () => {
   const isPortrait = useMediaQuery({ query: '(orientation: portrait)' });
   const isRetina = useMediaQuery({ query: '(min-resolution: 2dppx)' });
 
-  const firstName = "Jane";
-  const lastName = "Doe";
+  const firstName = localStorage.getItem('name')?.split(' ')[0] || " ";
+  const lastName = localStorage.getItem('name')?.split(' ')[1] || " ";
   const initials = `${firstName[0]}${lastName[0]}`;
   const isMobile = useMediaQuery({ query: '(max-width: 700px)' });
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const CourseArchivePage = () => {
       navigate('/login');
     } else {
       // Fetch courses
-      fetch('http://localhost:8080/api/professor/dashboard/courses', {
+      fetch('http://localhost:8080/api/professor/dashboard/courses/archived', {
         method: 'GET',
         headers: {
           Authorization: `${token}`,
@@ -38,11 +38,9 @@ const CourseArchivePage = () => {
       })
       .then(response => response.json())
       .then(data => {
-        // Filter only the archived courses
-        const archivedCourses = data.filter(course => course.archived === true);
-        
+
         // Group courses by term and year
-        const grouped = archivedCourses.reduce((acc, course) => {
+        const grouped = data.reduce((acc, course) => {
           const key = `${course.term} ${course.year}`;
           if (!acc[key]) acc[key] = [];
           acc[key].push(course);
@@ -67,8 +65,7 @@ const CourseArchivePage = () => {
         
         <div className="main-container">
           <div className='header-container'>
-            <h1 style={isMobile ? {} : { paddingTop: '10px', paddingLeft: '30px' }}>Welcome to your Dashboard</h1>    
-            <Link className="generic-button" to="/professor/home">Create Course</Link>   
+            <h1 style={isMobile ? {} : { paddingTop: '10px', paddingLeft: '30px' }}>Your Archived Courses</h1>    
           </div>
           {Object.keys(groupedCourses).map((termYear, index) => (
             <div key={index} className='term-group'>

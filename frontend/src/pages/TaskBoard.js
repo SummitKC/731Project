@@ -4,6 +4,7 @@ import '../assets/global.css';
 import { useMediaQuery } from 'react-responsive';
 import StudentSidebar from '../components/Common/StudentSidebar';
 import Board from '../components/TaskBoard/Board';
+import CreateTaskModal from '../components/TaskBoard/CreateTaskModal';
 import { useNavigate } from 'react-router-dom';
 
 const TaskBoard = () => {
@@ -17,8 +18,11 @@ const TaskBoard = () => {
   const initials = `${firstName[0]}${lastName[0]}`;
 
   const [tasks, setTasks] = useState([]);
-  const term = "Fall 2024";
+  const [assignmentsByCourse, setAssignmentsByCourse] = useState({});
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     
@@ -45,8 +49,41 @@ const TaskBoard = () => {
         setTasks(fetchedTasks);
       })
       .catch(error => console.error('Error fetching tasks:', error));
+      
+      // Fetch courses and their assignments
+      fetch('http://localhost:8080/api/student/dashboard/courses', {
+        method: 'GET',
+        headers: {
+          Authorization: `${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(coursesData => {
+        // Fetch assignments for each course
+        const fetchAssignmentsPromises = coursesData.map(course => 
+          fetch(`http://localhost:8080/api/student/course/${course.courseCode}/assignments`, {
+            method: 'GET',
+            headers: {
+              Authorization: `${token}`,
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(response => response.json())
+          .then(assignments => ({ courseName: course.name, courseCode: course.courseCode, assignments }))
+        );
+        return Promise.all(fetchAssignmentsPromises);
+      })
+      .then(assignmentsData => {
+        const assignmentsByCourse = assignmentsData.reduce((acc, { courseName, assignments }) => {
+          acc[courseName] = assignments;
+          return acc;
+        }, {});
+        setAssignmentsByCourse(assignmentsByCourse);
+      })
+      .catch(error => console.error('Error fetching courses or assignments:', error));
     }
-  }, []);
+  }, [navigate]);
 
   const groupedTasks = {};
 
@@ -81,6 +118,40 @@ const TaskBoard = () => {
   const inProgressTasks = getTasksByStatus('IN_PROGRESS');
   const completedTasks = getTasksByStatus('COMPLETED');
 
+  const handleCreateTaskClick = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleSubmitCreateTask = (taskData, assignmentID) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    } else {
+      
+      try{
+      const response = fetch(`http://localhost:8080/api/student/taskboard/tasks?assignment=${assignmentID}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(taskData),
+      })
+      if (response.ok){
+        window.location.reload();
+      } else {
+        setErrorMessage("error occured while creating task")
+      }
+      } catch (e){
+        console.log(e);
+      }
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <StudentSidebar firstName={firstName} lastName={lastName} />
@@ -93,7 +164,7 @@ const TaskBoard = () => {
         <div className="main-content">
           <div className='header-container'>
             <h1>Your Taskboard</h1>      
-            <button className='generic-button'>Create Task</button>
+            <button className='generic-button' onClick={handleCreateTaskClick}>Create Task</button>
           </div>
           <div className='dashboard-wrapper'>  
             <Board title="TODO" tasks={todoTasks} />
@@ -102,6 +173,13 @@ const TaskBoard = () => {
           </div>
         </div>
       </div>
+      <CreateTaskModal
+        show={showModal}
+        handleClose={handleCloseModal}
+        handleSubmit={handleSubmitCreateTask}
+        errorMessage={errorMessage}
+        assignmentsByCourse={assignmentsByCourse}
+      />
     </div>
   );
 };
