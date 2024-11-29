@@ -1,10 +1,8 @@
 package org.cps731.project.team.cps731.pomodoro.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,13 +12,6 @@ import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
-
-    private final UserDetailsService userDetailsService;
-
-    @Autowired
-    public ControllerExceptionHandler(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception e) {

@@ -25,11 +25,9 @@ import java.util.stream.Collectors;
 public class StudentTaskBoardController {
 
     private final TaskService taskService;
-    private final JwtUtil jwtUtil;
 
-    public StudentTaskBoardController(TaskService taskService, JwtUtil jwtUtil) {
+    public StudentTaskBoardController(TaskService taskService) {
         this.taskService = taskService;
-        this.jwtUtil = jwtUtil;
     }
 
     @GetMapping("/tasks")
@@ -63,7 +61,7 @@ public class StudentTaskBoardController {
     public ResponseEntity<Void> createTask(@RequestBody TaskDTO taskDTO, @RequestParam Long assignment) throws URISyntaxException {
         var createdTask = taskService.createTask(taskDTO, assignment);
         if (createdTask != null) {
-            return ResponseEntity.created(new URI("/api/tasks/" + createdTask.getID()))
+            return ResponseEntity.created(new URI("/api/student/taskboard/tasks/" + createdTask.getID()))
                     .build();
         }
         throw new RuntimeException("Unable to create task");
