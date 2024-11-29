@@ -36,7 +36,7 @@ public class StudentAnalyticsController {
         var studentId = SecurityUtil.getAuthenticatedUserID();
         
         // Get all tasks
-        var allTasks = taskService.getAllTasksByOwnnerID(studentId);
+        var allTasks = taskService.getAllTasksByOwnerID(studentId);
         var completedTasks = taskService.getTaskByState(studentId, TaskState.COMPLETE);
         
         // Get this month's completed tasks
