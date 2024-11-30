@@ -110,4 +110,8 @@ public class TaskDTO {
         result = result * PRIME + ($taskDate == null ? 43 : $taskDate.hashCode());
         return result;
     }
+
+    public String toString() {
+        return "TaskDTO(id=" + this.getId() + ", taskName=" + this.getTaskName() + ", taskStatus=" + this.getTaskStatus() + ", taskPriority=" + this.getTaskPriority() + ", taskDate=" + this.getTaskDate() + ")";
+    }
 }
