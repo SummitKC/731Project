@@ -16,6 +16,23 @@ const Task = ({ id, taskName, taskPriority, taskStatus, taskDate, board }) => {
   const priorityClass = taskPriority.toLowerCase();
 
   const [formattedStatus, setFormattedStatus] = useState(taskStatus);
+  const [formattedDate, setTaskDate] = useState((new Date(taskDate)).toISOString().split('T')[0]);
+  
+  const [taskTime, setTaskTime] = 
+    useState((new Date(taskDate)).
+    toISOString().split('T')[1].split(':')[0] + ':' + (new Date(taskDate)).
+    toISOString().split('T')[1].split(':')[1]);
+  
+  const [taskFormattedTime, setTaskFormattedTime] = useState(() => {
+    const [hours, minutes] = taskTime.split(':');
+    const isPM = parseInt(hours) >= 12;
+    const formattedHours = isPM ? parseInt(hours) - 12 : parseInt(hours);
+    return `${formattedHours}:${minutes} ${isPM ? 'PM'
+   : 'AM'}`;
+  });
+  
+  const [formattedDateTime, setFormattedDateTime] = useState(formattedDate + " " + taskFormattedTime);
+  
   
   if (formattedStatus === 'IN_PROGRESS'){
     setFormattedStatus('IN PROGRESS')
@@ -30,7 +47,7 @@ const Task = ({ id, taskName, taskPriority, taskStatus, taskDate, board }) => {
 
   let priorityOrDateElement = null;
   if (taskStatus === 'COMPLETE') {
-    priorityOrDateElement = <p className='rmar-30'>{taskDate}</p>;
+    priorityOrDateElement = <p className='rmar-30'>{formattedDateTime}</p>;
   } else {
     priorityOrDateElement = <p className={`rmar-30 ${priorityClass}`}>{taskPriority}</p>;
   }

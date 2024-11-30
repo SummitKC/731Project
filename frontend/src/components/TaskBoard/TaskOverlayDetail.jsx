@@ -51,7 +51,7 @@ const TaskDetailOverlay = ({ selectedTask, handleClose }) => {
     }
   };
 
-  const now = (new Date()).toISOString();
+  
   
 
   const onCancel = async () => {
@@ -60,6 +60,19 @@ const TaskDetailOverlay = ({ selectedTask, handleClose }) => {
 
   const handleComplete = async () => {
     try {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const date = now.getDate();  
+      const fulldate = year + '-' + month + '-' + date;
+      const th = now.getHours();
+      const tm = now.getMinutes();
+      const fulltime = th + ':' + tm + ':00';
+      //2024-11-30T21:52:22.964Z
+      const iso = fulldate + 'T' + fulltime + 'Z'; 
+      console.log('date:' + iso )
+  
+      
       const response = await fetch(`http://localhost:8080/api/student/taskboard/tasks/${selectedTask.id}`, {
         method: 'PUT',
         headers: {
@@ -70,14 +83,14 @@ const TaskDetailOverlay = ({ selectedTask, handleClose }) => {
           taskName: selectedTask.taskName,
           taskStatus: "COMPLETE",
           taskPriority: selectedTask.taskPriority,
-          taskDate: String(now)
+          taskDate: String(iso)
         })
       });
 
       if (response.ok) {
         console.log('Task marked as complete.');
         handleClose();
-        window.location.reload();
+        //window.location.reload();
       } else {
         console.error('Error marking task as complete:', response.statusText);
       }
