@@ -21,6 +21,7 @@ import org.cps731.project.team.cps731.pomodoro.matchers.IsCloseToLong;
 import org.cps731.project.team.cps731.pomodoro.security.filter.JwtAuthenticationFilter;
 import org.cps731.project.team.cps731.pomodoro.security.principal.authority.AppAuthorities;
 import org.cps731.project.team.cps731.pomodoro.services.PomodoroService;
+import org.cps731.project.team.cps731.pomodoro.services.StudentService;
 import org.cps731.project.team.cps731.pomodoro.services.TaskService;
 import org.cps731.project.team.cps731.pomodoro.services.TimeEntryService;
 import org.junit.jupiter.api.BeforeAll;
@@ -68,11 +69,16 @@ public class StudentPomodoroControllerTest {
     private JwtAuthenticationFilter jwtAuthenticationFilter;
     @MockBean
     private TimeEntryService timeEntryService;
+    @MockBean
+    private StudentService studentService;
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final ObjectWriter WRITER = MAPPER.writer();
     private static Task mockTask;
+    private static Task mockTask2;
     private static User mockUser;
+    private static User mockUser2;
     private static Student mockStudent;
+    private static Student mockStudent2;
 
     @BeforeAll
     public static void setupMocks() {
@@ -80,6 +86,10 @@ public class StudentPomodoroControllerTest {
         mockUser.setId(1L);
         mockStudent = new Student(mockUser, mockUser.getId());
         mockStudent.setID(mockUser.getId());
+        mockUser2 = new User("Syed Smith", "syed.smith@torontomu.ca", "password", UserType.STUDENT);
+        mockUser2.setId(2L);
+        mockStudent2 = new Student(mockUser2, mockUser2.getId());
+        mockStudent2.setID(mockUser2.getId());
         mockTask = Task.builder()
                 .name("Finish a1")
                 .priority(TaskPriority.NORMAL)
@@ -88,6 +98,14 @@ public class StudentPomodoroControllerTest {
                 .owner(mockStudent)
                 .build();
         mockTask.setID(1L);
+        mockTask2 = Task.builder()
+                .name("Finish a2")
+                .priority(TaskPriority.NORMAL)
+                .plannedDueDate(Timestamp.from(Instant.now().plus(7, ChronoUnit.DAYS)))
+                .state(TaskState.REVIEWING)
+                .owner(mockStudent2)
+                .build();
+        mockTask2.setID(2L);
     }
 
     @BeforeEach
@@ -108,6 +126,8 @@ public class StudentPomodoroControllerTest {
 
     @Test
     public void shouldReturnPomSessionForStartedPom() throws Exception {
+        when(studentService.getStudentById(mockStudent.getID()))
+                .thenReturn(mockStudent);
         when(taskService.getTaskById(mockTask.getID())).thenReturn(mockTask);
 
         mockMvc.perform(post("/student/pomodoro/start/" + mockTask.getID() + "?mins=25"))
@@ -129,6 +149,8 @@ public class StudentPomodoroControllerTest {
                 .pauseTime(0L)
                 .resumeTime(0L)
                 .build();
+        when(studentService.getStudentById(mockStudent.getID()))
+                .thenReturn(mockStudent);
         when(taskService.getTaskById(mockTask.getID())).thenReturn(mockTask);
         doReturn(mockPom)
                 .when(pomodoroService)
@@ -155,6 +177,8 @@ public class StudentPomodoroControllerTest {
                 .pauseTime(pauseTime)
                 .resumeTime(0L)
                 .build();
+        when(studentService.getStudentById(mockStudent.getID()))
+                .thenReturn(mockStudent);
         when(taskService.getTaskById(mockTask.getID())).thenReturn(mockTask);
         doReturn(mockPom)
                 .when(pomodoroService)
@@ -179,6 +203,8 @@ public class StudentPomodoroControllerTest {
     @Test
     public void shouldReturnPomSessionWhenEndingPomAndSaveTimeLog() throws Exception {
         when(taskService.getTaskById(mockTask.getID())).thenReturn(mockTask);
+        when(studentService.getStudentById(mockStudent.getID()))
+                .thenReturn(mockStudent);
         var pauseTime = Instant.now().minus(5, ChronoUnit.MINUTES).toEpochMilli();
         var mockPom = PomSession.builder()
                 .isPaused(false)
@@ -215,6 +241,42 @@ public class StudentPomodoroControllerTest {
             return true;
         }));
 
+    }
+
+    @Test
+    public void shouldDenyStudentFromStartingSessionForUnownedTask() throws Exception {
+        when(taskService.getTaskById(mockTask2.getID())).thenReturn(mockTask2);
+        when(studentService.getStudentById(mockStudent.getID())).thenReturn(mockStudent);
+
+        mockMvc.perform(post("/student/pomodoro/start/" + mockTask2.getID() + "?mins=25"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldDenyStudentFromPausingSessionForUnownedTask() throws Exception {
+        when(taskService.getTaskById(mockTask2.getID())).thenReturn(mockTask2);
+        when(studentService.getStudentById(mockStudent.getID())).thenReturn(mockStudent);
+
+        mockMvc.perform(post("/student/pomodoro/pause/" + mockTask2.getID()))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldDenyStudentFromResumingSessionForUnownedTask() throws Exception {
+        when(taskService.getTaskById(mockTask2.getID())).thenReturn(mockTask2);
+        when(studentService.getStudentById(mockStudent.getID())).thenReturn(mockStudent);
+
+        mockMvc.perform(post("/student/pomodoro/resume/" + mockTask2.getID()))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldDenyStudentFromEndingSessionForUnownedTask() throws Exception {
+        when(taskService.getTaskById(mockTask2.getID())).thenReturn(mockTask2);
+        when(studentService.getStudentById(mockStudent.getID())).thenReturn(mockStudent);
+
+        mockMvc.perform(post("/student/pomodoro/end/" + mockTask2.getID()))
+                .andExpect(status().isForbidden());
     }
 
 }

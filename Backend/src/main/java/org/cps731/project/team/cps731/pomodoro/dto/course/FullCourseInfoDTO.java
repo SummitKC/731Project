@@ -2,41 +2,30 @@ package org.cps731.project.team.cps731.pomodoro.dto.course;
 
 import org.cps731.project.team.cps731.pomodoro.data.model.assignment.Assignment;
 import org.cps731.project.team.cps731.pomodoro.data.model.course.Course;
-import org.cps731.project.team.cps731.pomodoro.data.model.course.Term;
-import org.cps731.project.team.cps731.pomodoro.dto.assignment.AssignmentDTO;
 import org.cps731.project.team.cps731.pomodoro.dto.announcement.AnnouncementDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.assignment.AssignmentDTO;
 
 import java.util.List;
 
 public class FullCourseInfoDTO {
 
-    private String courseName;
-    private Term courseTerm;
-    private Integer year;
+    private CourseDTO course;
     private List<AnnouncementDTO> announcements;
     private List<AssignmentDTO> assignments;
+    private String professor;
 
     public FullCourseInfoDTO(Course course, List<Assignment> assignments) {
-        courseName = course.getName();
-        courseTerm = course.getTerm();
-        year = course.getYear();
+        this.course = new CourseDTO(course);
         announcements = course.getAnnouncements().stream().map(AnnouncementDTO::new).toList();
         this.assignments = assignments.stream().map(AssignmentDTO::new).toList();
+        professor = course.getCreatedBy().getUser().getName();
     }
 
     public FullCourseInfoDTO() {
     }
 
-    public String getCourseName() {
-        return this.courseName;
-    }
-
-    public Term getCourseTerm() {
-        return this.courseTerm;
-    }
-
-    public Integer getYear() {
-        return this.year;
+    public CourseDTO getCourse() {
+        return this.course;
     }
 
     public List<AnnouncementDTO> getAnnouncements() {
@@ -47,16 +36,12 @@ public class FullCourseInfoDTO {
         return this.assignments;
     }
 
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
+    public String getProfessor() {
+        return this.professor;
     }
 
-    public void setCourseTerm(Term courseTerm) {
-        this.courseTerm = courseTerm;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
+    public void setCourse(CourseDTO course) {
+        this.course = course;
     }
 
     public void setAnnouncements(List<AnnouncementDTO> announcements) {
@@ -67,4 +52,51 @@ public class FullCourseInfoDTO {
         this.assignments = assignments;
     }
 
+    public void setProfessor(String professor) {
+        this.professor = professor;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof FullCourseInfoDTO)) return false;
+        final FullCourseInfoDTO other = (FullCourseInfoDTO) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$course = this.getCourse();
+        final Object other$course = other.getCourse();
+        if (this$course == null ? other$course != null : !this$course.equals(other$course)) return false;
+        final Object this$announcements = this.getAnnouncements();
+        final Object other$announcements = other.getAnnouncements();
+        if (this$announcements == null ? other$announcements != null : !this$announcements.equals(other$announcements))
+            return false;
+        final Object this$assignments = this.getAssignments();
+        final Object other$assignments = other.getAssignments();
+        if (this$assignments == null ? other$assignments != null : !this$assignments.equals(other$assignments))
+            return false;
+        final Object this$professor = this.getProfessor();
+        final Object other$professor = other.getProfessor();
+        if (this$professor == null ? other$professor != null : !this$professor.equals(other$professor)) return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof FullCourseInfoDTO;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $course = this.getCourse();
+        result = result * PRIME + ($course == null ? 43 : $course.hashCode());
+        final Object $announcements = this.getAnnouncements();
+        result = result * PRIME + ($announcements == null ? 43 : $announcements.hashCode());
+        final Object $assignments = this.getAssignments();
+        result = result * PRIME + ($assignments == null ? 43 : $assignments.hashCode());
+        final Object $professor = this.getProfessor();
+        result = result * PRIME + ($professor == null ? 43 : $professor.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "FullCourseInfoDTO(course=" + this.getCourse() + ", announcements=" + this.getAnnouncements() + ", assignments=" + this.getAssignments() + ", professor=" + this.getProfessor() + ")";
+    }
 }
