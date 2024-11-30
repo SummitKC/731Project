@@ -1,6 +1,7 @@
 package org.cps731.project.team.cps731.pomodoro.data;
 
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
@@ -12,6 +13,7 @@ import org.cps731.project.team.cps731.pomodoro.data.model.course.Term;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskPriority;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskState;
+import org.cps731.project.team.cps731.pomodoro.data.model.timeentry.TimeEntry;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.User;
@@ -67,6 +69,17 @@ public class DevDataInitializer implements ApplicationRunner {
                         .announcement(announcementForA1)
                         .dueDate(Timestamp.from(Instant.now().plus(14, ChronoUnit.DAYS)))
                         .build();
+
+        var announcementForA2 = Announcement.builder()
+                .title("Assignment 2")
+                .description("Assignment 2 is out now!")
+                .course(introToDbSystems)
+                .issueTime(Timestamp.from(Instant.now()))
+                .build();
+        var a2 = Assignment.builder()
+                .announcement(announcementForA2)
+                .dueDate(Timestamp.from(Instant.now().plus(3, ChronoUnit.DAYS)))
+                .build();
         
         var task1 = Task.builder()
                 .owner(studentJohn)
@@ -77,6 +90,51 @@ public class DevDataInitializer implements ApplicationRunner {
                 .derivedFrom(a1)
                 .build();
 
+        var task2 = Task.builder()
+                .owner(studentJohn)
+                .state(TaskState.COMPLETE)
+                .name("Finish Assignment 2")
+                .priority(TaskPriority.HIGH)
+                .plannedDueDate(Timestamp.from(Instant.now()))
+                .derivedFrom(a1)
+                .build();
+
+        var timeEntry1 = TimeEntry
+                .builder()
+                .timeLogged(Duration.of(25, ChronoUnit.MINUTES).toMillis())
+                .startTime(Timestamp.from(Instant.now().minus(2, ChronoUnit.DAYS).minus(25, ChronoUnit.MINUTES)))
+                .endTime(Timestamp.from(Instant.now().minus(2, ChronoUnit.DAYS)))
+                .pomodoros(1)
+                .task(task1)
+                .build();
+
+        var timeEntry2 = TimeEntry
+                .builder()
+                .timeLogged(Duration.of(50, ChronoUnit.MINUTES).toMillis())
+                .startTime(Timestamp.from(Instant.now().minus(2, ChronoUnit.DAYS).plus(30, ChronoUnit.MINUTES)))
+                .endTime(Timestamp.from(Instant.now().minus(2, ChronoUnit.DAYS).plus(80, ChronoUnit.MINUTES)))
+                .pomodoros(1)
+                .task(task1)
+                .build();
+
+        var timeEntry3 = TimeEntry
+                .builder()
+                .timeLogged(Duration.of(30, ChronoUnit.MINUTES).toMillis())
+                .startTime(Timestamp.from(Instant.now().minus(7, ChronoUnit.DAYS).minus(30, ChronoUnit.MINUTES)))
+                .endTime(Timestamp.from(Instant.now().minus(7, ChronoUnit.DAYS)))
+                .pomodoros(1)
+                .task(task1)
+                .build();
+
+        var timeEntry4 = TimeEntry
+                .builder()
+                .timeLogged(Duration.of(120, ChronoUnit.MINUTES).toMillis())
+                .startTime(Timestamp.from(Instant.now().minus(7, ChronoUnit.DAYS).plus(35, ChronoUnit.MINUTES)))
+                .endTime(Timestamp.from(Instant.now().minus(7, ChronoUnit.DAYS).plus(155, ChronoUnit.MINUTES)))
+                .pomodoros(1)
+                .task(task1)
+                .build();
+
         studentJohn.setCourses(Set.of(introToSoftEng));
         introToSoftEng.setTakenBy(Set.of(studentJohn));
         a1.setDerivingTasks(Set.of(task1));
@@ -85,7 +143,6 @@ public class DevDataInitializer implements ApplicationRunner {
 
         studentJohn.setCourses(Set.of(introToDbSystems));
         introToDbSystems.setTakenBy(Set.of(studentJohn));
-        
         
 
         entityManager.persist(userJohn);
@@ -99,8 +156,15 @@ public class DevDataInitializer implements ApplicationRunner {
         entityManager.persist(introToDbSystems);
         entityManager.persist(introToSoftEng);
         entityManager.persist(announcementForA1);
+        entityManager.persist(announcementForA2);
         entityManager.persist(a1);
+        entityManager.persist(a2);
         entityManager.persist(task1);
+        entityManager.persist(task2);
+        entityManager.persist(timeEntry1);
+        entityManager.persist(timeEntry2);
+        entityManager.persist(timeEntry3);
+        entityManager.persist(timeEntry4);
         entityManager.flush();
     }
 }
