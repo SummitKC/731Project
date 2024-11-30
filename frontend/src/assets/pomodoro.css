@@ -1,0 +1,28 @@
+.session-buttons {
+    display: flex;
+    flex-direction: column;  
+    position: absolute;
+    right: 10%;
+    top: 25%;
+}
+.main-container {
+    display: flex;
+    flex-direction: column;  
+    width: 85%; 
+    height: auto;
+    min-height: 85%;
+    max-width: 1500px;
+    background-color: white;
+    margin-top: 40px;
+    margin-left: 40px;
+    border-radius: 50px;
+    justify-self: center;
+  }
+
+.timer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 80%;
+    width: 80%;
+}

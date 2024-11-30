@@ -12,6 +12,7 @@ import CourseArchivePage from './pages/CourseArchivePage.js';
 
 import PrivateRoute from './PrivateRoute';
 import './assets/style.css';
+import PomodoroPage from './pages/PomodoroPage.js';
 
 function AppRouter() {
   return (
@@ -25,6 +26,7 @@ function AppRouter() {
           <Route path="/student/course/:courseCode" element={<CoursePageStudent />} />
           <Route path="/taskboard" element={<TaskBoard />} />
           <Route path="/course/:courseCode" element={<CoursePageStudent />} />
+          <Route path="/pomodoro" element={<PomodoroPage />} />
         </Route>
         <Route element={<PrivateRoute allowedTypes={['Professor']} />}>
           <Route path="/professor/home" element={<ProfessorHome />} />
