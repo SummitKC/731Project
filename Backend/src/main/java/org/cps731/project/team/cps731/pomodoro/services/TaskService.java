@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
@@ -65,7 +66,7 @@ public class TaskService {
         return taskRepo.findAllByOwnerIDAndStateIsInAndDerivedFrom_Announcement_IssueTimeAfter(
                 userID,
                 Set.of(TaskState.COMPLETE),
-                Timestamp.from(Instant.from(LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0))));
+                Timestamp.from(Instant.ofEpochMilli(LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).toInstant(ZoneOffset.UTC).toEpochMilli())));
     }
 
     public Set<Task> getTaskByStateAndIssueTime(Long ownerId, TaskState state, Timestamp issueTime) {
