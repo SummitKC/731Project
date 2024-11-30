@@ -1,10 +1,13 @@
 package org.cps731.project.team.cps731.pomodoro.controllers.student;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import org.cps731.project.team.cps731.pomodoro.config.WebTestConfig;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.Task;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskPriority;
 import org.cps731.project.team.cps731.pomodoro.data.model.task.TaskState;
@@ -13,145 +16,111 @@ import org.cps731.project.team.cps731.pomodoro.data.model.user.User;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.UserType;
 import org.cps731.project.team.cps731.pomodoro.dto.PomSession;
 import org.cps731.project.team.cps731.pomodoro.dto.task.TaskDTO;
+import org.cps731.project.team.cps731.pomodoro.matchers.IsCloseToInt;
 import org.cps731.project.team.cps731.pomodoro.matchers.IsCloseToLong;
 import org.cps731.project.team.cps731.pomodoro.security.filter.JwtAuthenticationFilter;
-import org.cps731.project.team.cps731.pomodoro.security.principal.AppUserDetails;
 import org.cps731.project.team.cps731.pomodoro.security.principal.authority.AppAuthorities;
+import org.cps731.project.team.cps731.pomodoro.services.PomodoroService;
 import org.cps731.project.team.cps731.pomodoro.services.TaskService;
 import org.cps731.project.team.cps731.pomodoro.services.TimeEntryService;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebMvcTest(controllers = StudentPomodoroController.class)
+@Import(WebTestConfig.class)
 @ActiveProfiles("test")
 public class StudentPomodoroControllerTest {
 
-    @LocalServerPort
-    private int port;
+    public static final int TIME_MARGIN = 500;
     @Autowired
-    private TestRestTemplate restTemplate;
+    private MockMvc mockMvc;
+    @MockBean
+    private PomodoroService pomodoroService;
     @MockBean
     private TaskService taskService;
     @MockBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
     @MockBean
     private TimeEntryService timeEntryService;
-    @SpyBean
-    private StudentPomodoroController pomodoroController;
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final ObjectWriter WRITER = MAPPER.writer();
+    private static Task mockTask;
+    private static User mockUser;
+    private static Student mockStudent;
 
-
-    @Test
-    public void shouldReturnPomSessionForStartedPom() throws ServletException, IOException {
-        var taskID = 1L;
-        var mockUser = new User("John Smith", "john.something@torontomu.ca", "password", UserType.STUDENT);
+    @BeforeAll
+    public static void setupMocks() {
+        mockUser = new User("John Smith", "john.something@torontomu.ca", "password", UserType.STUDENT);
         mockUser.setId(1L);
-        var mockStudent = new Student(mockUser, mockUser.getId());
+        mockStudent = new Student(mockUser, mockUser.getId());
         mockStudent.setID(mockUser.getId());
-        var mockTask = Task.builder()
+        mockTask = Task.builder()
                 .name("Finish a1")
                 .priority(TaskPriority.NORMAL)
                 .plannedDueDate(Timestamp.from(Instant.now().plus(7, ChronoUnit.DAYS)))
                 .state(TaskState.IN_PROGRESS)
                 .owner(mockStudent)
                 .build();
-        mockTask.setID(taskID);
-        var mockDecodedJWT = mock(DecodedJWT.class);
-        when(mockDecodedJWT.getSubject()).thenReturn(mockStudent.getID().toString());
+        mockTask.setID(1L);
+    }
+
+    @BeforeEach
+    public void setupTest() throws ServletException, IOException {
         doAnswer((Answer<Void>) invocation -> {
             var request = (ServletRequest) invocation.getArgument(0);
             var response = (ServletResponse) invocation.getArgument(1);
             var filterChain = (FilterChain) invocation.getArgument(2);
-            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                    new AppUserDetails(mockStudent.getUser()),
-                    mockDecodedJWT,
-                    Set.of(AppAuthorities.STUDENT)
-            ));
+            var mockDecodedJWT = mock(DecodedJWT.class);
+            when(mockDecodedJWT.getSubject()).thenReturn(mockStudent.getID().toString());
+            SecurityContextHolder.getContext().setAuthentication(
+                    new UsernamePasswordAuthenticationToken("John Smith", mockDecodedJWT, Set.of(AppAuthorities.STUDENT)))
+            ;
             filterChain.doFilter(request, response);
             return null;
         }).when(jwtAuthenticationFilter).doFilter(any(ServletRequest.class), any(ServletResponse.class), any(FilterChain.class));
-        when(taskService.getTaskById(taskID)).thenReturn(mockTask);
-
-        var requestEntity = new HttpEntity<>(null, null);
-        var response = restTemplate
-                .exchange(
-                        "http://localhost:" + port + "/api/student/pomodoro/start/" + taskID + "?mins=25",
-                        HttpMethod.POST,
-                        requestEntity,
-                        PomSession.class
-                );
-
-        assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-        assertThat(response.getBody(), notNullValue());
-        assertThat(response.getBody(), hasProperty("resumeTime", equalTo(0L)));
-        assertThat(response.getBody(), hasProperty("pauseTime", equalTo(0L)));
-        assertThat(response.getBody(), hasProperty("task", equalTo(new TaskDTO(mockTask))));
-        assertThat(response.getBody(), hasProperty("paused", equalTo(false)));
-        assertThat(response.getBody(), hasProperty("pauses", equalTo(Collections.emptyList())));
     }
 
     @Test
-    public void shouldReturnPomSessionWhenPausingPomAndBeUpdatedWithPauseTimeAndPaused() throws ServletException, IOException {
-        var taskID = 1L;
-        var mockUser = new User("John Something", "john.something@torontomu.ca", "password", UserType.STUDENT);
-        mockUser.setId(1L);
-        var mockStudent = new Student(mockUser, mockUser.getId());
-        mockStudent.setID(mockUser.getId());
-        var mockTask = Task.builder()
-                .name("Finish a1")
-                .priority(TaskPriority.NORMAL)
-                .plannedDueDate(Timestamp.from(Instant.now().plus(7, ChronoUnit.DAYS)))
-                .state(TaskState.IN_PROGRESS)
-                .owner(mockStudent)
-                .build();
-        mockTask.setID(taskID);
-        var mockDecodedJWT = mock(DecodedJWT.class);
-        when(mockDecodedJWT.getSubject()).thenReturn(mockStudent.getID().toString());
-        when(taskService.getTaskById(taskID)).thenReturn(mockTask);
-        var mockPomSession = PomSession.builder()
-                .task(new TaskDTO(mockTask))
-                .startTime(Instant.now().minus(10, ChronoUnit.MINUTES).toEpochMilli())
-                .endTime(Instant.now().plus(15, ChronoUnit.MINUTES).toEpochMilli())
-                .build();
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                new AppUserDetails(mockStudent.getUser()),
-                mockDecodedJWT,
-                Set.of(AppAuthorities.STUDENT)
-        ));
-        doAnswer((Answer<Void>) invocation -> {
-            var request = (ServletRequest) invocation.getArgument(0);
-            var response = (ServletResponse) invocation.getArgument(1);
-            var filterChain = (FilterChain) invocation.getArgument(2);
-            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                    new AppUserDetails(mockStudent.getUser()),
-                    mockDecodedJWT,
-                    Set.of(AppAuthorities.STUDENT)
-            ));
-            filterChain.doFilter(request, response);
-            return null;
-        }).when(jwtAuthenticationFilter).doFilter(any(ServletRequest.class), any(ServletResponse.class), any(FilterChain.class));
+    public void shouldReturnPomSessionForStartedPom() throws Exception {
+        when(taskService.getTaskById(mockTask.getID())).thenReturn(mockTask);
+
+        mockMvc.perform(post("/student/pomodoro/start/" + mockTask.getID() + "?mins=25"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.startTime").exists())
+                .andExpect(jsonPath("$.endTime").exists())
+                .andExpect(jsonPath("$.resumeTime").value(0))
+                .andExpect(jsonPath("$.pauseTime").value(0))
+                .andExpect(jsonPath("$.paused").value(false));
+    }
+
+    @Test
+    public void shouldReturnPomSessionWhenPausingPomAndBeUpdatedWithPauseTimeAndPaused() throws Exception {
         var mockPom = PomSession.builder()
                 .isPaused(false)
                 .startTime(Instant.now().minus(15, ChronoUnit.MINUTES).toEpochMilli())
@@ -160,69 +129,23 @@ public class StudentPomodoroControllerTest {
                 .pauseTime(0L)
                 .resumeTime(0L)
                 .build();
-        doReturn(Map.of(taskID, mockPom))
-                .when(pomodoroController).getActivePomSessions();
+        when(taskService.getTaskById(mockTask.getID())).thenReturn(mockTask);
+        doReturn(mockPom)
+                .when(pomodoroService)
+                .getSession(mockTask.getID());
 
-        var requestEntity = new HttpEntity<>(null, null);
-        var response = restTemplate
-                .exchange(
-                        "http://localhost:" + port + "/api/student/pomodoro/pause/" + taskID,
-                        HttpMethod.POST,
-                        requestEntity,
-                        PomSession.class
-                );
-
-        assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-        assertThat(response.getBody(), notNullValue());
-        assertThat(response.getBody(), hasProperty("resumeTime", equalTo(0L)));
-        System.out.println(Instant.now().toEpochMilli() - response.getBody().getPauseTime());
-        assertThat(response.getBody(), hasProperty("pauseTime", IsCloseToLong.closeTo(Instant.now().toEpochMilli(), 100)));
-        assertThat(response.getBody(), hasProperty("task", equalTo(mockPomSession.getTask())));
-        assertThat(response.getBody(), hasProperty("paused", equalTo(true)));
-        assertThat(response.getBody(), hasProperty("pauses", equalTo(Collections.emptyList())));
+        mockMvc.perform(post("/student/pomodoro/pause/" + mockTask.getID()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.startTime").exists())
+                .andExpect(jsonPath("$.endTime").exists())
+                .andExpect(jsonPath("$.resumeTime").value(0))
+                .andExpect(jsonPath("$.pauseTime").value(IsCloseToLong.closeTo(Instant.now().toEpochMilli(), TIME_MARGIN)))
+                .andExpect(jsonPath("$.paused").value(true))
+                .andExpect(jsonPath("$.pauses").value(equalTo(Collections.emptyList())));
     }
 
     @Test
-    public void shouldReturnPomSessionWhenResumingPomAndBeUpdatedWithResumeTimeAndPausedFalse() throws ServletException, IOException {
-        var taskID = 1L;
-        var mockUser = new User("John Something", "john.something@torontomu.ca", "password", UserType.STUDENT);
-        mockUser.setId(1L);
-        var mockStudent = new Student(mockUser, mockUser.getId());
-        mockStudent.setID(mockUser.getId());
-        var mockTask = Task.builder()
-                .name("Finish a1")
-                .priority(TaskPriority.NORMAL)
-                .plannedDueDate(Timestamp.from(Instant.now().plus(7, ChronoUnit.DAYS)))
-                .state(TaskState.IN_PROGRESS)
-                .owner(mockStudent)
-                .build();
-        mockTask.setID(taskID);
-        var mockDecodedJWT = mock(DecodedJWT.class);
-        when(mockDecodedJWT.getSubject()).thenReturn(mockStudent.getID().toString());
-        when(taskService.getTaskById(taskID)).thenReturn(mockTask);
-        var mockPomSession = PomSession.builder()
-                .task(new TaskDTO(mockTask))
-                .startTime(Instant.now().minus(10, ChronoUnit.MINUTES).toEpochMilli())
-                .endTime(Instant.now().plus(15, ChronoUnit.MINUTES).toEpochMilli())
-                .isPaused(true)
-                .build();
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                new AppUserDetails(mockStudent.getUser()),
-                mockDecodedJWT,
-                Set.of(AppAuthorities.STUDENT)
-        ));
-        doAnswer((Answer<Void>) invocation -> {
-            var request = (ServletRequest) invocation.getArgument(0);
-            var response = (ServletResponse) invocation.getArgument(1);
-            var filterChain = (FilterChain) invocation.getArgument(2);
-            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                    new AppUserDetails(mockStudent.getUser()),
-                    mockDecodedJWT,
-                    Set.of(AppAuthorities.STUDENT)
-            ));
-            filterChain.doFilter(request, response);
-            return null;
-        }).when(jwtAuthenticationFilter).doFilter(any(ServletRequest.class), any(ServletResponse.class), any(FilterChain.class));
+    public void shouldReturnPomSessionWhenResumingPomAndBeUpdatedWithResumeTimeAndPausedFalse() throws Exception {
         var pauseTime = Instant.now().minus(5, ChronoUnit.MINUTES).toEpochMilli();
         var mockPom = PomSession.builder()
                 .isPaused(true)
@@ -232,64 +155,30 @@ public class StudentPomodoroControllerTest {
                 .pauseTime(pauseTime)
                 .resumeTime(0L)
                 .build();
-        doReturn(Map.of(taskID, mockPom))
-                .when(pomodoroController).getActivePomSessions();
+        when(taskService.getTaskById(mockTask.getID())).thenReturn(mockTask);
+        doReturn(mockPom)
+                .when(pomodoroService)
+                .getSession(mockTask.getID());
 
-        var requestEntity = new HttpEntity<>(null, null);
-        var response = restTemplate
-                .exchange(
-                        "http://localhost:" + port + "/api/student/pomodoro/resume/" + taskID,
-                        HttpMethod.POST,
-                        requestEntity,
-                        PomSession.class
-                );
-
-        assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-        assertThat(response.getBody(), notNullValue());
-        assertThat(response.getBody(), hasProperty("pauseTime", equalTo(pauseTime)));
-        assertThat(response.getBody(), hasProperty("resumeTime", IsCloseToLong.closeTo(Instant.now().toEpochMilli(), 100)));
-        assertThat(response.getBody(), hasProperty("task", equalTo(mockPomSession.getTask())));
-        assertThat(response.getBody(), hasProperty("paused", equalTo(false)));
-        assertThat(response.getBody(), hasProperty("pauses", equalTo(List.of(response.getBody().getResumeTime() - pauseTime))));
-        assertThat(response.getBody(), hasProperty("endTime",
-                IsCloseToLong.closeTo(Instant.ofEpochMilli(pauseTime).plus(10, ChronoUnit.MINUTES).plusMillis(response.getBody().getPauses().getFirst()).toEpochMilli(), 100)));
+        mockMvc.perform(post("/student/pomodoro/resume/" + mockTask.getID()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.startTime").exists())
+                .andExpect(jsonPath("$.endTime").exists())
+                .andExpect(jsonPath("$.task.id").value(mockTask.getID()))
+                .andExpect(jsonPath("$.task.taskName").value(mockTask.getName()))
+                .andExpect(jsonPath("$.task.taskStatus").value(mockTask.getState().toString()))
+                .andExpect(jsonPath("$.task.taskPriority").value(mockTask.getPriority().toString()))
+                .andExpect(jsonPath("$.task.taskDate").exists())
+                .andExpect(jsonPath("$.paused").value(false))
+                .andExpect(jsonPath("$.pauses").value(hasSize(1)))
+                .andExpect(jsonPath("$.pauses[0]").value(IsCloseToInt.closeTo((int) Duration.of(5, ChronoUnit.MINUTES).toMillis(), TIME_MARGIN)))
+                .andExpect(jsonPath("$.endTime")
+                        .value(IsCloseToLong.closeTo(Instant.ofEpochMilli(pauseTime).plus(15, ChronoUnit.MINUTES).toEpochMilli(), TIME_MARGIN)));
     }
 
     @Test
-    public void shouldReturnPomSessionWhenEndingPomAndSaveTimeLog() throws ServletException, IOException {
-        var taskID = 1L;
-        var mockUser = new User("John Something", "john.something@torontomu.ca", "password", UserType.STUDENT);
-        mockUser.setId(1L);
-        var mockStudent = new Student(mockUser, mockUser.getId());
-        mockStudent.setID(mockUser.getId());
-        var mockTask = Task.builder()
-                .name("Finish a1")
-                .priority(TaskPriority.NORMAL)
-                .plannedDueDate(Timestamp.from(Instant.now().plus(7, ChronoUnit.DAYS)))
-                .state(TaskState.IN_PROGRESS)
-                .owner(mockStudent)
-                .build();
-        mockTask.setID(taskID);
-        var mockDecodedJWT = mock(DecodedJWT.class);
-        when(mockDecodedJWT.getSubject()).thenReturn(mockStudent.getID().toString());
-        when(taskService.getTaskById(taskID)).thenReturn(mockTask);
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                new AppUserDetails(mockStudent.getUser()),
-                mockDecodedJWT,
-                Set.of(AppAuthorities.STUDENT)
-        ));
-        doAnswer((Answer<Void>) invocation -> {
-            var request = (ServletRequest) invocation.getArgument(0);
-            var response = (ServletResponse) invocation.getArgument(1);
-            var filterChain = (FilterChain) invocation.getArgument(2);
-            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                    new AppUserDetails(mockStudent.getUser()),
-                    mockDecodedJWT,
-                    Set.of(AppAuthorities.STUDENT)
-            ));
-            filterChain.doFilter(request, response);
-            return null;
-        }).when(jwtAuthenticationFilter).doFilter(any(ServletRequest.class), any(ServletResponse.class), any(FilterChain.class));
+    public void shouldReturnPomSessionWhenEndingPomAndSaveTimeLog() throws Exception {
+        when(taskService.getTaskById(mockTask.getID())).thenReturn(mockTask);
         var pauseTime = Instant.now().minus(5, ChronoUnit.MINUTES).toEpochMilli();
         var mockPom = PomSession.builder()
                 .isPaused(false)
@@ -300,23 +189,23 @@ public class StudentPomodoroControllerTest {
                 .resumeTime(Instant.ofEpochMilli(pauseTime).plus(3, ChronoUnit.MINUTES).toEpochMilli())
                 .build();
         mockPom.setPauses(List.of(mockPom.getResumeTime() - mockPom.getPauseTime()));
-        var mockPomSessions = new HashMap<>();
-        mockPomSessions.put(taskID, mockPom);
-        doReturn(mockPomSessions)
-                .when(pomodoroController).getActivePomSessions();
+        doReturn(mockPom)
+                .when(pomodoroService)
+                .getSession(mockTask.getID());
 
-        var requestEntity = new HttpEntity<>(null, null);
-        var response = restTemplate
-                .exchange(
-                        "http://localhost:" + port + "/api/student/pomodoro/end/" + taskID,
-                        HttpMethod.POST,
-                        requestEntity,
-                        PomSession.class
-                );
-
-        assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-        assertThat(response.getBody(), equalTo(mockPom));
-
+        mockMvc.perform(post("/student/pomodoro/end/" + mockTask.getID()))
+                .andExpect(jsonPath("$.startTime").value(mockPom.getStartTime()))
+                .andExpect(jsonPath("$.endTime").value(mockPom.getEndTime()))
+                .andExpect(jsonPath("$.task.id").value(mockTask.getID()))
+                .andExpect(jsonPath("$.task.taskName").value(mockTask.getName()))
+                .andExpect(jsonPath("$.task.taskStatus").value(mockTask.getState().toString()))
+                .andExpect(jsonPath("$.task.taskPriority").value(mockTask.getPriority().toString()))
+                .andExpect(jsonPath("$.task.taskDate").exists())
+                .andExpect(jsonPath("$.paused").value(false))
+                .andExpect(jsonPath("$.pauseTime").value(mockPom.getPauseTime()))
+                .andExpect(jsonPath("$.resumeTime").value(mockPom.getResumeTime()))
+                .andExpect(jsonPath("$.pauses").value(hasSize(1)))
+                .andExpect(jsonPath("$.pauses[0]").value(mockPom.getPauses().getFirst()));
         verify(timeEntryService).createTimeEntry(argThat(arg -> {
             assertThat(arg.getTask(), equalTo(mockTask));
             assertThat(arg.getStartTime().getTime(), equalTo(mockPom.getStartTime()));

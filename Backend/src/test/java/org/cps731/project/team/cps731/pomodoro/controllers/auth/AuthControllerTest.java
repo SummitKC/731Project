@@ -1,13 +1,10 @@
 package org.cps731.project.team.cps731.pomodoro.controllers.auth;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import org.cps731.project.team.cps731.pomodoro.config.WebTestConfig;
-import org.cps731.project.team.cps731.pomodoro.controllers.student.StudentAnalyticsController;
 import org.cps731.project.team.cps731.pomodoro.dto.auth.LoginRequestDTO;
 import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterProfessorRequestDTO;
 import org.cps731.project.team.cps731.pomodoro.dto.auth.RegisterStudentRequestDTO;
@@ -20,9 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
