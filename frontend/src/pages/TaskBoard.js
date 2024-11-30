@@ -30,7 +30,7 @@ const TaskBoard = () => {
       console.log('Expired or bad token, login again!');
       navigate('/login');
     } else {
-      // Fetch tasks
+      // get all tasks
       fetch('http://localhost:8080/api/student/taskboard/tasks', {
         method: 'GET',
         headers: {
@@ -50,7 +50,7 @@ const TaskBoard = () => {
       })
       .catch(error => console.error('Error fetching tasks:', error));
       
-      // Fetch courses and their assignments
+      // get courses
       fetch('http://localhost:8080/api/student/dashboard/courses', {
         method: 'GET',
         headers: {
@@ -60,7 +60,7 @@ const TaskBoard = () => {
       })
       .then(response => response.json())
       .then(coursesData => {
-        // Fetch assignments for each course
+        // get assignments for each course
         const fetchAssignmentsPromises = coursesData.map(course => 
           fetch(`http://localhost:8080/api/student/course/${course.courseCode}/assignments`, {
             method: 'GET',
@@ -85,38 +85,35 @@ const TaskBoard = () => {
     }
   }, [navigate]);
 
+  // group items in 3 bins and sort them tasks based on date+time
   const groupedTasks = {};
 
   tasks.forEach(task => {
-    const { taskDate, taskStatus } = task;
-    const dateObj = new Date(taskDate);
-    const year = dateObj.getFullYear();
-    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
-    const day = dateObj.getDate().toString().padStart(2, '0');
-    const formattedDate = `${year}-${month}-${day}`;
-  
-    if (!groupedTasks[formattedDate]) {
-      groupedTasks[formattedDate] = { TODO: [], IN_PROGRESS: [], COMPLETED: [] };
+    const { taskDate, taskStatus, id } = task;
+    const dateStr = new Date(taskDate).toISOString().slice(0, 10); // YYYY-MM-DD
+
+    if (!groupedTasks[dateStr]) {
+      groupedTasks[dateStr] = { TODO: [], 'IN_PROGRESS': [], 'COMPLETE': [] };
     }
-    const status = taskStatus === 'REVIEWING' ? 'IN_PROGRESS' : taskStatus;
-    groupedTasks[formattedDate][status].push(task);
+
+    groupedTasks[dateStr][taskStatus].push({ ...task, key: `${dateStr}-${id}` });
   });
-  
 
   const sortedDates = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
 
-  const getTasksByStatus = (status) => {
+  const convertGroupedTasks = (groupedTasks, status) => {
     return sortedDates
-      .filter(date => groupedTasks[date][status].length > 0)
-      .map(date => ({
-        taskDate: date,
-        tasks: groupedTasks[date][status]
-      }));
+      .map(dateStr => ({
+        taskDate: dateStr,
+        tasks: groupedTasks[dateStr][status]
+      }))
+      .filter(group => group.tasks.length > 0);
   };
-  
-  const todoTasks = getTasksByStatus('TODO');
-  const inProgressTasks = getTasksByStatus('IN_PROGRESS');
-  const completedTasks = getTasksByStatus('COMPLETED');
+
+  // filter by status and make 3 arrays
+  const todoTasks = convertGroupedTasks(groupedTasks, 'TODO');
+  const inProgressTasks = convertGroupedTasks(groupedTasks, 'IN_PROGRESS');
+  const completedTasks = convertGroupedTasks(groupedTasks, 'COMPLETE');
 
   const handleCreateTaskClick = () => {
     setShowModal(true);
@@ -126,27 +123,27 @@ const TaskBoard = () => {
     setShowModal(false);
   };
 
-  const handleSubmitCreateTask = (taskData, assignmentID) => {
+  const handleSubmitCreateTask = async (taskData, assignmentID) => {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');
     } else {
-      
-      try{
-      const response = fetch(`http://localhost:8080/api/student/taskboard/tasks?assignment=${assignmentID}`, {
-        method: 'POST',
-        headers: {
-          Authorization: `${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(taskData),
-      })
-      if (response.ok){
-        window.location.reload();
-      } else {
-        setErrorMessage("error occured while creating task")
-      }
-      } catch (e){
+      try {
+        console.log(taskData);
+        const response = await fetch(`http://localhost:8080/api/student/taskboard/tasks?assignment=${assignmentID}`, {
+          method: 'POST',
+          headers: {
+            Authorization: `${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(taskData),
+        });
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          setErrorMessage("Error occurred while creating task");
+        }
+      } catch (e) {
         console.log(e);
       }
     }

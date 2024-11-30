@@ -4,10 +4,10 @@ import '../../assets/global.css';
 import TaskDetailOverlay from './TaskOverlayDetail';
 
 
-const Task = ({ taskName, taskPriority, taskStatus, taskDate, board }) => {
+const Task = ({ id, taskName, taskPriority, taskStatus, taskDate, board }) => {
   const [selectedTask, setSelectedTask] = useState(null);
   const handleTaskClick = () => { 
-    setSelectedTask({taskName, taskPriority, taskStatus, taskDate});
+    setSelectedTask({id, taskName, taskPriority, taskStatus, taskDate});
   };
   const handleClose = () => { 
     setSelectedTask(null);
@@ -15,13 +15,21 @@ const Task = ({ taskName, taskPriority, taskStatus, taskDate, board }) => {
   
   const priorityClass = taskPriority.toLowerCase();
 
-  let statusElement = null;
-  if (board === 'true') {
-    statusElement = <div className='status'><p>{taskStatus}</p></div>;
+  const [formattedStatus, setFormattedStatus] = useState(taskStatus);
+  
+  if (formattedStatus === 'IN_PROGRESS'){
+    setFormattedStatus('IN PROGRESS')
   }
 
+  let statusElement = null;
+  if (board === 'true') {
+    statusElement = <div className='status'><p>{formattedStatus}</p></div>;
+  }
+  
+  
+
   let priorityOrDateElement = null;
-  if (taskStatus === 'Completed') {
+  if (taskStatus === 'COMPLETE') {
     priorityOrDateElement = <p className='rmar-30'>{taskDate}</p>;
   } else {
     priorityOrDateElement = <p className={`rmar-30 ${priorityClass}`}>{taskPriority}</p>;
@@ -34,7 +42,7 @@ const Task = ({ taskName, taskPriority, taskStatus, taskDate, board }) => {
           <p className='lmar-30'>{taskName}</p>
         </div>
         {statusElement}
-        <div style={ taskStatus === "Completed" ? {minWidth: '110px'} : {}} className='priority'>
+        <div style={ taskStatus === "COMPLETE" ? {minWidth: '110px'} : {}} className='priority'>
           {priorityOrDateElement}
         </div>
         

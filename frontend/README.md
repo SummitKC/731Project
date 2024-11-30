@@ -4,6 +4,8 @@ Install these npm packages:
 npm install -g npm@10.9.0
 npm install --save react-responsive
 npm install react-router-dom
+npm install date-fns
+npm install react-beautiful-dnd
 ```
 In the project directory, you can run:
 
