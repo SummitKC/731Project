@@ -1,0 +1,14 @@
+.analytic {
+  border-radius: 5px;
+  padding: 50px;
+  margin: 50px;
+  text-align: center;
+  justify-items: center;
+  width: 100px;
+}
+
+.analytics-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}

@@ -4,10 +4,10 @@ import '../../assets/global.css';
 import TaskDetailOverlay from './TaskOverlayDetail';
 
 
-const Task = ({ taskName, taskPriority, taskStatus, taskDate, board }) => {
+const Task = ({ id, taskName, taskPriority, taskStatus, taskDate, board }) => {
   const [selectedTask, setSelectedTask] = useState(null);
   const handleTaskClick = () => { 
-    setSelectedTask({taskName, taskPriority, taskStatus, taskDate});
+    setSelectedTask({id, taskName, taskPriority, taskStatus, taskDate});
   };
   const handleClose = () => { 
     setSelectedTask(null);
@@ -15,14 +15,39 @@ const Task = ({ taskName, taskPriority, taskStatus, taskDate, board }) => {
   
   const priorityClass = taskPriority.toLowerCase();
 
-  let statusElement = null;
-  if (board === 'true') {
-    statusElement = <div className='status'><p>{taskStatus}</p></div>;
+  const [formattedStatus, setFormattedStatus] = useState(taskStatus);
+  const [formattedDate, setTaskDate] = useState((new Date(taskDate)).toISOString().split('T')[0]);
+  
+  const [taskTime, setTaskTime] = 
+    useState((new Date(taskDate)).
+    toISOString().split('T')[1].split(':')[0] + ':' + (new Date(taskDate)).
+    toISOString().split('T')[1].split(':')[1]);
+  
+  const [taskFormattedTime, setTaskFormattedTime] = useState(() => {
+    const [hours, minutes] = taskTime.split(':');
+    const isPM = parseInt(hours) >= 12;
+    const formattedHours = isPM ? parseInt(hours) - 12 : parseInt(hours);
+    return `${formattedHours}:${minutes} ${isPM ? 'PM'
+   : 'AM'}`;
+  });
+  
+  const [formattedDateTime, setFormattedDateTime] = useState(formattedDate + " " + taskFormattedTime);
+  
+  
+  if (formattedStatus === 'IN_PROGRESS'){
+    setFormattedStatus('IN PROGRESS')
   }
 
+  let statusElement = null;
+  if (board === 'true') {
+    statusElement = <div className='status'><p>{formattedStatus}</p></div>;
+  }
+  
+  
+
   let priorityOrDateElement = null;
-  if (taskStatus === 'Completed') {
-    priorityOrDateElement = <p className='rmar-30'>{taskDate}</p>;
+  if (taskStatus === 'COMPLETE') {
+    priorityOrDateElement = <p className='rmar-30'>{formattedDateTime}</p>;
   } else {
     priorityOrDateElement = <p className={`rmar-30 ${priorityClass}`}>{taskPriority}</p>;
   }
@@ -34,7 +59,7 @@ const Task = ({ taskName, taskPriority, taskStatus, taskDate, board }) => {
           <p className='lmar-30'>{taskName}</p>
         </div>
         {statusElement}
-        <div style={ taskStatus === "Completed" ? {minWidth: '110px'} : {}} className='priority'>
+        <div style={ taskStatus === "COMPLETE" ? {minWidth: '110px'} : {}} className='priority'>
           {priorityOrDateElement}
         </div>
         

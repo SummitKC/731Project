@@ -65,6 +65,7 @@ const AssignmentBoard = ({ assignments, title, type, courseCode, fetchCourseData
             {groupedAssignments[date].map((assignment, idx) => (
               <Assignment
                 key={idx}
+                assignmentID={assignment.assignmentID}
                 assignmentName={assignment.assignmentTitle}
                 assignmentDueDate={assignment.assignmentDueDate}
                 assignmentDueTime={assignment.assignmentDueTime}

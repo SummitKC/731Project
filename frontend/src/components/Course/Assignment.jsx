@@ -1,38 +1,37 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import '../../assets/task.css';
 import '../../assets/global.css';
+import AssignmentDetailOverlay from './AssignmentDetailOverlay';
 
-import TaskDetailOverlay from '../TaskBoard/TaskOverlayDetail';
-
-
-const Assignment = ({assignmentName , assignmentDueDate, assignmentDueTime, type }) => {
+const Assignment = ({ assignmentID, assignmentName, assignmentDueDate, assignmentDueTime, type }) => {
   const [selectedAssignment, setSelectedAssignment] = useState(null);
-  const handleAssignmentClick = () => { 
-    setSelectedAssignment({assignmentName, assignmentDueDate, assignmentDueTime, type});
-  };
-  const handleClose = () => { 
-    selectedAssignment(null);
-  }
-  
-  const typeClass = type.toLowerCase();
 
+  const handleAssignmentClick = () => {
+    setSelectedAssignment({ assignmentID, assignmentName, assignmentDueDate, assignmentDueTime, type });
+  };
+
+  const handleClose = () => {
+    setSelectedAssignment(null);
+  };
   
   return (
     <>
-      <div className={`task-wrapper weight-600`} onClick={selectedAssignment}>
+      <div className={`task-wrapper weight-600`} onClick={handleAssignmentClick}>
         <div className='task'>
           <p className='lmar-30'>{assignmentName}</p>
-   
         </div>
-        <div style={{width: '90px'}} className='priority high'> 
+        <div style={{ width: '90px' }} className='priority high'>
           <p>{assignmentDueTime}</p>
         </div>
-
       </div>
-      
-      
+      {selectedAssignment && (
+        <AssignmentDetailOverlay
+          selectedAssignment={selectedAssignment}
+          handleClose={handleClose}
+        />
+      )}
     </>
   );
-}
+};
 
 export default Assignment;

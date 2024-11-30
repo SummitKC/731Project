@@ -8,7 +8,7 @@ import TaskBoard from './pages/TaskBoard';
 import CoursePageStudent from './pages/CoursePageStudent';
 import CoursePageProfessor from './pages/CoursePageProfessor';
 import CourseArchivePage from './pages/CourseArchivePage.js';
-
+import AnalyticsPage from './pages/AnalyticsPage.js';
 
 import PrivateRoute from './PrivateRoute';
 import './assets/style.css';
@@ -27,6 +27,8 @@ function AppRouter() {
           <Route path="/taskboard" element={<TaskBoard />} />
           <Route path="/course/:courseCode" element={<CoursePageStudent />} />
           <Route path="/pomodoro" element={<PomodoroPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
+          
         </Route>
         <Route element={<PrivateRoute allowedTypes={['Professor']} />}>
           <Route path="/professor/home" element={<ProfessorHome />} />

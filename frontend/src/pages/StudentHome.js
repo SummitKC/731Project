@@ -15,7 +15,6 @@ const StudentHome = () => {
   const isDesktopOrLaptop = useMediaQuery({ query: '(min-width: 1224px)' });
   const isPortrait = useMediaQuery({ query: '(orientation: portrait)' });
 
-
   const [courses, setCourses] = useState([]);
   const [tasks, setTasks] = useState([]);
   const term = "Fall 2024";
@@ -40,7 +39,7 @@ const StudentHome = () => {
           });
           if (response.ok) {
             const data = await response.json();
-            console.log(data);
+
             localStorage.setItem('name', data.name);
             localStorage.setItem('email', data.email);
             localStorage.setItem('studentID', data.studentID);
@@ -54,7 +53,7 @@ const StudentHome = () => {
   
       fetchProfile();
       
-      // Fetch courses
+      // get all courses
       fetch('http://localhost:8080/api/student/dashboard/courses', {
         method: 'GET',
         headers: {
@@ -66,7 +65,7 @@ const StudentHome = () => {
         .then(data => setCourses(data))
         .catch(error => console.error('Error fetching courses:', error));
       
-      // Fetch tasks
+      // get all tasks
       fetch('http://localhost:8080/api/student/dashboard/tasks', {
         method: 'GET',
         headers: {
@@ -85,40 +84,33 @@ const StudentHome = () => {
   const initials = `${firstName[0]}${lastName[0]}`;
   const groupedTasks = {};
 
-  tasks.forEach(task => {
-    const { taskDate, taskStatus } = task;
-    if (!groupedTasks[taskDate]) {
-      groupedTasks[taskDate] = { TODO: [], 'IN_PROGRESS': [], Completed: [] };
-    }
-    groupedTasks[taskDate][taskStatus].push(task);
+  const filteredTasks = tasks.filter(task => task.taskStatus !== 'COMPLETE');
+
+
+  filteredTasks.forEach(task => {
+  const { taskDate, taskStatus, id } = task;
+  const dateStr = new Date(taskDate).toISOString().slice(0, 10); // Format to YYYY-MM-DD
+
+  if (!groupedTasks[dateStr]) {
+    groupedTasks[dateStr] = { TODO: [], 'IN_PROGRESS': [] };
+  }
+
+  groupedTasks[dateStr][taskStatus].push({ ...task, key: `${dateStr}-${id}` }); // Use unique key
   });
 
   const sortedDates = Object.keys(groupedTasks).sort((a, b) => new Date(a) - new Date(b));
 
   const convertGroupedTasks = (groupedTasks) => {
-    return Object.keys(groupedTasks).map(date => {
-        const dateObj = new Date(date);
-        
-        // Extract year, month, day
-        const year = dateObj.getFullYear();
-        const month = (dateObj.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
-        const day = dateObj.getDate().toString().padStart(2, '0');
-
-        // Format the date as YYYY-MM-DD
-        const formattedDate = `${year}-${month}-${day}`;
-
-        const statuses = groupedTasks[date];
-        return {
-            taskDate: formattedDate,
-            tasks: Object.values(statuses).flat()
-        };
+    return Object.keys(groupedTasks).map(dateStr => {
+      const dateTasks = groupedTasks[dateStr];
+      return {
+        taskDate: dateStr,
+        tasks: Object.values(dateTasks).flat()
+      };
     });
   };
 
-
   const allTasks = convertGroupedTasks(groupedTasks);
-
-  
 
   const handleCourseClick = (courseCode, courseName) => {
     const token = localStorage.getItem('token');
@@ -235,7 +227,7 @@ const StudentHome = () => {
               </div>
               <button className='generic-button font' style={{ alignSelf: 'end' }} onClick={handleJoinCourseClick}>Join Course</button>
             </div>
-            <Board title="Tasks Overview" tasks={allTasks} />
+            <Board title="Tasks Overview" tasks={allTasks} board={'true'} />
           </div>
         </div>
       </div>
@@ -247,8 +239,6 @@ const StudentHome = () => {
         setCourseCode={setCourseCode}
         errorMessage={errorMessage}
       />
-
-
     </div>
   );
 };

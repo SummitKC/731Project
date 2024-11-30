@@ -8,6 +8,9 @@ const CreateTaskModal = ({ show, handleClose, handleSubmit, assignmentsByCourse 
   const [taskStatus, setTaskStatus] = useState('TODO');
   const [taskPriority, setTaskPriority] = useState('NORMAL');
   const [taskDate, setTaskDate] = useState('');
+  const [taskTime, setTaskTime] = useState('');
+  const [taskDateTime, setTaskDateTime] = useState('');
+  
   const [selectedAssignment, setSelectedAssignment] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -17,19 +20,19 @@ const CreateTaskModal = ({ show, handleClose, handleSubmit, assignmentsByCourse 
       handleSubmit('All fields are required.');
       return;
     }
-    
+
     handleSubmit({
       taskName,
       taskStatus,
       taskPriority,
-      taskDate: new Date(taskDate).toISOString(),
+      taskDate: String(`${taskDate}T${taskTime}:00Z`),
       
     }, Number(selectedAssignment));
   };
 
   return (
     <div className={`modal ${show ? 'show' : ''}`}>
-      <div className="modal-content">
+      <div className="modal-content" style={{height: 'auto'}}>
         <span className="close" onClick={handleClose}>&times;</span>
         <h2 className='bmar-20'>Create Task</h2>
         <form onSubmit={handleTaskSubmit}>
@@ -40,7 +43,7 @@ const CreateTaskModal = ({ show, handleClose, handleSubmit, assignmentsByCourse 
           <select className='bmar-20' style={{ height:'30px' }} value={taskStatus} onChange={(e) => setTaskStatus(e.target.value)} required>
             <option value="TODO">TODO</option>
             <option value="IN_PROGRESS">IN PROGRESS</option>
-            <option value="COMPLETED">COMPLETED</option>
+            <option value="COMPLETE">COMPLETE</option>
           </select>
 
           <label>Priority:</label>
@@ -51,9 +54,11 @@ const CreateTaskModal = ({ show, handleClose, handleSubmit, assignmentsByCourse 
             <option className='urgent' value="URGENT">URGENT</option>
           </select>
 
-          <label>Date and Time:</label>
-          <input className='bmar-30' type="datetime-local" value={taskDate} onChange={(e) => setTaskDate(e.target.value)} required />
-
+          <label>Date</label>
+          <input className='bmar-30' type="date" value={taskDate} onChange={(e) => setTaskDate(e.target.value)} required />
+          <label>Date</label>
+          <input className='bmar-30' type="time" value={taskTime} onChange={(e) => setTaskTime(e.target.value)} required />
+          
           <label>Assignment:</label>
           <select className='bmar-20' style={{ height:'30px' }} value={selectedAssignment} onChange={(e) => setSelectedAssignment(e.target.value)} required>
             <option value="">Select an assignment</option>
