@@ -76,35 +76,48 @@ const Timer = () => {
   };
 
   const handleReset = () => {
-    setIsRunning(false); // Stop the session
-    setIsPaused(true); // Pause the session
-    setIsSessionStarted(false); // Reset session started state
-    setShowInputs(false); // Show the input fields
-    setTotalTime(0); // Reset total time
-    setHours(0); // Reset hours
-    setMinutes(0); // Reset minutes
-    setSeconds(0); // Reset seconds
+    setIsRunning(false);
+    setIsPaused(true); 
+    setIsSessionStarted(false);
+    setShowInputs(false); 
+    setTotalTime(0);
+    setHours(0);
+    setMinutes(0);
+    setSeconds(0); 
   };
 
   return (
     <div className="timer">
-      <h2>
-        Time Remaining: {String(hours).padStart(2, "0")}:
-        {String(minutes).padStart(2, "0")}:
-        {String(seconds).padStart(2, "0")}
-      </h2>
+      <div className="circle-container">
+      <svg>
+  <circle className="base-circle" cx="50%" cy="50%" r="175" />
+  <circle
+    className="progress-circle"
+    cx="50%"
+    cy="50%"
+    r="175"
+    style={{
+      strokeDashoffset: 314 * (1 - totalTime / (hours * 3600000 + minutes * 60000 + seconds * 1000)),
+    }}
+  />
+</svg>
+  <div className="time-display">
+    {String(hours).padStart(2, "0")}:{String(minutes).padStart(2, "0")}:
+    {String(seconds).padStart(2, "0")} <br></br>
+    <h1 className="sub-text">Remaining</h1>
+  </div>
+</div>
 
       <div className="session-buttons">
           <button style={!showInputs ? {} : {display: "none"}} onClick={handleStartNewSession} className="generic-button">Start New Session</button>
 
-        {/* Show input fields when 'Start New Session' is clicked */}
         {showInputs && (
           <div className="input-section">
             <div>
             <button onClick={handleStartSession} className="generic-button">
             Start Session</button> <br></br>
-              <label>
-                Hours (0-23):
+              <label className="user-input">
+                Hours: 
                 <input
                   type="number"
                   min="0"
@@ -115,45 +128,30 @@ const Timer = () => {
               </label>
             </div>
             <div>
-              <label>
-                Minutes (0-59):
+              <label className="user-input">
+                Minutes: 
                 <input
                   type="number"
                   min="0"
                   max="59"
+                  step={5}
                   value={minutes}
                   onChange={(e) => setMinutes(Number(e.target.value))}
-                />
-              </label>
-            </div>
-            <div>
-              <label>
-                Seconds (0-59):
-                <input
-                  type="number"
-                  min="0"
-                  max="59"
-                  value={seconds}
-                  onChange={(e) => setSeconds(Number(e.target.value))}
                 />
               </label>
             </div>
           </div>
         )}
 
-        {/* Start Session button appears after inputs are shown */}
-
-        {/* Always visible Pause/Resume button */}
+    
         <button onClick={handlePauseResume} className="generic-button">
           {isRunning && !isPaused ? "Pause Session" : "Resume Session"}
         </button>
 
-        {/* End Session button */}
         <button onClick={handleReset} className="generic-button">
           End Session
         </button>
 
-        {/* Delete Session button */}
         <button className="generic-button">Delete Session</button>
       </div>
     </div>
