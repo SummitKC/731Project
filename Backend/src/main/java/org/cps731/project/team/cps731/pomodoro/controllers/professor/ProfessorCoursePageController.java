@@ -89,6 +89,13 @@ public class ProfessorCoursePageController {
         return ResponseEntity.ok(new AssignmentDTO(createdAssignment));
     }
 
+    @PutMapping("/assignment/{assignmentID}")
+    public ResponseEntity<AssignmentDTO> updateAssignment(@PathVariable Long assignmentID, @RequestBody CreateAssignmentRequestDTO requestDTO) {
+        return ResponseEntity.ok(
+                new AssignmentDTO(assignmentService.updateAssignment(assignmentID, requestDTO))
+        );
+    }
+
     @PutMapping("/{courseCode}/archive")
     public ResponseEntity<CourseDTO> archiveCourse(@PathVariable String courseCode, @RequestParam Boolean archived) {
         
