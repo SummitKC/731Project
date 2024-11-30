@@ -90,7 +90,7 @@ public class ProfessorCoursePageController {
     }
 
     @PutMapping("/assignment/{assignmentID}")
-    public ResponseEntity<AssignmentDTO> updateAssignment(@PathVariable Long assignmentID, CreateAssignmentRequestDTO requestDTO) {
+    public ResponseEntity<AssignmentDTO> updateAssignment(@PathVariable Long assignmentID, @RequestBody CreateAssignmentRequestDTO requestDTO) {
         return ResponseEntity.ok(
                 new AssignmentDTO(assignmentService.updateAssignment(assignmentID, requestDTO))
         );
