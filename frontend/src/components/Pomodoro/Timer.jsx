@@ -12,8 +12,7 @@ const Timer = () => {
   const [isPaused, setIsPaused] = useState(true);
   const [isSessionStarted, setIsSessionStarted] = useState(false);
   const [showInputs, setShowInputs] = useState(false);
-  const [startButtonText, setStartButtonText] = useState('Start New Session');
-
+  const [isEditing, setIsEditing] = useState(false);
   const calculateTime = (time) => {
     setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
     setMinutes(Math.floor((time / (1000 * 60)) % 60));
@@ -48,14 +47,13 @@ const Timer = () => {
   }, [totalTime]);
 
   const handleStartNewSession = () => {
+    handleReset();
     setShowInputs(true);
-    setStartButtonText('Start Session');
     setIsSessionStarted(false); // This should remain false until the session starts
   };
   
   const handleStartSession = () => {
     const totalMilliseconds = hours * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000;
-  
     if (totalMilliseconds <= 0) {
       alert("Please set a valid time for the session.");
       return;
@@ -66,7 +64,6 @@ const Timer = () => {
     setIsPaused(false); // Unpause the session
     setIsSessionStarted(true); // Mark the session as started
     setShowInputs(false); // Hide input fields
-    setStartButtonText('Start New Session'); // Change button text to "Start New Session"
   };
   const handlePauseResume = () => {
     if (isPaused) {
@@ -82,8 +79,7 @@ const Timer = () => {
     setIsRunning(false); // Stop the session
     setIsPaused(true); // Pause the session
     setIsSessionStarted(false); // Reset session started state
-    setShowInputs(true); // Show the input fields
-    setStartButtonText('Start New Session'); // Reset button text
+    setShowInputs(false); // Show the input fields
     setTotalTime(0); // Reset total time
     setHours(0); // Reset hours
     setMinutes(0); // Reset minutes
@@ -99,17 +95,14 @@ const Timer = () => {
       </h2>
 
       <div className="session-buttons">
-        {/* Start New Session button */}
-        {!isSessionStarted && (
-          <button onClick={handleStartNewSession} className="generic-button">
-            {startButtonText}
-          </button>
-        )}
+          <button style={!showInputs ? {} : {display: "none"}} onClick={handleStartNewSession} className="generic-button">Start New Session</button>
 
         {/* Show input fields when 'Start New Session' is clicked */}
         {showInputs && (
           <div className="input-section">
             <div>
+            <button onClick={handleStartSession} className="generic-button">
+            Start Session</button> <br></br>
               <label>
                 Hours (0-23):
                 <input
@@ -149,17 +142,6 @@ const Timer = () => {
         )}
 
         {/* Start Session button appears after inputs are shown */}
-        {isSessionStarted && !isPaused && (
-          <button onClick={handlePauseResume} className="generic-button">
-            Pause Session
-          </button>
-        )}
-
-        {isSessionStarted && isPaused && (
-          <button onClick={handlePauseResume} className="generic-button">
-            Resume Session
-          </button>
-        )}
 
         {/* Always visible Pause/Resume button */}
         <button onClick={handlePauseResume} className="generic-button">
