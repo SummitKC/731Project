@@ -15,6 +15,8 @@ import org.cps731.project.team.cps731.pomodoro.data.model.user.Professor;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.Student;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.User;
 import org.cps731.project.team.cps731.pomodoro.data.model.user.UserType;
+import org.cps731.project.team.cps731.pomodoro.dto.announcement.AnnouncementDTO;
+import org.cps731.project.team.cps731.pomodoro.dto.assignment.AssignmentDTO;
 import org.cps731.project.team.cps731.pomodoro.dto.course.FullCourseInfoDTO;
 import org.cps731.project.team.cps731.pomodoro.security.filter.JwtAuthenticationFilter;
 import org.cps731.project.team.cps731.pomodoro.security.principal.authority.AppAuthorities;
@@ -40,6 +42,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -164,4 +167,47 @@ public class StudentCoursePageControllerTest {
                 });
     }
 
+    @Test
+    public void shouldReturnNotFoundResponseForCourseThatDoesNotExist() throws Exception {
+        when(courseService.getCourseById(mockCourse.getCourseCode()))
+                .thenReturn(null);
+
+        mockMvc.perform(get("/student/course/" + mockCourse.getCourseCode()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldReturnAnnouncementDTOsForCourseWhenCallingAnnouncementsEndpoint() throws Exception {
+        when(courseService.getCourseById(mockCourse.getCourseCode()))
+                .thenReturn(mockCourse);
+        when(announcementService.getAnnouncementsByCourse(mockCourse.getCourseCode(), 0, 10))
+                .thenReturn(mockCourse.getAnnouncements().stream().toList());
+
+        mockMvc.perform(get("/student/course/" + mockCourse.getCourseCode() + "/announcements"))
+                .andExpect(status().isOk())
+                .andExpect(result -> {
+                    var body = MAPPER.readerForListOf(AnnouncementDTO.class)
+                            .readValue(result.getResponse().getContentAsString());
+
+                    assertThat(body, equalTo(mockCourse.getAnnouncements().stream().map(AnnouncementDTO::new).toList()));
+                });
+    }
+
+    @Test
+    public void shouldReturnAssignmentDTOsForCourseWhenCallingAssignmentsEndpoint() throws Exception {
+        when(courseService.getCourseById(mockCourse.getCourseCode()))
+                .thenReturn(mockCourse);
+
+        mockMvc.perform(get("/student/course/" + mockCourse.getCourseCode() + "/assignments"))
+                .andExpect(status().isOk())
+                .andExpect(result -> {
+                    var body = MAPPER.readerForListOf(AssignmentDTO.class)
+                            .readValue(result.getResponse().getContentAsString());
+
+                    assertThat(body, equalTo(assignmentService.getAssignmentsByCourse(mockCourse.getCourseCode(), 0, 10)
+                            .stream()
+                            .map(AssignmentDTO::new)
+                            .toList()));
+                });
+    }
 }
