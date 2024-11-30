@@ -2,7 +2,6 @@ package org.cps731.project.team.cps731.pomodoro.controllers.student;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -42,7 +41,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -77,7 +75,6 @@ public class StudentCoursePageControllerTest {
     private static Announcement announcementForA2;
     private static Announcement mockAnnouncment;
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final ObjectWriter WRITER = MAPPER.writer().withDefaultPrettyPrinter();
 
     @BeforeAll
     public static void setupMocks() {
@@ -209,5 +206,15 @@ public class StudentCoursePageControllerTest {
                             .map(AssignmentDTO::new)
                             .toList()));
                 });
+    }
+
+    @Test
+    public void shouldCallStudentServiceRemoveFromCourseWhenCallingTheDeleteCourseEndpoint() throws Exception {
+        when(studentService.removeStudentFromCourse(mockStudent.getID(), mockCourse.getCourseCode()))
+                .thenReturn(true);
+
+        mockMvc.perform(delete("/student/course/" + mockCourse.getCourseCode()))
+                .andExpect(status().isNoContent());
+        verify(studentService, times(1)).removeStudentFromCourse(mockStudent.getID(), mockCourse.getCourseCode());
     }
 }

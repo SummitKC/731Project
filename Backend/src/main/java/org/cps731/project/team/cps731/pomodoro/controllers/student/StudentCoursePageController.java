@@ -82,7 +82,7 @@ public class StudentCoursePageController {
         );
     }
 
-    @DeleteMapping("/courses/{courseCode}")
+    @DeleteMapping("/{courseCode}")
     public ResponseEntity<Void> leaveCourse(@PathVariable String courseCode) {
         var studentId = SecurityUtil.getAuthenticatedUserID();
 
