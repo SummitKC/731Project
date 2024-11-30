@@ -3,11 +3,11 @@ import '../../assets/task.css';
 import '../../assets/global.css';
 import AssignmentDetailOverlay from './AssignmentDetailOverlay';
 
-const Assignment = ({ assignmentID, assignmentName, assignmentDueDate, assignmentDueTime }) => {
+const Assignment = ({ assignmentID, assignmentName, assignmentDueDate, assignmentDueTime, type }) => {
   const [selectedAssignment, setSelectedAssignment] = useState(null);
 
   const handleAssignmentClick = () => {
-    setSelectedAssignment({ assignmentID, assignmentName, assignmentDueDate, assignmentDueTime });
+    setSelectedAssignment({ assignmentID, assignmentName, assignmentDueDate, assignmentDueTime, type });
   };
 
   const handleClose = () => {
