@@ -3,6 +3,7 @@ package org.cps731.project.team.cps731.pomodoro.controllers.student;
 import org.cps731.project.team.cps731.pomodoro.data.model.timeentry.TimeEntry;
 import org.cps731.project.team.cps731.pomodoro.dto.PomSession;
 import org.cps731.project.team.cps731.pomodoro.dto.task.TaskDTO;
+import org.cps731.project.team.cps731.pomodoro.services.PomodoroService;
 import org.cps731.project.team.cps731.pomodoro.services.TaskService;
 import org.cps731.project.team.cps731.pomodoro.services.TimeEntryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,25 +22,20 @@ import java.util.Map;
 @PreAuthorize("hasRole('ROLE_STUDENT')")
 public class StudentPomodoroController {
 
-    @Autowired
-    private TimeEntryService timeEntryService;
+    private final TimeEntryService timeEntryService;
+    private final TaskService taskService;
+    private final PomodoroService pomodoroService;
 
     @Autowired
-    private TaskService taskService;
-
-    private final Map<Long, PomSession> activePomSessions = new HashMap<>();
-
-    /**
-     * Used to mock the activePomSessions during test
-     * @return
-     */
-    protected Map<Long, PomSession> getActivePomSessions() {
-        return activePomSessions;
+    public StudentPomodoroController(TimeEntryService timeEntryService, TaskService taskService, PomodoroService pomodoroService) {
+        this.timeEntryService = timeEntryService;
+        this.taskService = taskService;
+        this.pomodoroService = pomodoroService;
     }
 
     @PostMapping("/start/{TaskID}")
     public ResponseEntity<PomSession> startPomodoro(@PathVariable Long TaskID, @RequestParam int mins) {
-        PomSession session = getActivePomSessions().get(TaskID);
+        PomSession session = pomodoroService.getSession(TaskID);
         if (session == null) {
             var task = taskService.getTaskById(TaskID);
             session = PomSession.builder()
@@ -50,7 +46,7 @@ public class StudentPomodoroController {
 
             session.setStartTime(Instant.now().toEpochMilli());
             session.setTask(new TaskDTO(task));
-            getActivePomSessions().put(TaskID, session);
+            pomodoroService.addSession(TaskID, session);
             
             return ResponseEntity.ok(session);
         }
@@ -59,7 +55,7 @@ public class StudentPomodoroController {
 
     @PostMapping("/pause/{TaskID}")
     public ResponseEntity<PomSession> pausePomodoro(@PathVariable Long TaskID) {
-        PomSession session = getActivePomSessions().get(TaskID);
+        PomSession session = pomodoroService.getSession(TaskID);
         if (session == null) {
             throw new IllegalArgumentException("Session does not exist");
         } else if (session.isPaused()) {
@@ -73,7 +69,7 @@ public class StudentPomodoroController {
     
     @PostMapping("/resume/{TaskID}")
     public ResponseEntity<PomSession> resumePomodoro(@PathVariable Long TaskID) {
-        PomSession session = getActivePomSessions().get(TaskID);
+        PomSession session = pomodoroService.getSession(TaskID);
         if (session == null) {
             throw new IllegalArgumentException("Session does not exist");
         } else if (!session.isPaused()) {
@@ -89,7 +85,7 @@ public class StudentPomodoroController {
 
     @PostMapping("/end/{taskID}")
     public ResponseEntity<PomSession> endPomodoro(@PathVariable Long taskID) {
-        PomSession session = getActivePomSessions().get(taskID);
+        PomSession session = pomodoroService.getSession(taskID);
         if (session == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -105,14 +101,14 @@ public class StudentPomodoroController {
                 .pomodoros(1)
                 .build();
         timeEntryService.createTimeEntry(timeEntry);
-        getActivePomSessions().remove(taskID);
+        pomodoroService.removeSession(taskID);
         return ResponseEntity.ok(session);
     }
 
 
     @GetMapping("/break/{TaskID}") //Work in progress
     public ResponseEntity<Integer> pomoBreak(@PathVariable Long TaskID) {
-        PomSession session = getActivePomSessions().get(TaskID);
+        PomSession session = pomodoroService.getSession(TaskID);
         if (session == null) {
             return ResponseEntity.badRequest().build();
         }
