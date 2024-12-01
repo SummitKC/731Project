@@ -37,10 +37,9 @@ Project Structure:
   ├── package.json
   └── ...
 
-#To start the app
+**To start the app**
 
-
-##IMPORTANT: Make sure you are on Java version 21 
+**IMPORTANT: Make sure you are on Java version 21**
 
 To run the app please download these packages in the Frontend folder:
 
@@ -50,8 +49,8 @@ To run the app please download these packages in the Frontend folder:
 - npm install date-fns
 - npm install react-beautiful-dnd
 
-To start the front end CD into the Frontend, and type in "npm start" in the terminal. NOTE this only starts the frontend. 
+To start the front end CD into the Frontend, and type in "npm start" in the terminal. NOTE: this only starts the frontend. 
 
-To start the backend, CD into the Backend folder, and type in `./mvnw spring-boot:run -D"spring-boot.run.profiles=dev"` in the terminal. NOTE this only stats the backend. 
+To start the backend, CD into the Backend folder, and type in `./mvnw spring-boot:run -D"spring-boot.run.profiles=dev"` in the terminal. NOTE: this only stats the backend. 
 
 Once both are started, the app should be functional. 
