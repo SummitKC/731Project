@@ -34,7 +34,7 @@ const CoursePageStudent = () => {
     if (!token) {
       navigate('/login');
     } else {
-      fetch(`http://localhost:8080/api/student/course/courses/${courseCode}`, { 
+      fetch(`http://localhost:8080/api/student/course/${courseCode}`, { 
         method: 'DELETE', 
         headers: {
           Authorization: `${token}`,
