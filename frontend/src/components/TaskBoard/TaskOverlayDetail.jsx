@@ -60,15 +60,34 @@ const TaskDetailOverlay = ({ selectedTask, handleClose }) => {
 
   const handleComplete = async () => {
     try {
+      
       const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth();
-      const date = now.getDate();  
+      let year = now.getFullYear();
+      let month = now.getMonth();
+      let date = now.getDate();  
+      let th = now.getHours();
+      let tm = now.getMinutes();
+      if (th < 10 && th >= 0){
+        th = "0" + th;
+      }
+      if (tm >= 0 && tm < 10){
+        tm = "0" + tm;
+      }
+      
+      if (month < 10 && month >= 0){
+        month = "0" + month;
+      }
+      if (date >= 0 && date < 10){
+        date = "0" + date;
+      }
       const fulldate = year + '-' + month + '-' + date;
-      const th = now.getHours();
-      const tm = now.getMinutes();
+      
       const fulltime = th + ':' + tm + ':00';
       //2024-11-30T21:52:22.964Z
+      
+      console.log('time:' + fulltime )
+
+      
       const iso = fulldate + 'T' + fulltime + 'Z'; 
       console.log('date:' + iso )
   
@@ -90,7 +109,7 @@ const TaskDetailOverlay = ({ selectedTask, handleClose }) => {
       if (response.ok) {
         console.log('Task marked as complete.');
         handleClose();
-        window.location.reload();
+        
       } else {
         console.error('Error marking task as complete:', response.statusText);
       }

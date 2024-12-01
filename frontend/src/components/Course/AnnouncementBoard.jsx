@@ -10,7 +10,7 @@ const AnnouncementBoard = ({ announcements, type, courseCode, fetchCourseData })
   
   const navigate = useNavigate();
 
-  // Group announcements by post date
+  // Group announcements by post date and time
   const groupedAnnouncements = announcements.reduce((acc, announcement) => {
     const { announcementPostDate } = announcement;
     if (!acc[announcementPostDate]) {
@@ -20,8 +20,8 @@ const AnnouncementBoard = ({ announcements, type, courseCode, fetchCourseData })
     return acc;
   }, {});
 
-
-  const sortedDatesDesc = Object.keys(groupedAnnouncements).sort((a, b) => new Date(a) - new Date(b));
+  // Sort dates in descending order (including time)
+  const sortedDatesDesc = Object.keys(groupedAnnouncements).sort((a, b) => new Date(b) - new Date(a));
 
   const handleNewAnnouncement = (data) => {
     const token = localStorage.getItem('token');
