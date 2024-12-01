@@ -206,7 +206,6 @@ const Timer = () => {
           End Session
         </button>
 
-        <button className="generic-button">Delete Session</button>
       </div>
     </div>
   );
