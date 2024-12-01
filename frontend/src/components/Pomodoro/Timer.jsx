@@ -205,7 +205,6 @@ const Timer = () => {
         <button onClick={handleReset} className="generic-button">
           End Session
         </button>
-
       </div>
     </div>
   );
