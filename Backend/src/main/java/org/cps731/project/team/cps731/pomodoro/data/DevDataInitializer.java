@@ -101,8 +101,17 @@ public class DevDataInitializer implements ApplicationRunner {
 
         var timeEntry1 = TimeEntry
                 .builder()
-                .timeLogged(Duration.of(25, ChronoUnit.MINUTES).toMillis())
-                .startTime(Timestamp.from(Instant.now().minus(2, ChronoUnit.DAYS).minus(25, ChronoUnit.MINUTES)))
+                .timeLogged(Duration.of(7, ChronoUnit.SECONDS).toMillis())
+                .startTime(Timestamp.from(Instant.now().minus(2, ChronoUnit.DAYS).minus(7, ChronoUnit.SECONDS)))
+                .endTime(Timestamp.from(Instant.now().minus(2, ChronoUnit.DAYS)))
+                .pomodoros(1)
+                .task(task1)
+                .build();
+
+        var timeEntry123 = TimeEntry
+                .builder()
+                .timeLogged(Duration.of(7, ChronoUnit.SECONDS).toMillis())
+                .startTime(Timestamp.from(Instant.now().minus(2, ChronoUnit.DAYS).minus(7, ChronoUnit.SECONDS)))
                 .endTime(Timestamp.from(Instant.now().minus(2, ChronoUnit.DAYS)))
                 .pomodoros(1)
                 .task(task1)
@@ -165,6 +174,7 @@ public class DevDataInitializer implements ApplicationRunner {
         entityManager.persist(timeEntry2);
         entityManager.persist(timeEntry3);
         entityManager.persist(timeEntry4);
+        entityManager.persist(timeEntry123);
         entityManager.flush();
     }
 }
