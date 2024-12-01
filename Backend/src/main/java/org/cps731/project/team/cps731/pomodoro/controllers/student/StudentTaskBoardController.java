@@ -43,10 +43,10 @@ public class StudentTaskBoardController {
 
         // Get only recent tasks (last week)
         //Timestamp oneWeekAgo = Timestamp.from(Instant.now().minusSeconds(7 * 24 * 60 * 60));
-        Set<TaskDTO> upcomingTasks = taskService.getTaskByStateAndIssueTime(studentId,
+/*         Set<TaskDTO> upcomingTasks = taskService.getTaskByStateAndIssueTime(studentId,
                 TaskState.TODO,
                 Timestamp.from(Instant.now().minus(7, ChronoUnit.DAYS)))
-                .stream().map(TaskDTO::new).collect(Collectors.toSet());
+                .stream().map(TaskDTO::new).collect(Collectors.toSet()); */
 
         return ResponseEntity.ok(new TaskBoardDTO(todoTasks, inProgressTasks, reviewingTasks, completedTasks));
     }
