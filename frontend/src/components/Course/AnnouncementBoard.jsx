@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Announcement from './Announcement';
 import { useNavigate } from 'react-router-dom';
-
 import '../../assets/coursepage.css';
 import NewAnnouncementModal from '../Course/NewAnnouncementModal';
 
@@ -21,8 +20,8 @@ const AnnouncementBoard = ({ announcements, type, courseCode, fetchCourseData })
     return acc;
   }, {});
 
-  // Sort dates in descending order
-  const sortedDatesDesc = Object.keys(groupedAnnouncements).sort((a, b) => new Date(b) - new Date(a));
+
+  const sortedDatesDesc = Object.keys(groupedAnnouncements).sort((a, b) => new Date(a) - new Date(b));
 
   const handleNewAnnouncement = (data) => {
     const token = localStorage.getItem('token');
@@ -31,7 +30,6 @@ const AnnouncementBoard = ({ announcements, type, courseCode, fetchCourseData })
       console.log('Expired or bad token, login again!');
       navigate('/login');
     } else {
-    
       fetch(`http://localhost:8080/api/professor/course/${courseCode}/announcement`, {
         method: 'POST',
         headers: {
@@ -40,7 +38,12 @@ const AnnouncementBoard = ({ announcements, type, courseCode, fetchCourseData })
         },
         body: JSON.stringify(data)
       })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text().then(text => text ? JSON.parse(text) : {});
+      })
       .then(result => {
         console.log('New announcement created:', result);
         setShowAnnouncementModal(false);
@@ -49,7 +52,7 @@ const AnnouncementBoard = ({ announcements, type, courseCode, fetchCourseData })
       .catch(error => {
         console.error('Error creating announcement:', error);
         setErrorMessage('Error creating announcement. Please try again.');
-      }); 
+      });
     }
   };
 
