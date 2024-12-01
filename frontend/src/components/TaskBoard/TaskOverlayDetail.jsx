@@ -90,7 +90,7 @@ const TaskDetailOverlay = ({ selectedTask, handleClose }) => {
       if (response.ok) {
         console.log('Task marked as complete.');
         handleClose();
-        //window.location.reload();
+        window.location.reload();
       } else {
         console.error('Error marking task as complete:', response.statusText);
       }

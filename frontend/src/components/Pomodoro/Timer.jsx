@@ -8,11 +8,11 @@ const Timer = () => {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [totalTime, setTotalTime] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(true);
   const [isSessionStarted, setIsSessionStarted] = useState(false);
   const [showInputs, setShowInputs] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
 
   const [incrementsCompleted, setIncrementsCompleted] = useState(0);
   const [shortBreak, setShortBreak] = useState(false);
@@ -27,9 +27,9 @@ const Timer = () => {
   useEffect(() => {
     let interval = null;
 
-    if (isRunning && !isPaused && totalTime > 0) {
+    if (isRunning && !isPaused && timeLeft > 0) {
       interval = setInterval(() => {
-        setTotalTime((prevTime) => {
+        setTimeLeft((prevTime) => {
           if (prevTime <= 1000) {
             clearInterval(interval);
             setIsRunning(false);
@@ -56,11 +56,11 @@ const Timer = () => {
     }
 
     return () => clearInterval(interval);
-  }, [isRunning, isPaused, totalTime, shortBreak, longBreak]); // Dependencies include break states
+  }, [isRunning, isPaused, timeLeft, shortBreak, longBreak]);
 
   useEffect(() => {
-    calculateTime(totalTime);
-  }, [totalTime]);
+    calculateTime(timeLeft);
+  }, [timeLeft]);
 
   const handleStartNewSession = () => {
     handleReset();
@@ -76,6 +76,7 @@ const Timer = () => {
     }
 
     setTotalTime(totalMilliseconds);
+    setTimeLeft(totalMilliseconds);
     setIsRunning(true);
     setIsPaused(false);
     setIsSessionStarted(true);
@@ -98,6 +99,7 @@ const Timer = () => {
     setIsSessionStarted(false);
     setShowInputs(false);
     setTotalTime(0);
+    setTimeLeft(0);
     setHours(0);
     setMinutes(0);
     setSeconds(0);
@@ -107,32 +109,32 @@ const Timer = () => {
   };
 
   const startShortBreak = () => {
-    // Start a short break (5 minutes)
-    setTotalTime(5 * 60 * 1000);
+    setTimeLeft(5 * 60 * 1000);
     setIsRunning(true);
     setIsPaused(false);
   };
 
   const startLongBreak = () => {
-    // Start a long break (15 minutes)
-    setTotalTime(15 * 60 * 1000);
+    setTimeLeft(15 * 60 * 1000);
     setIsRunning(true);
     setIsPaused(false);
   };
 
   const handlePomodoroEnd = () => {
     if (incrementsCompleted === 3) {
-      // After 3 sessions, long break
       setLongBreak(true);
       setIncrementsCompleted(0); // Reset Pomodoro count after long break
     } else {
-      // Start short break
       setShortBreak(true);
     }
 
-    // Increase completed Pomodoro sessions
     setIncrementsCompleted(incrementsCompleted + 1);
   };
+
+  // Calculate circle progress and color
+  const totalSessionTime = hours * 3600000 + minutes * 60000 + seconds * 1000;
+  const progress = totalTime > 0 ? (1099 * timeLeft) / totalTime : 0;
+  const circleColor = timeLeft / totalTime > 0.5 ? 'green' : timeLeft / totalTime > 0.1 ? 'yellow' : 'red';
 
   return (
     <div className="timer">
@@ -145,13 +147,14 @@ const Timer = () => {
             cy="50%"
             r="175"
             style={{
-              strokeDashoffset: 314 * (1 - totalTime / (hours * 3600000 + minutes * 60000 + seconds * 1000)),
+              strokeDashoffset: 1099 - progress, // Ensure it progresses counterclockwise
+              stroke: circleColor,
             }}
           />
         </svg>
         <div className="time-display">
-          {String(hours).padStart(2, "0")}:{String(minutes).padStart(2, "0")}:
-          {String(seconds).padStart(2, "0")} <br />
+          {String(hours).padStart(2, "0")}:{String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+          <br />
           <h1 className="sub-text">Remaining</h1>
         </div>
       </div>

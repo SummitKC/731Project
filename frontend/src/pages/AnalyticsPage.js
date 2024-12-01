@@ -43,7 +43,7 @@ const AnalyticsPage = () => {
     { title: "Total Sessions", data: analytics.totalSessions, unit : ""},
     { title: "Total Tasks", data: analytics.totalTasks, unit : ""},
     { title: "Completed Tasks", data: analytics.completedTasks, unit : ""},
-    { title: "Completion Rate", data: (analytics.completionRate || "0%"), unit : ""},
+    { title: "Completion Rate", data: (analytics.completionRate || "0") + "%", unit : ""},
     { title: "Tasks Completed This Month", data: analytics.taskCompletedThisMonth, unit : ""}
   ];
 
