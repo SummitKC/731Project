@@ -52,7 +52,22 @@ const TaskDetailOverlay = ({ selectedTask, handleClose }) => {
   };
 
   
+  const toIsoString = (date) => {
+    var tzo = -date.getTimezoneOffset(),
+        dif = tzo >= 0 ? '+' : '-',
+        pad = function(num) {
+            return (num < 10 ? '0' : '') + num;
+        };
   
+    return date.getFullYear() +
+        '-' + pad(date.getMonth() + 1) +
+        '-' + pad(date.getDate()) +
+        'T' + pad(date.getHours()) +
+        ':' + pad(date.getMinutes()) +
+        ':' + pad(date.getSeconds()) +
+        dif + pad(Math.floor(Math.abs(tzo) / 60)) +
+        ':' + pad(Math.abs(tzo) % 60);
+  }
 
   const onCancel = async () => {
     setIsEditing(false);
@@ -62,35 +77,8 @@ const TaskDetailOverlay = ({ selectedTask, handleClose }) => {
     try {
       
       const now = new Date();
-      let year = now.getFullYear();
-      let month = now.getMonth();
-      let date = now.getDate();  
-      let th = now.getHours();
-      let tm = now.getMinutes();
-      if (th < 10 && th >= 0){
-        th = "0" + th;
-      }
-      if (tm >= 0 && tm < 10){
-        tm = "0" + tm;
-      }
       
-      if (month < 10 && month >= 0){
-        month = "0" + month;
-      }
-      if (date >= 0 && date < 10){
-        date = "0" + date;
-      }
-      const fulldate = year + '-' + month + '-' + date;
-      
-      const fulltime = th + ':' + tm + ':00';
-      //2024-11-30T21:52:22.964Z
-      
-      console.log('time:' + fulltime )
-
-      
-      const iso = fulldate + 'T' + fulltime + 'Z'; 
-      console.log('date:' + iso )
-  
+      const iso = toIsoString(now);
       
       const response = await fetch(`http://localhost:8080/api/student/taskboard/tasks/${selectedTask.id}`, {
         method: 'PUT',

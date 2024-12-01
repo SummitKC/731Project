@@ -39,7 +39,7 @@ const AnalyticsPage = () => {
     { title: "Average Session Time", data: analytics.averageSessionTime, unit : "minutes"},
     { title: "Max Session Time", data: analytics.maxSessionTime, unit : "minutes"},
     { title: "Min Session Time", data: analytics.minSessionTime, unit : "minutes"},
-    { title: "Total Session Time", data: analytics.totalSessionTime, unit : "hours"},
+    { title: "Total Session Time", data: (analytics.totalSessionTime <= 60 ? analytics.totalSessionTime : analytics.totalSessionTime / 60 ), unit : (analytics.totalSessionTime > 60 ? "hours": "minutes")},
     { title: "Total Sessions", data: analytics.totalSessions, unit : ""},
     { title: "Total Tasks", data: analytics.totalTasks, unit : ""},
     { title: "Completed Tasks", data: analytics.completedTasks, unit : ""},
